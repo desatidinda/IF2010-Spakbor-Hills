@@ -1,3 +1,4 @@
+package entity.Player;
 public class Point {
     private int x;
     private int y;

@@ -19,5 +19,9 @@ public abstract class Item {
     public void setItemType(String itemType) {
         this.itemType = itemType;
     }
+
+    public boolean isEdible() {
+        return false;
+    }
     
 }

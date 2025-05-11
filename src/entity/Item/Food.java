@@ -29,4 +29,8 @@ public class Food extends Item{
         this.sellPrice = sellPrice;
     }
 
+    @Override
+    public boolean isEdible() {
+        return true;
+    }
 }
