@@ -1,5 +1,14 @@
 package main;
 
-public class GameStates {
-    
+public enum GameStates {
+    INITIAL,
+    MAP, 
+    INSIDE_HOUSE, 
+    NPC_HOUSE, 
+    FISHING,
+    MENU,
+    ITEMLIST,
+    STATISTCS;
+
+    // public static GameStates gameState = MENU;
 }
