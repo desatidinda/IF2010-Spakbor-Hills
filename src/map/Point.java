@@ -1,4 +1,5 @@
-package entity.Player;
+package map;
+
 public class Point {
     private int x;
     private int y;
@@ -12,20 +13,20 @@ public class Point {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public int getY() {
         return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
     }
 
     public void setY(int y) {
         this.y = y;
     }
 
-    @Override
-    public String toString() {
-        return "(" + x + ", " + y + ")";
+    public void translate(int dx, int dy) {
+        this.x += dx;
+        this.y += dy;
     }
 }
