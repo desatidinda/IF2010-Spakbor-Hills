@@ -336,4 +336,19 @@ public class Player {
         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
         System.out.println("Inventory : " + inventory);
     }
+
+    public void chatWith(NPC npc) {
+        npc.incrementChatting();
+        npc.chat();
+        energy -= 10;
+    }
+
+    public void giveGift(NPC npc, Item item) {
+        if (inventory.contains(item)) {
+            inventory.remove(item);
+            npc.incrementGifting();
+            npc.reactToGift(item);
+            energy -= 5;
+        }
+    }
 }
