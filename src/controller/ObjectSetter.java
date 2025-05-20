@@ -4,11 +4,14 @@ import java.util.Random;
 
 import entity.House.House;
 import entity.House.ShippingBin;
+import entity.Farm.Pond;
 import main.GamePanel;
 
 public class ObjectSetter {
     GamePanel gp;
     Random random = new Random();
+
+    int houseStartCol, houseStartRow, houseEndCol, houseEndRow;
 
     public ObjectSetter(GamePanel gp) {
         this.gp = gp;
@@ -16,13 +19,7 @@ public class ObjectSetter {
 
     public void setObject() {
         deployHouseAndBin();
-        // gp.obj[0] = new House();
-        // gp.obj[0].worldX = 12 * gp.tileSize;
-        // gp.obj[0].worldY = 12 * gp.tileSize;
-
-        // gp.obj[1] = new ShippingBin();
-        // gp.obj[1].worldX = 18 * gp.tileSize;
-        // gp.obj[1].worldY = 16 * gp.tileSize;
+        deployPond();
     }
 
     public void deployHouseAndBin() {
@@ -32,29 +29,55 @@ public class ObjectSetter {
         int binWidth = 2;
         int binHeight = 2;
 
-        // Posisi ShippingBin offset dari pojok kiri atas house
-        int binOffsetX = 6; // tile ke kanan
-        int binOffsetY = 4; // tile ke bawah
+        int binOffsetX = 6;
+        int binOffsetY = 4;
 
-        // Hitung posisi maksimal house agar house & bin tetap di dalam world
-        int maxCol = gp.maxWorldCol - Math.max(houseWidth, binOffsetX + binWidth);
-        int maxRow = gp.maxWorldRow - Math.max(houseHeight, binOffsetY + binHeight);
+        int totalAreaWidth = Math.max(houseWidth, binOffsetX + binWidth);
+        int totalAreaHeight = Math.max(houseHeight, binOffsetY + binHeight);
+
+        int maxCol = gp.maxWorldCol - totalAreaWidth;
+        int maxRow = gp.maxWorldRow - totalAreaHeight;
 
         int col = random.nextInt(maxCol);
         int row = random.nextInt(maxRow);
 
-        int houseX = col * gp.tileSize;
-        int houseY = row * gp.tileSize;
+        houseStartCol = col;
+        houseStartRow = row;
+        houseEndCol = houseStartCol + totalAreaWidth - 1;
+        houseEndRow = houseStartRow + totalAreaHeight - 1;
 
         House house = new House();
-        house.worldX = houseX;
-        house.worldY = houseY;
+        house.worldX = col * gp.tileSize;
+        house.worldY = row * gp.tileSize;
         gp.obj[0] = house;
 
         ShippingBin bin = new ShippingBin();
-        bin.worldX = houseX + gp.tileSize * binOffsetX;
-        bin.worldY = houseY + gp.tileSize * binOffsetY;
+        bin.worldX = (col * gp.tileSize) + gp.tileSize * binOffsetX;
+        bin.worldY = (row * gp.tileSize) + gp.tileSize * binOffsetY;
         gp.obj[1] = bin;
     }
 
+    public void deployPond() {
+        int pondWidth = 2;
+        int pondHeight = 2;
+
+        int colPond, rowPond;
+        boolean overlap;
+
+        do {
+            colPond = random.nextInt(gp.maxWorldCol - pondWidth);
+            rowPond = random.nextInt(gp.maxWorldRow - pondHeight);
+
+            int pondEndCol = colPond + pondWidth - 1;
+            int pondEndRow = rowPond + pondHeight - 1;
+
+            overlap = !(colPond > houseEndCol || pondEndCol < houseStartCol ||
+                        rowPond > houseEndRow || pondEndRow < houseStartRow);
+        } while (overlap);
+
+        Pond pond = new Pond();
+        pond.worldX = colPond * gp.tileSize;
+        pond.worldY = rowPond * gp.tileSize;
+        gp.obj[2] = pond;
+    }
 }

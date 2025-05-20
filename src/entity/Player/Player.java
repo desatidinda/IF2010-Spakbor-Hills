@@ -15,7 +15,7 @@ public class Player {
     private String name;
     private String gender;
     private int energy;
-    private final String farmName;
+    private String farmName;
     private String partner;
     private int gold;
     private Inventory inventory;
@@ -64,7 +64,6 @@ public class Player {
         solid.height = gp.tileSize;
 
         getImage();
-
     }
 
     public void update() {
@@ -240,6 +239,19 @@ public class Player {
 
 
     // SETTER
+    public void setName(String name) { 
+        this.name = name; 
+    }
+
+    public void setGender(String gender) { 
+        this.gender = gender;
+        getImage();
+    }
+
+    public void setFarmName(String farmName) { 
+        this.farmName = farmName; 
+    }
+
     public void setPartner(String partner) { 
         this.partner = partner; 
     }

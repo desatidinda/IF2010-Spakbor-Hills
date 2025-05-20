@@ -2,6 +2,7 @@ package main;
 
 public enum GameStates {
     INITIAL,
+    INFORMATION,
     MAP, 
     INSIDE_HOUSE, 
     NPC_HOUSE, 

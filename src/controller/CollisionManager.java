@@ -31,7 +31,7 @@ public class CollisionManager {
                 playerRightCol = playerRightWorldX / gp.tileSize;
                 
                 // cek ujung world
-                if (playerTopRow < 0) {
+                if (playerTopWorldY - player.speed < 0) {
                     player.collision = true;
                     return;
                 }
@@ -83,10 +83,10 @@ public class CollisionManager {
                 playerTopRow = playerTopWorldY / gp.tileSize;
                 playerBottomRow = playerBottomWorldY / gp.tileSize;
                 
-                if (playerLeftCol < 0) {
-                    player.collision = true;
-                    return;
-                }
+                if (playerLeftWorldX - player.speed < 0) {
+                player.collision = true;
+                return;
+}
                 
                 playerTopRow = Math.max(0, Math.min(playerTopRow, gp.maxWorldRow - 1));
                 playerBottomRow = Math.max(0, Math.min(playerBottomRow, gp.maxWorldRow - 1));
