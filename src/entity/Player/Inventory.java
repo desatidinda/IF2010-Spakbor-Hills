@@ -20,7 +20,19 @@ public class Inventory {
         }
     }
 
+    public void printContents() {
+        if (items.isEmpty()) {
+            System.out.println("Inventory kosong.");
+        } else {
+            for (Map.Entry<String, Integer> entry : items.entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+            }
+        }
+    }
+
     public Map<String, Integer> getItems() {
         return items;
     }
 }
+
+

@@ -79,7 +79,7 @@ public abstract class NPC {
     }
 
     // Abstract methods di implementasi di subclass
-    public abstract void reactToGift(Item item);
+    public abstract void reactToGift(String itemName);
 
     public abstract void chat();
 }

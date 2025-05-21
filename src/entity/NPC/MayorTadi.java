@@ -1,16 +1,21 @@
 package entity.NPC;
 
-import entity.Item.Item;
+import java.util.Arrays;
+import java.util.List;
 
-public class MayorTadi extends NPC{
-   public MayorTadi() {
+public class MayorTadi extends NPC {
+
+    private final List<String> lovedItemNames = Arrays.asList(
+            "Legend"
+    );
+
+    private final List<String> likedItemNames = Arrays.asList(
+            "Angler", "Crimsonfish", "Glacierfish"
+    );
+
+    public MayorTadi() {
         super("Mayor Tadi");
-        lovedItems.add(new Item("Legend"));
-        likedItems.add(new Item("Angler"));
-        likedItems.add(new Item("Crimsonfish"));
-        likedItems.add(new Item("Glacierfish"));
-        // Sisa Item masuk ke hatedItem secara default
-    } 
+    }
 
     @Override
     public void chat() {
@@ -18,13 +23,13 @@ public class MayorTadi extends NPC{
     }
 
     @Override
-    public void reactToGift(Item item) {
-        if (lovedItems.contains(item)) {
+    public void reactToGift(String itemName) {
+        if (lovedItemNames.contains(itemName)) {
             addHeartPoints(25);
-        } else if (likedItems.contains(item)) {
+        } else if (likedItemNames.contains(itemName)) {
             addHeartPoints(20);
         } else {
-            addHeartPoints(-25);
+            addHeartPoints(-25); // Semua item lain dianggap hated
         }
     }
 }

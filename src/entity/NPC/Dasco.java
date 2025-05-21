@@ -1,28 +1,24 @@
 package entity.NPC;
 
-import entity.Item.Item;
+import java.util.Arrays;
+import java.util.List;
 
+public class Dasco extends NPC {
 
-public class Dasco extends NPC{
+    private final List<String> lovedItemNames = Arrays.asList(
+            "The Legends of Spakbor", "Cooked Pig's Head", "Wine", "Fugu", "Spakbor Salad"
+    );
+
+    private final List<String> likedItemNames = Arrays.asList(
+            "Fish Sandwich", "Fish Stew", "Baguette", "Fish n’ Chips"
+    );
+
+    private final List<String> hatedItemNames = Arrays.asList(
+            "Legend", "Grape", "Cauliflower", "Wheat", "Pufferfish", "Salmon"
+    );
+
     public Dasco() {
         super("Dasco");
-        lovedItems.add(new Item("The Legends of Spakbor"));
-        lovedItems.add(new Item("Cooked Pig's Head"));
-        lovedItems.add(new Item("Wine"));
-        lovedItems.add(new Item("Fugu"));
-        lovedItems.add(new Item("Spakbor Salad"));
-
-        likedItems.add(new Item("Fish Sandwich"));
-        likedItems.add(new Item("Fish Stew"));
-        likedItems.add(new Item("Baguette"));
-        likedItems.add(new Item("Fish n’ Chips"));
-
-        hatedItems.add(new Item("Legend"));
-        hatedItems.add(new Item("Grape"));
-        hatedItems.add(new Item("Cauliflower"));
-        hatedItems.add(new Item("Wheat"));
-        hatedItems.add(new Item("Pufferfish"));
-        hatedItems.add(new Item("Salmon"));
     }
 
     @Override
@@ -31,12 +27,12 @@ public class Dasco extends NPC{
     }
 
     @Override
-    public void reactToGift(Item item) {
-        if (lovedItems.contains(item)) {
+    public void reactToGift(String itemName) {
+        if (lovedItemNames.contains(itemName)) {
             addHeartPoints(25);
-        } else if (likedItems.contains(item)) {
+        } else if (likedItemNames.contains(itemName)) {
             addHeartPoints(20);
-        } else if (hatedItems.contains(item)) {
+        } else if (hatedItemNames.contains(itemName)) {
             addHeartPoints(-25);
         }
     }

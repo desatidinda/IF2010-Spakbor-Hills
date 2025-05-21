@@ -1,25 +1,25 @@
 package entity.NPC;
 
-import entity.Item.Item;
+import java.util.Arrays;
+import java.util.List;
 
-public class Abigail {
+public class Abigail extends NPC {
+
+    private final List<String> lovedItemNames = Arrays.asList(
+            "Blueberry", "Melon", "Pumpkin", "Grape", "Cranberry"
+    );
+
+    private final List<String> likedItemNames = Arrays.asList(
+            "Baguette", "Pumpkin Pie", "Wine"
+    );
+
+    private final List<String> hatedItemNames = Arrays.asList(
+            "Hot Pepper", "Cauliflower", "Parsnip", "Wheat"
+    );
+
     public Abigail() {
         super("Abigail");
-        lovedItems.add(new Item("Blueberry"));
-        lovedItems.add(new Item("Melon"));
-        lovedItems.add(new Item("Pumpkin"));
-        lovedItems.add(new Item("Grape"));
-        lovedItems.add(new Item("Cranberry"));
-
-        likedItems.add(new Item("Baguette"));
-        likedItems.add(new Item("Pumpkin Pie"));
-        likedItems.add(new Item("Wine"));
-
-        hatedItems.add(new Item("Hot Pepper"));
-        hatedItems.add(new Item("Cauliflower"));
-        hatedItems.add(new Item("Parsnip"));
-        hatedItems.add(new Item("Wheat"));
-    } 
+    }
 
     @Override
     public void chat() {
@@ -27,12 +27,12 @@ public class Abigail {
     }
 
     @Override
-    public void reactToGift(Item item) {
-        if (lovedItems.contains(item)) {
+    public void reactToGift(String itemName) {
+        if (lovedItemNames.contains(itemName)) {
             addHeartPoints(25);
-        } else if (likedItems.contains(item)) {
+        } else if (likedItemNames.contains(itemName)) {
             addHeartPoints(20);
-        } else if (hatedItems.contains(item)) {
+        } else if (hatedItemNames.contains(itemName)) {
             addHeartPoints(-25);
         }
     }

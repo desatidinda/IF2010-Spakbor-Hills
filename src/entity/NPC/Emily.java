@@ -1,17 +1,20 @@
 package entity.NPC;
 
-import entity.Item.Item;
+import java.util.Arrays;
+import java.util.List;
 
-public class Emily extends NPC{
+public class Emily extends NPC {
+
+    private final List<String> likedItemNames = Arrays.asList(
+            "Catfish", "Salmon", "Sardine"
+    );
+
+    private final List<String> hatedItemNames = Arrays.asList(
+            "Coal", "Wood"
+    );
+
     public Emily() {
         super("Emily");
-        likedItems.add(new Item("Catfish"));
-        likedItems.add(new Item("Salmon"));
-        likedItems.add(new Item("Sardine"));
-
-        hatedItems.add(new Item("Coal"));
-        hatedItems.add(new Item("Wood"));
-        //lovedItems segala jenis seed 
     }
 
     @Override
@@ -20,12 +23,13 @@ public class Emily extends NPC{
     }
 
     @Override
-    public void reactToGift(Item item) {
-        if (item.getType().equals("Seed")) {
-            addHeartPoints(25); 
-        } else if (likedItems.contains(item)) {
+    public void reactToGift(String itemName) {
+        // Jika itemName mengandung kata "Seed", maka diasumsikan itu jenis benih
+        if (itemName.toLowerCase().contains("seed")) {
+            addHeartPoints(25);
+        } else if (likedItemNames.contains(itemName)) {
             addHeartPoints(20);
-        } else if (hatedItems.contains(item)) {
+        } else if (hatedItemNames.contains(itemName)) {
             addHeartPoints(-25);
         }
     }

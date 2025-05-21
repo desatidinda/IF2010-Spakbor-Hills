@@ -1,15 +1,24 @@
 package entity.NPC;
 
-import entity.Item.Item;
+import java.util.Arrays;
+import java.util.List;
 
-public class Caroline extends NPC{
+public class Caroline extends NPC {
+
+    private final List<String> lovedItemNames = Arrays.asList(
+            "Firewood", "Coal"
+    );
+
+    private final List<String> likedItemNames = Arrays.asList(
+            "Potato", "Wheat"
+    );
+
+    private final List<String> hatedItemNames = Arrays.asList(
+            "Hot Pepper"
+    );
+
     public Caroline() {
         super("Caroline");
-        lovedItems.add(new Item("Firewood"));
-        lovedItems.add(new Item("Coal"));
-        likedItems.add(new Item("Potato"));
-        likedItems.add(new Item("Wheat"));
-        hatedItems.add(new Item("Hot Pepper"));
     }
 
     @Override
@@ -18,12 +27,12 @@ public class Caroline extends NPC{
     }
 
     @Override
-    public void reactToGift(Item item) {
-        if (lovedItems.contains(item)) {
+    public void reactToGift(String itemName) {
+        if (lovedItemNames.contains(itemName)) {
             addHeartPoints(25);
-        } else if (likedItems.contains(item)) {
+        } else if (likedItemNames.contains(itemName)) {
             addHeartPoints(20);
-        } else if (hatedItems.contains(item)) {
+        } else if (hatedItemNames.contains(itemName)) {
             addHeartPoints(-25);
         }
     }

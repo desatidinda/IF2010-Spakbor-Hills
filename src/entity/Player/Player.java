@@ -4,12 +4,18 @@ import map.Point;
 import input.KeyHandler;
 // import main.Game;
 import main.GamePanel;
+import entity.NPC.NPC;
+import entity.Item.Item;
+import entity.recipe.Recipe;
+import entity.recipe.Fuel;
+import entity.recipe.RecipeRegistry;
 
 // import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.Map;
 
 public class Player {
     private String name;
@@ -37,7 +43,7 @@ public class Player {
     public int solidDefaultX, solidDefaultY;
     public boolean collision = false;
 
-  
+
     public Player(String name, String gender, String farmName, GamePanel gp, KeyHandler keyHandler) {
         this.name = name;
         this.gender = gender;
@@ -48,7 +54,7 @@ public class Player {
         this.inventory = new Inventory();
         this.location = new Point(16, 16); // default starting location (ini ditengah)
         this.gp = gp;
-        this.keyHandler = keyHandler;   
+        this.keyHandler = keyHandler;
 
         screenX = gp.screenWidth/2 - gp.tileSize / 2;
         screenY = gp.screenHeight/2 - gp.tileSize / 2;
@@ -72,15 +78,15 @@ public class Player {
             if (keyHandler.upPressed) {
                 direction = "up";
                 //moveUp();
-            } 
+            }
             else if (keyHandler.downPressed) {
                 direction = "down";
                 //moveDown();
-            } 
+            }
             else if (keyHandler.leftPressed) {
                 direction = "left";
                 //moveLeft();
-            } 
+            }
             else if (keyHandler.rightPressed) {
                 direction = "right";
                 //moveRight();
@@ -88,7 +94,7 @@ public class Player {
 
             // cek collision
             collision = false;
-            gp.cm.checkTile(this); 
+            gp.cm.checkTile(this);
             int objectIndex = gp.cm.checkObject(this, true);
 
             if (collision == false) {
@@ -120,7 +126,7 @@ public class Player {
                 }
                 System.out.println("Location: (" + location.getX() + ", " + location.getY() + ")");
             }
-    
+
             spriteCounter++;
             if (spriteCounter > 1) {
                 if (spriteNum == 1) {
@@ -130,7 +136,7 @@ public class Player {
                 }
                 spriteCounter = 0;
             }
-        }   
+        }
     }
 
     public void draw(Graphics2D g2) {
@@ -141,7 +147,7 @@ public class Player {
             case "up":
                 if (spriteNum == 1) {
                     image = up1;
-                } 
+                }
                 if (spriteNum == 2) {
                     image = up2;
                 }
@@ -149,15 +155,15 @@ public class Player {
             case "down":
                 if (spriteNum == 1) {
                     image = down1;
-                } 
+                }
                 if (spriteNum == 2) {
                     image = down2;
                 }
                 break;
-            case "left": 
+            case "left":
                 if (spriteNum == 1) {
                     image = left1;
-                } 
+                }
                 if (spriteNum == 2) {
                     image = left2;
                 }
@@ -165,7 +171,7 @@ public class Player {
             case "right":
                 if (spriteNum == 1) {
                     image = right1;
-                } 
+                }
                 if (spriteNum == 2) {
                     image = right2;
                 }
@@ -175,7 +181,7 @@ public class Player {
         //g2.drawImage(image, location.getX() * gp.tileSize, location.getY() * gp.tileSize, gp.tileSize, gp.tileSize, null);
 
         g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-    } 
+    }
 
     public void getImage() {
         try {
@@ -199,53 +205,53 @@ public class Player {
                 left1 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cowo_kiri_1.png"));
                 left2 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cowo_kiri_2.png"));
             }
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     // GETTER
-    public String getName() { 
-        return name; 
+    public String getName() {
+        return name;
     }
 
-    public String getGender() { 
-        return gender; 
+    public String getGender() {
+        return gender;
     }
 
-    public int getEnergy() { 
-        return energy; 
+    public int getEnergy() {
+        return energy;
     }
 
-    public String getFarmName() { 
-        return farmName; 
+    public String getFarmName() {
+        return farmName;
     }
 
-    public String getPartner() { 
-        return partner; 
+    public String getPartner() {
+        return partner;
     }
 
-    public int getGold() { 
-        return gold; 
+    public int getGold() {
+        return gold;
     }
 
-    public Inventory getInventory() { 
-        return inventory; 
+    public Inventory getInventory() {
+        return inventory;
     }
 
-    public Point getLocation() { 
-        return location; 
+    public Point getLocation() {
+        return location;
     }
 
 
     // SETTER
-    public void setPartner(String partner) { 
-        this.partner = partner; 
+    public void setPartner(String partner) {
+        this.partner = partner;
     }
 
-    public void setLocation(Point location) { 
-        this.location = location; 
+    public void setLocation(Point location) {
+        this.location = location;
     }
 
 
@@ -257,16 +263,16 @@ public class Player {
     //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
     //     }
     // }
-    
+
     // public void moveDown() {
     //     if (worldY + gp.tileSize < gp.tileSize * gp.maxWorldRow) {
     //         location.setY(location.getY() + speed);
     //         worldY += gp.tileSize;
     //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
-            
+
     //     }
     // }
-    
+
     // public void moveLeft() {
     //     if (worldX - gp.tileSize >= 0) {
     //         location.setX(location.getX() - speed);
@@ -274,7 +280,7 @@ public class Player {
     //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
     //     }
     // }
-    
+
     // public void moveRight() {
     //     if (worldX + gp.tileSize < gp.tileSize * gp.maxWorldCol) {
     //         location.setX(location.getX() + speed);
@@ -282,11 +288,11 @@ public class Player {
     //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
     //     }
     // }
-    
+
 
     // METHOD
-    public void addGold(int amount) { 
-        this.gold += amount; 
+    public void addGold(int amount) {
+        this.gold += amount;
     }
 
     public boolean useGold(int amount) {
@@ -317,10 +323,10 @@ public class Player {
     public void sleep() {
         if (energy < MAX_ENERGY * 0.1) {
             energy = MAX_ENERGY / 2;
-        } 
+        }
         else if (energy == 0) {
             energy = MAX_ENERGY / 2 + 10;
-        } 
+        }
         else {
             energy = MAX_ENERGY;
         }
@@ -343,12 +349,60 @@ public class Player {
         energy -= 10;
     }
 
-    public void giveGift(NPC npc, Item item) {
-        if (inventory.contains(item)) {
-            inventory.remove(item);
-            npc.incrementGifting();
-            npc.reactToGift(item);
+    public void giveGift(NPC npc, String itemName) {
+        if (inventory.hasItem(itemName)) {
+            inventory.removeItem(itemName);
+            npc.reactToGift(itemName);
             energy -= 5;
+            System.out.println("Kamu memberikan " + itemName + " ke " + npc.getName());
+        } else {
+            System.out.println("Kamu tidak memiliki item: " + itemName);
         }
+    }
+
+    public void cook(String recipeName, Fuel fuel) {
+        Recipe recipe = RecipeRegistry.get(recipeName);
+
+        if (recipe == null) {
+            System.out.println("Resep tidak ditemukan.");
+            return;
+        }
+
+        if (!recipe.isUnlocked()) {
+            System.out.println("Resep belum kamu pelajari.");
+            return;
+        }
+
+        if (!fuel.isEnough(recipe.getRequiredFuel())) {
+            System.out.println("Bahan bakar tidak cukup.");
+            return;
+        }
+
+        // Cek bahan: hitung jumlah secara manual
+        for (Map.Entry<String, Integer> entry : recipe.getIngredients().entrySet()) {
+            String itemName = entry.getKey();
+            int requiredQty = entry.getValue();
+
+            int available = 0;
+            for (int i = 0; i < requiredQty; i++) {
+                if (inventory.hasItem(itemName)) {
+                    available++;
+                    inventory.removeItem(itemName); // sementara remove dulu (anggap berhasil)
+                } else {
+                    // Kalau gagal, rollback yang sudah di-remove
+                    for (int j = 0; j < available; j++) {
+                        inventory.addItem(itemName);
+                    }
+                    System.out.println("Bahan tidak cukup: " + itemName);
+                    return;
+                }
+            }
+        }
+
+        fuel.useFuel(recipe.getRequiredFuel());
+        inventory.addItem(recipe.getName());
+        energy -= 10;
+
+        System.out.println("Berhasil memasak " + recipe.getName() + "!");
     }
 }
