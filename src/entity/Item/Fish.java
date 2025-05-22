@@ -1,10 +1,19 @@
 package entity.Item;
 
+
 public class Fish extends Item{
     private String season;
     private String weather;
     private String location;
     private String rarity;
+
+    public Fish(String fishName, String season, String weather, String location, String rarity){
+        super(fishName, "Fish");
+        this.season = season;
+        this.weather = weather;
+        this.location = location;
+        this.rarity = rarity;
+    }
 
     public String getSeason() {
         return season;
@@ -21,21 +30,4 @@ public class Fish extends Item{
     public String getRarity() {
         return rarity;
     }
-
-    public void setSeason(String season) {
-        this.season = season;
-    }
-
-    public void setWeather(String weather) {
-        this.weather = weather;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setRarity(String rarity) {
-        this.rarity = rarity;
-    }
-
 }

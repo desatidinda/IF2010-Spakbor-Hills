@@ -1,8 +1,13 @@
 package entity.Item;
 
 public abstract class Item {
-    private String itemName;
-    private String itemType;
+    protected String itemName;
+    protected String itemType;
+
+    public Item(String itemName, String itemType){
+        this.itemName = itemName;
+        this.itemType = itemType;
+    }
 
     public String getItemName() {
         return itemName;
@@ -10,14 +15,6 @@ public abstract class Item {
 
     public String getItemType() {
         return itemType;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public void setItemType(String itemType) {
-        this.itemType = itemType;
     }
     
 }
