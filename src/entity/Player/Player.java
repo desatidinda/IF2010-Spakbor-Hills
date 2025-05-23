@@ -89,6 +89,7 @@ public class Player {
             }
 
             // cek collision di tiap state
+            collision = false;
             if (gp.gameState == GameStates.MAP) {
                 gp.cm.checkTile(this); 
                 int objectIndex = gp.cm.checkObject(this, true);
@@ -124,25 +125,29 @@ public class Player {
                 } 
             } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
                     //TODO: bikin collision inside house
-                    switch (direction) {
-                        case "up":
-                            houseY -= gp.tileSize;
-                            getLocation().setY(getLocation().getY() - speed);
-                            break;
-                        case "down":
-                            houseY += gp.tileSize;
-                            getLocation().setY(getLocation().getY() + speed);
-                            break;
-                        case "left":
-                            houseX -= gp.tileSize;
-                            getLocation().setX(getLocation().getX() - speed);
-                            break;
-                        case "right":
-                            houseX += gp.tileSize;
-                            getLocation().setX(getLocation().getX() + speed);
-                            break;
+                    int furnitureIndex = gp.cm.checkIndoorObject(this, true);
+                    //TODO: lakuin aktivitas sesuai apa yg ditabrak
+                    if (collision == false) {
+                        switch (direction) {
+                            case "up":
+                                houseY -= gp.tileSize;
+                                //getLocation().setY(getLocation().getY() - speed);
+                                break;
+                            case "down":
+                                houseY += gp.tileSize;
+                                //getLocation().setY(getLocation().getY() + speed);
+                                break;
+                            case "left":
+                                houseX -= gp.tileSize;
+                                //getLocation().setX(getLocation().getX() - speed);
+                                break;
+                            case "right":
+                                houseX += gp.tileSize;
+                                //getLocation().setX(getLocation().getX() + speed);
+                                break;
+                        }
+                        //System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
                     }
-                    System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
             }
     
             spriteCounter++;
@@ -172,8 +177,8 @@ public class Player {
             worldX = gp.tileSize * 16;
             worldY = gp.tileSize * 16;
 
-            indoorLocation.setX(16);
-            indoorLocation.setY(16);
+            // indoorLocation.setX(16);
+            // indoorLocation.setY(16);
 
             solid.x = houseX;
             solid.y = houseY;

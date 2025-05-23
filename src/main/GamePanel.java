@@ -9,6 +9,7 @@ import state.InsideHouseState;
 import state.MapState;
 import input.KeyHandler;
 import objects.GameObject;
+import main.GameClock;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,6 +66,8 @@ public class GamePanel extends JPanel implements Runnable {
         stateHandlers.put(GameStates.MAP, new MapState(this));
         stateHandlers.put(GameStates.INSIDE_HOUSE, new InsideHouseState(this));
         stateHandlers.put(GameStates.FISHING, new FishingState(this));
+
+        GameClock.init();
     }
 
     public void startGameThread() {
@@ -76,18 +79,27 @@ public class GamePanel extends JPanel implements Runnable {
     public void run() {
         double drawInterval = 1000000000.0 / FPS;
         double delta = 0;
+
         long lastTime = System.nanoTime();
-        long currentTime;
+        long timer = System.currentTimeMillis(); // Buat update game time
+        int clockInterval = 1000; // 1 detik
 
         while (gameThread != null) {
-            currentTime = System.nanoTime();
+            long currentTime = System.nanoTime();
             delta += (currentTime - lastTime) / drawInterval;
             lastTime = currentTime;
 
+            // Update + repaint sesuai FPS
             if (delta >= 1) {
                 update();
                 repaint();
                 delta--;
+            }
+
+            // Update game time tiap 1 detik real
+            if (System.currentTimeMillis() - timer >= clockInterval) {
+                GameClock.updateTime(1);
+                timer += clockInterval;
             }
         }
     }
@@ -107,6 +119,11 @@ public class GamePanel extends JPanel implements Runnable {
         StateHandler handler = stateHandlers.get(gameState);
         if (handler != null) {
             handler.draw(g2);
+            g2.setColor(Color.WHITE);
+            g2.drawString("Time: " + GameClock.getFormattedTime(), 20, 20);
+            g2.drawString("Season: " + GameClock.getCurrentSeason(), 20, 40);
+            g2.drawString("Weather: " + GameClock.getCurrentWeather(), 20, 60);
+            g2.drawString("Day: " + GameClock.getDay(), 20, 80);
         }
 
         g2.dispose();

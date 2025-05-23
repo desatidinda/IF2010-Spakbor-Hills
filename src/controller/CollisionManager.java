@@ -3,6 +3,8 @@ package controller;
 import main.GamePanel;
 import entity.Player.*;
 
+import java.awt.Rectangle;
+
 public class CollisionManager {
     GamePanel gp;
 
@@ -135,6 +137,7 @@ public class CollisionManager {
                 break;
         }
     }
+
     public int checkObject(Player player, boolean playerCollision) {
         int index = 999;
         for (int i = 0; i < gp.obj.length; i++) {
@@ -195,6 +198,80 @@ public class CollisionManager {
                 gp.obj[i].solidArea.height = gp.obj[i].solidAreaDefaultHeight;
             }
         }
+        return index;
+    }
+
+    public int checkIndoorObject(Player player, boolean playerCollision) {
+        int index = 999;
+
+        // original solid position
+        int originalX = player.solid.x;
+        int originalY = player.solid.y;
+        
+        // krn di dalem house pake housex
+        int playerHouseX = player.houseX - 384;
+        int playerHouseY = player.houseY - 288;
+        
+        // prediksi abis ini dmn yh
+        int predictedX = playerHouseX + player.solid.x;
+        int predictedY = playerHouseY + player.solid.y;
+        
+        switch (player.direction) {
+            case "up":
+                predictedY -= gp.tileSize; 
+                break;
+            case "down":
+                predictedY += gp.tileSize;
+                break;
+            case "left":
+                predictedX -= gp.tileSize;
+                break;
+            case "right":
+                predictedX += gp.tileSize;
+                break;
+        }
+        
+        // solid playernya jadiin ke prediksi
+        player.solid.x = predictedX;
+        player.solid.y = predictedY;
+        
+        System.out.println("DEBUG - Player house coords: (" + playerHouseX + "," + playerHouseY + ")");
+        System.out.println("DEBUG - Player predicted position: (" + predictedX + "," + predictedY + ") direction: " + player.direction);
+        
+        for (int i = 0; i < gp.furniture.length; i++) {
+            if (gp.furniture[i] != null) {
+                if (gp.furniture[i].solidArea == null) {
+                    continue;
+                }
+                
+                // original furniture solid
+                int furnitureOriginalX = gp.furniture[i].solidArea.x;
+                int furnitureOriginalY = gp.furniture[i].solidArea.y;
+                
+                gp.furniture[i].solidArea.x = gp.furniture[i].worldX + gp.furniture[i].solidAreaDefaultX;
+                gp.furniture[i].solidArea.y = gp.furniture[i].worldY + gp.furniture[i].solidAreaDefaultY;
+                
+                System.out.println("DEBUG: Furniture[" + i + "] solid: (" + gp.furniture[i].solidArea.x + "," + gp.furniture[i].solidArea.y + ") size: " + gp.furniture[i].solidArea.width + "x" + gp.furniture[i].solidArea.height);
+                
+                // Cek collision
+                if (player.solid.intersects(gp.furniture[i].solidArea)) {
+                    if (gp.furniture[i].collision) {
+                        player.collision = true;
+                        index = i;
+                        System.out.println("COLLISION DETECTED with furniture[" + i + "]!");
+                    }
+                }
+                
+                // Reset furniture solid area
+                gp.furniture[i].solidArea.x = furnitureOriginalX;
+                gp.furniture[i].solidArea.y = furnitureOriginalY;
+            }
+        }
+        
+        // Reset player solid to original position
+        player.solid.x = originalX;
+        player.solid.y = originalY;
+        
         return index;
     }
 }

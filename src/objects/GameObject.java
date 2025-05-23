@@ -11,6 +11,7 @@ public class GameObject {
     protected String name;
     public boolean collision;
     public int worldX, worldY;
+    public int houseX, houseY;
     public int widthInTiles;
     public int heightInTiles;
     public Rectangle solidArea = new Rectangle(0,0, 48, 48);
@@ -33,5 +34,9 @@ public class GameObject {
             g2.drawImage(image, screenX, screenY, objectWidth, objectHeight, null);
         }
 
+    }
+
+    public String getName() {
+        return name;
     }
 }
