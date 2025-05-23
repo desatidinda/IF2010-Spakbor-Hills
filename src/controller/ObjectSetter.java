@@ -3,8 +3,8 @@ package controller;
 import java.util.Random;
 
 import entity.House.House;
-import entity.House.ShippingBin;
 import entity.Farm.Pond;
+import entity.Farm.ShippingBin;
 import main.GamePanel;
 
 public class ObjectSetter {
@@ -79,5 +79,6 @@ public class ObjectSetter {
         pond.worldX = colPond * gp.tileSize;
         pond.worldY = rowPond * gp.tileSize;
         gp.obj[2] = pond;
+        //TODO: masih overlap, benerin dan gaboleh kedeploy ditengah biar ga nabrak player
     }
 }

@@ -4,21 +4,18 @@ import javax.swing.*;
 
 public class Game {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Spakbor Hills");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setSize(800, 600); 
+        JFrame window = new JFrame();
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
+        window.setTitle("Spakbor Hills");
 
-        GamePanel gamePanel = new GamePanel(); 
-        frame.add(gamePanel); 
-        frame.pack();
+        GamePanel gamePanel = new GamePanel();
+        window.add(gamePanel);
+        window.pack();
 
-        frame.setLocation(100, 100);
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
 
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        
-        gamePanel.setupGame();
-        gamePanel.startGameThread(); 
+        gamePanel.startGameThread();
     }
 }

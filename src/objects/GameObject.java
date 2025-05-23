@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import main.GamePanel;
 
 public class GameObject {
-    protected BufferedImage image;
+    public BufferedImage image;
     protected String name;
     public boolean collision;
     public int worldX, worldY;
