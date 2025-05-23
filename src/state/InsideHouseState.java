@@ -16,12 +16,12 @@ import entity.House.TV;
 public class InsideHouseState implements StateHandler {
 
     private final GamePanel gp;
-    private GameObject[] furniture;
+    // private GameObject[] furniture;
     private BufferedImage image;
 
     public InsideHouseState(GamePanel gp) {
         this.gp = gp;
-        furniture = gp.furniture;
+        // furniture = gp.furniture;
         loadBackground();
         deployFurniture();
     }
@@ -43,10 +43,10 @@ public class InsideHouseState implements StateHandler {
     public void draw(Graphics2D g2) {
         g2.drawImage(image, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
-        for (int i = 0; i < furniture.length; i++) {
-            if (furniture[i] != null) {
-                g2.drawImage(furniture[i].image, furniture[i].worldX, furniture[i].worldY, 
-                gp.tileSize * furniture[i].widthInTiles, gp.tileSize * furniture[i].heightInTiles, null);
+        for (int i = 0; i < gp.furniture.length; i++) {
+            if (gp.furniture[i] != null) {
+                g2.drawImage(gp.furniture[i].image, gp.furniture[i].worldX, gp.furniture[i].worldY,
+                        gp.tileSize * gp.furniture[i].widthInTiles, gp.tileSize * gp.furniture[i].heightInTiles, null);
             }
         }
 
@@ -59,17 +59,17 @@ public class InsideHouseState implements StateHandler {
         KingBed kingbed = new KingBed();
         kingbed.worldX = 8;
         kingbed.worldY = 0;
-        furniture[0] = kingbed;
+        gp.furniture[0] = kingbed;
 
         Stove stove = new Stove();
         stove.worldX = gp.tileSize * 14 - 8;
         stove.worldY = gp.tileSize * 10 - 8;
-        furniture[1] = stove;
+        gp.furniture[1] = stove;
 
         TV tv = new TV();
         tv.worldX = gp.tileSize * 5;
         tv.worldY = 0;
-        furniture[2] = tv;
+        gp.furniture[2] = tv;
     }
 
     @Override
@@ -108,9 +108,9 @@ public class InsideHouseState implements StateHandler {
         }
     }
 
-    public GameObject[] getFurniture() {
-        return furniture;
-    }
+    // public GameObject[] getFurniture() {
+    //     return furniture;
+    // }
 
 }
 

@@ -1,24 +1,19 @@
 package entity.Player;
 
-import map.Point;
-import input.KeyHandler;
-// import main.Game;
-import main.GamePanel;
-import main.GameStates;
-import entity.NPC.NPC;
+import entity.Item.FuelItem;
 import entity.Item.Recipe;
 import entity.Item.RecipeRegistry;
-import java.util.Map;
-import entity.Item.Firewood;
-import entity.Item.Coal;
-import entity.Item.FuelItem;
-import entity.Item.Item;
+import entity.NPC.NPC;
+import map.Point;
+import input.KeyHandler;
+import main.GamePanel;
+import main.GameStates;
 
-// import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.Map;
 
 public class Player {
     private String name;
@@ -51,7 +46,7 @@ public class Player {
     public boolean teleportMode = false;
     public int teleportOption = 0;
 
-
+  
     public Player(String name, String gender, String farmName, GamePanel gp, KeyHandler keyHandler) {
         this.name = name;
         this.gender = gender;
@@ -63,12 +58,12 @@ public class Player {
         this.location = new Point(16, 16); // default starting location (ini ditengah)
         this.indoorLocation = new Point(16, 16); // default indoor location
         this.gp = gp;
-        this.keyHandler = keyHandler;
+        this.keyHandler = keyHandler;   
 
-        screenX = gp.screenWidth / 2 - gp.tileSize / 2;
-        screenY = gp.screenHeight / 2 - gp.tileSize / 2;
+        screenX = gp.screenWidth/2 - gp.tileSize / 2;
+        screenY = gp.screenHeight/2 - gp.tileSize / 2;
         worldX = gp.tileSize * 15;
-        worldY = gp.tileSize * 15;
+        worldY   = gp.tileSize * 15;
 
         solid = new Rectangle();
         solid.x = 0;
@@ -85,17 +80,20 @@ public class Player {
         if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed) {
             if (keyHandler.upPressed) {
                 direction = "up";
-            } else if (keyHandler.downPressed) {
+            } 
+            else if (keyHandler.downPressed) {
                 direction = "down";
-            } else if (keyHandler.leftPressed) {
+            } 
+            else if (keyHandler.leftPressed) {
                 direction = "left";
-            } else if (keyHandler.rightPressed) {
+            } 
+            else if (keyHandler.rightPressed) {
                 direction = "right";
             }
 
             // cek collision di tiap state
             if (gp.gameState == GameStates.MAP) {
-                gp.cm.checkTile(this);
+                gp.cm.checkTile(this); 
                 int objectIndex = gp.cm.checkObject(this, true);
                 teleport(objectIndex);
                 if (collision == false) {
@@ -126,30 +124,30 @@ public class Player {
                             break;
                     }
                     System.out.println("Location: (" + location.getX() + ", " + location.getY() + ")");
-                }
+                } 
             } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
-                //TODO: bikin collision inside house
-                switch (direction) {
-                    case "up":
-                        houseY -= gp.tileSize;
-                        getLocation().setY(getLocation().getY() - speed);
-                        break;
-                    case "down":
-                        houseY += gp.tileSize;
-                        getLocation().setY(getLocation().getY() + speed);
-                        break;
-                    case "left":
-                        houseX -= gp.tileSize;
-                        getLocation().setX(getLocation().getX() - speed);
-                        break;
-                    case "right":
-                        houseX += gp.tileSize;
-                        getLocation().setX(getLocation().getX() + speed);
-                        break;
-                }
-                System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
+                    //TODO: bikin collision inside house
+                    switch (direction) {
+                        case "up":
+                            houseY -= gp.tileSize;
+                            getLocation().setY(getLocation().getY() - speed);
+                            break;
+                        case "down":
+                            houseY += gp.tileSize;
+                            getLocation().setY(getLocation().getY() + speed);
+                            break;
+                        case "left":
+                            houseX -= gp.tileSize;
+                            getLocation().setX(getLocation().getX() - speed);
+                            break;
+                        case "right":
+                            houseX += gp.tileSize;
+                            getLocation().setX(getLocation().getX() + speed);
+                            break;
+                    }
+                    System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
             }
-
+    
             spriteCounter++;
             if (spriteCounter > 1) {
                 if (spriteNum == 1) {
@@ -159,7 +157,7 @@ public class Player {
                 }
                 spriteCounter = 0;
             }
-        }
+        }   
     }
 
     public void teleport(int i) {
@@ -206,7 +204,7 @@ public class Player {
             case "up":
                 if (spriteNum == 1) {
                     image = up1;
-                }
+                } 
                 if (spriteNum == 2) {
                     image = up2;
                 }
@@ -214,15 +212,15 @@ public class Player {
             case "down":
                 if (spriteNum == 1) {
                     image = down1;
-                }
+                } 
                 if (spriteNum == 2) {
                     image = down2;
                 }
                 break;
-            case "left":
+            case "left": 
                 if (spriteNum == 1) {
                     image = left1;
-                }
+                } 
                 if (spriteNum == 2) {
                     image = left2;
                 }
@@ -230,7 +228,7 @@ public class Player {
             case "right":
                 if (spriteNum == 1) {
                     image = right1;
-                }
+                } 
                 if (spriteNum == 2) {
                     image = right2;
                 }
@@ -245,7 +243,7 @@ public class Player {
         } else if (gp.gameState == GameStates.FISHING) {
             g2.drawImage(image, gp.tileSize * 8 - 8, gp.tileSize * 9, gp.tileSize, gp.tileSize, null);
         }
-    }
+    } 
 
     public void getImage() {
         try {
@@ -258,7 +256,8 @@ public class Player {
                 right2 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cewe_kanan_2.png"));
                 left1 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cewe_kiri_1.png"));
                 left2 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cewe_kiri_2.png"));
-            } else {
+            }
+            else {
                 up1 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cowo_belakang_1.png"));
                 up2 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cowo_belakang_2.png"));
                 down1 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cowo_depan_1.png"));
@@ -268,42 +267,42 @@ public class Player {
                 left1 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cowo_kiri_1.png"));
                 left2 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cowo_kiri_2.png"));
             }
-
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     // GETTER
-    public String getName() {
-        return name;
+    public String getName() { 
+        return name; 
     }
 
-    public String getGender() {
-        return gender;
+    public String getGender() { 
+        return gender; 
     }
 
-    public int getEnergy() {
-        return energy;
+    public int getEnergy() { 
+        return energy; 
     }
 
-    public String getFarmName() {
-        return farmName;
+    public String getFarmName() { 
+        return farmName; 
     }
 
-    public String getPartner() {
-        return partner;
+    public String getPartner() { 
+        return partner; 
     }
 
-    public int getGold() {
-        return gold;
+    public int getGold() { 
+        return gold; 
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    public Inventory getInventory() { 
+        return inventory; 
     }
 
-    public Point getLocation() {
+    public Point getLocation() { 
         if (gp.gameState == GameStates.MAP) {
             return location;
         } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
@@ -314,25 +313,25 @@ public class Player {
 
 
     // SETTER
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name) { 
+        this.name = name; 
     }
 
-    public void setGender(String gender) {
+    public void setGender(String gender) { 
         this.gender = gender;
         getImage();
     }
 
-    public void setFarmName(String farmName) {
-        this.farmName = farmName;
+    public void setFarmName(String farmName) { 
+        this.farmName = farmName; 
     }
 
-    public void setPartner(String partner) {
-        this.partner = partner;
+    public void setPartner(String partner) { 
+        this.partner = partner; 
     }
 
-    public void setLocation(Point location) {
-        this.location = location;
+    public void setLocation(Point location) { 
+        this.location = location; 
     }
 
 
@@ -344,16 +343,16 @@ public class Player {
     //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
     //     }
     // }
-
+    
     // public void moveDown() {
     //     if (worldY + gp.tileSize < gp.tileSize * gp.maxWorldRow) {
     //         location.setY(location.getY() + speed);
     //         worldY += gp.tileSize;
     //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
-
+            
     //     }
     // }
-
+    
     // public void moveLeft() {
     //     if (worldX - gp.tileSize >= 0) {
     //         location.setX(location.getX() - speed);
@@ -361,7 +360,7 @@ public class Player {
     //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
     //     }
     // }
-
+    
     // public void moveRight() {
     //     if (worldX + gp.tileSize < gp.tileSize * gp.maxWorldCol) {
     //         location.setX(location.getX() + speed);
@@ -369,11 +368,11 @@ public class Player {
     //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
     //     }
     // }
-
+    
 
     // METHOD
-    public void addGold(int amount) {
-        this.gold += amount;
+    public void addGold(int amount) { 
+        this.gold += amount; 
     }
 
     public boolean useGold(int amount) {
@@ -404,9 +403,11 @@ public class Player {
     public void sleep() {
         if (energy < MAX_ENERGY * 0.1) {
             energy = MAX_ENERGY / 2;
-        } else if (energy == 0) {
+        } 
+        else if (energy == 0) {
             energy = MAX_ENERGY / 2 + 10;
-        } else {
+        } 
+        else {
             energy = MAX_ENERGY;
         }
         System.out.println(name + " has slept and recovered energy.");
@@ -496,3 +497,4 @@ public class Player {
         System.out.println("Berhasil memasak " + quantity + "x " + recipe.getName() + "!");
     }
 }
+

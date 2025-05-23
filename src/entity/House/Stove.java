@@ -3,6 +3,7 @@ package entity.House;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import objects.GameObject;
+import java.awt.Rectangle;
 
 public class Stove extends GameObject {
     public Stove() {
@@ -10,6 +11,9 @@ public class Stove extends GameObject {
         collision = true;
         widthInTiles = 2;
         heightInTiles = 2;
+        solidArea = new Rectangle(0, 0, 36, 36); // sesuai ukuran (misal 2 tile * 48)
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
 
         try {
             image = ImageIO.read(getClass().getResourceAsStream("/objects/ObjectImage/stove.png"));
