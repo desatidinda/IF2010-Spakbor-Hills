@@ -1,5 +1,7 @@
 package main;
 
+import entity.Farm.Season;
+import entity.Farm.Weather;
 import java.util.Random;
 
 public class GameClock {
@@ -85,11 +87,11 @@ public class GameClock {
         };
     }
 
-    public enum Season {
-        SPRING, SUMMER, FALL, WINTER
-    }
+    // public enum Season {
+    //     SPRING, SUMMER, FALL, WINTER
+    // }
 
-    public enum Weather {
-        SUNNY, RAINY
-    }
+    // public enum Weather {
+    //     SUNNY, RAINY
+    // }
 }
