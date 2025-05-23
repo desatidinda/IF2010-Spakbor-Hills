@@ -17,10 +17,23 @@ public class Inventory {
     public void removeItem(String itemName) {
         if (hasItem(itemName)) {
             items.put(itemName, items.get(itemName) - 1);
+            if (items.get(itemName) <= 0) {
+                items.remove(itemName);
+            }
         }
     }
 
     public Map<String, Integer> getItems() {
         return items;
+    }
+    
+    public void printInventory() {
+        if (items.isEmpty()) {
+            System.out.println("(Kosong)");
+        } else {
+            System.out.println("Inventaris:");
+            items.entrySet().forEach(entry ->
+                System.out.println("- " + entry.getKey() + " x" + entry.getValue()));
+        }
     }
 }
