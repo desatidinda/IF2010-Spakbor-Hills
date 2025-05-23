@@ -1,17 +1,20 @@
 package entity.Player;
 
+import entity.Item.FuelItem;
+import entity.Item.Recipe;
+import entity.Item.RecipeRegistry;
+import entity.NPC.NPC;
 import map.Point;
 import input.KeyHandler;
-// import main.Game;
 import main.GamePanel;
 import main.GameStates;
 import state.*;
 
-// import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.Map;
 
 public class Player {
     private String name;
@@ -90,7 +93,6 @@ public class Player {
             }
 
             // cek collision di tiap state
-            collision = false;
             if (gp.gameState == GameStates.MAP) {
                 gp.cm.checkTile(this); 
                 int objectIndex = gp.cm.checkObject(this, true);
@@ -126,29 +128,25 @@ public class Player {
                 } 
             } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
                     //TODO: bikin collision inside house
-                    int furnitureIndex = gp.cm.checkIndoorObject(this, true);
-                    //TODO: lakuin aktivitas sesuai apa yg ditabrak
-                    if (collision == false) {
-                        switch (direction) {
-                            case "up":
-                                houseY -= gp.tileSize;
-                                //getLocation().setY(getLocation().getY() - speed);
-                                break;
-                            case "down":
-                                houseY += gp.tileSize;
-                                //getLocation().setY(getLocation().getY() + speed);
-                                break;
-                            case "left":
-                                houseX -= gp.tileSize;
-                                //getLocation().setX(getLocation().getX() - speed);
-                                break;
-                            case "right":
-                                houseX += gp.tileSize;
-                                //getLocation().setX(getLocation().getX() + speed);
-                                break;
-                        }
-                        //System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
+                    switch (direction) {
+                        case "up":
+                            houseY -= gp.tileSize;
+                            getLocation().setY(getLocation().getY() - speed);
+                            break;
+                        case "down":
+                            houseY += gp.tileSize;
+                            getLocation().setY(getLocation().getY() + speed);
+                            break;
+                        case "left":
+                            houseX -= gp.tileSize;
+                            getLocation().setX(getLocation().getX() - speed);
+                            break;
+                        case "right":
+                            houseX += gp.tileSize;
+                            getLocation().setX(getLocation().getX() + speed);
+                            break;
                     }
+                    System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
             }
     
             spriteCounter++;
@@ -178,8 +176,8 @@ public class Player {
             worldX = gp.tileSize * 16;
             worldY = gp.tileSize * 16;
 
-            // indoorLocation.setX(16);
-            // indoorLocation.setY(16);
+            indoorLocation.setX(16);
+            indoorLocation.setY(16);
 
             solid.x = houseX;
             solid.y = houseY;
@@ -389,4 +387,79 @@ public class Player {
         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
         System.out.println("Inventory : " + inventory);
     }
+
+    public void chatWith(NPC npc) {
+        npc.incrementChatting();
+        npc.chat();
+        energy -= 10;
+    }
+
+    public void giveGift(NPC npc, String itemName) {
+        if (inventory.hasItem(itemName)) {
+            inventory.removeItem(itemName);
+            npc.reactToGift(itemName);
+            energy -= 5;
+            System.out.println("Kamu memberikan " + itemName + " ke " + npc.getName());
+        } else {
+            System.out.println("Kamu tidak memiliki item: " + itemName);
+        }
+    }
+
+
+    public void cook(String recipeName, String fuelName, int quantity) {
+        Recipe recipe = RecipeRegistry.get(recipeName);
+
+        if (recipe == null) {
+            System.out.println("Resep tidak ditemukan.");
+            return;
+        }
+
+        if (!recipe.isUnlocked()) {
+            System.out.println("Resep belum kamu pelajari.");
+            return;
+        }
+
+        if (quantity <= 0) {
+            System.out.println("Jumlah masakan harus lebih dari 0.");
+            return;
+        }
+
+        FuelItem fuel = FuelItem.getFuelFromName(fuelName);
+        if (fuel == null) {
+            System.out.println("Bahan bakar \"" + fuelName + "\" tidak dikenali.");
+            return;
+        }
+
+        int requiredFuelCount = recipe.getRequiredFuel() * quantity;
+        int neededFuelUnits = fuel.calculateUnitsNeeded(requiredFuelCount);
+        int availableFuel = inventory.getItemCount(fuel.getItemName());
+
+        if (availableFuel < neededFuelUnits) {
+            System.out.println("Fuel tidak cukup. Butuh " + neededFuelUnits + ", punya " + availableFuel);
+            return;
+        }
+
+        for (Map.Entry<String, Integer> entry : recipe.getIngredients().entrySet()) {
+            String itemName = entry.getKey();
+            int totalNeeded = entry.getValue() * quantity;
+
+            if (!inventory.hasItem(itemName, totalNeeded)) {
+                System.out.println("Bahan tidak cukup: " + itemName + " (butuh " + totalNeeded + ")");
+                return;
+            }
+        }
+
+        for (Map.Entry<String, Integer> entry : recipe.getIngredients().entrySet()) {
+            inventory.removeItem(entry.getKey(), entry.getValue() * quantity);
+        }
+
+        inventory.removeItem(fuel.getItemName(), neededFuelUnits);
+
+        inventory.addItem(recipe.getName(), quantity);
+
+        energy -= 10 * quantity;
+
+        System.out.println("Berhasil memasak " + quantity + "x " + recipe.getName() + "!");
+    }
 }
+

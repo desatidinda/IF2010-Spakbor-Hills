@@ -2,6 +2,7 @@ package state;
 
 import main.GamePanel;
 import main.GameStates;
+import entity.Player.Player;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;

@@ -1,6 +1,6 @@
 package entity.House;
 
-public abstract class Furniture {
+public abstract class BaseFurniture {
     protected int widthInTiles;
     protected int heightInTiles;
     
