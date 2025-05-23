@@ -3,10 +3,10 @@ package entity.Item;
 public class Seeds extends Item{
     private String season;
     private int daysToHarvest;
-    private double buyPrice;
+    private Double buyPrice;
 
-    public Seeds(String seedName, String season, int daysToHarvest, double buyPrice){
-        super(seedName, "Seeds");
+    public Seeds(String itemName, String season, int daysToHarvest, Double buyPrice){
+        super(itemName, "Seeds");
         this.season = season;
         this.daysToHarvest = daysToHarvest;
         this.buyPrice = buyPrice;
@@ -20,7 +20,7 @@ public class Seeds extends Item{
         return daysToHarvest;
     }
 
-    public double buyPrice(){
+    public Double buyPrice(){
         return buyPrice;
     }
 }
