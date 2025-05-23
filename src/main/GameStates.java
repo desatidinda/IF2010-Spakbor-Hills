@@ -9,6 +9,4 @@ public enum GameStates {
     MENU,
     ITEMLIST,
     STATISTCS;
-
-    // public static GameStates gameState = MENU;
 }

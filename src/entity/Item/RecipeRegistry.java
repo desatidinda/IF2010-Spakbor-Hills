@@ -1,4 +1,4 @@
-package entity.recipe;
+package entity.Item;
 
 import java.util.*;
 

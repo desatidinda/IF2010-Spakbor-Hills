@@ -6,18 +6,30 @@ import java.util.Map;
 public class Inventory {
     private final Map<String, Integer> items = new HashMap<>();
 
-    public void addItem(String itemName) {
-        items.put(itemName, items.getOrDefault(itemName, 0) + 1);
+    public void addItem(String itemName, int quantity) {
+        items.put(itemName, items.getOrDefault(itemName, 0) + quantity);
     }
 
     public boolean hasItem(String itemName) {
         return items.getOrDefault(itemName, 0) > 0;
     }
 
+    public boolean hasItem(String itemName, int quantity) {
+        return items.getOrDefault(itemName, 0) >= quantity;
+    }
+
     public void removeItem(String itemName) {
-        if (hasItem(itemName)) {
-            items.put(itemName, items.get(itemName) - 1);
+        removeItem(itemName, 1);
+    }
+
+    public void removeItem(String itemName, int quantity) {
+        if (hasItem(itemName, quantity)) {
+            items.put(itemName, items.get(itemName) - quantity);
         }
+    }
+
+    public int getItemCount(String itemName) {
+        return items.getOrDefault(itemName, 0);
     }
 
     public void printContents() {
@@ -34,5 +46,3 @@ public class Inventory {
         return items;
     }
 }
-
-

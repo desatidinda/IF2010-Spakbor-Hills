@@ -2,7 +2,6 @@ package controller;
 
 import main.GamePanel;
 import entity.Player.*;
-import objects.*;
 
 public class CollisionManager {
     GamePanel gp;
@@ -31,8 +30,9 @@ public class CollisionManager {
                 playerRightCol = playerRightWorldX / gp.tileSize;
                 
                 // cek ujung world
-                if (playerTopRow < 0) {
+                if (playerTopWorldY - player.speed < 0) {
                     player.collision = true;
+                    player.teleportMode = true;
                     return;
                 }
                 
@@ -49,6 +49,7 @@ public class CollisionManager {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("Warning: Array bound check in UP direction: " + e.getMessage());
                     player.collision = true;
+                    player.teleportMode = true;
                 }
                 break;
                 
@@ -59,6 +60,7 @@ public class CollisionManager {
                 
                 if (playerBottomRow >= gp.maxWorldRow) {
                     player.collision = true;
+                    player.teleportMode = true;
                     return;
                 }
                 
@@ -83,10 +85,11 @@ public class CollisionManager {
                 playerTopRow = playerTopWorldY / gp.tileSize;
                 playerBottomRow = playerBottomWorldY / gp.tileSize;
                 
-                if (playerLeftCol < 0) {
-                    player.collision = true;
-                    return;
-                }
+                if (playerLeftWorldX - player.speed < 0) {
+                player.collision = true;
+                player.teleportMode = true;
+                return;
+}
                 
                 playerTopRow = Math.max(0, Math.min(playerTopRow, gp.maxWorldRow - 1));
                 playerBottomRow = Math.max(0, Math.min(playerBottomRow, gp.maxWorldRow - 1));
@@ -111,6 +114,7 @@ public class CollisionManager {
                 
                 if (playerRightCol >= gp.maxWorldCol) {
                     player.collision = true;
+                    player.teleportMode = true;
                     return;
                 }
                 
@@ -134,63 +138,63 @@ public class CollisionManager {
     public int checkObject(Player player, boolean playerCollision) {
         int index = 999;
         for (int i = 0; i < gp.obj.length; i++) {
-                if (gp.obj[i] != null) {
-                    player.solid.x = player.worldX + player.solid.x;
-                    player.solid.y = player.worldY + player.solid.y;
+            if (gp.obj[i] != null) {
+                player.solid.x = player.worldX + player.solid.x;
+                player.solid.y = player.worldY + player.solid.y;
 
-                    gp.obj[i].solidArea.x = gp.obj[i].worldX + gp.obj[i].solidArea.x;
-                    gp.obj[i].solidArea.y = gp.obj[i].worldY + gp.obj[i].solidArea.y;
+                gp.obj[i].solidArea.x = gp.obj[i].worldX + gp.obj[i].solidArea.x;
+                gp.obj[i].solidArea.y = gp.obj[i].worldY + gp.obj[i].solidArea.y;
 
-                    gp.obj[i].solidArea.width = gp.obj[i].widthInTiles * gp.tileSize;
-                    gp.obj[i].solidArea.height = gp.obj[i].heightInTiles * gp.tileSize;
+                gp.obj[i].solidArea.width = gp.obj[i].widthInTiles * gp.tileSize;
+                gp.obj[i].solidArea.height = gp.obj[i].heightInTiles * gp.tileSize;
 
-                    switch (player.direction) {
-                        case "up":
-                            player.solid.y -= player.speed;
-                            if (player.solid.intersects(gp.obj[i].solidArea)) {
-                                if (gp.obj[i].collision) {
-                                    player.collision = true;
-                                    index = i;
-                                }
+                switch (player.direction) {
+                    case "up":
+                        player.solid.y -= player.speed;
+                        if (player.solid.intersects(gp.obj[i].solidArea)) {
+                            if (gp.obj[i].collision) {
+                                player.collision = true;
+                                index = i;
                             }
-                            break;
-                        case "down":
-                            player.solid.y += player.speed;
-                            if (player.solid.intersects(gp.obj[i].solidArea)) {
-                                if (gp.obj[i].collision) {
-                                    player.collision = true;
-                                    index = i;
-                                }
+                        }
+                        break;
+                    case "down":
+                        player.solid.y += player.speed;
+                        if (player.solid.intersects(gp.obj[i].solidArea)) {
+                            if (gp.obj[i].collision) {
+                                player.collision = true;
+                                index = i;
                             }
-                            break;
-                        case "left":
-                            player.solid.x -= player.speed;
-                            if (player.solid.intersects(gp.obj[i].solidArea)) {
-                                if (gp.obj[i].collision) {
-                                    player.collision = true;
-                                    index = i;
-                                }
+                        }
+                        break;
+                    case "left":
+                        player.solid.x -= player.speed;
+                        if (player.solid.intersects(gp.obj[i].solidArea)) {
+                            if (gp.obj[i].collision) {
+                                player.collision = true;
+                                index = i;
                             }
-                            break;
-                        case "right":
-                            player.solid.x += player.speed;
-                            if (player.solid.intersects(gp.obj[i].solidArea)) {
-                                if (gp.obj[i].collision) {
-                                    player.collision = true;
-                                    index = i;
-                                }
+                        }
+                        break;
+                    case "right":
+                        player.solid.x += player.speed;
+                        if (player.solid.intersects(gp.obj[i].solidArea)) {
+                            if (gp.obj[i].collision) {
+                                player.collision = true;
+                                index = i;
                             }
-                            break;
+                        }
+                        break;
 
-                    }
-                    player.solid.x = player.solidDefaultX;
-                    player.solid.y = player.solidDefaultY;
-                    gp.obj[i].solidArea.x = gp.obj[i].solidAreaDefaultX;
-                    gp.obj[i].solidArea.y = gp.obj[i].solidAreaDefaultY;
-                    gp.obj[i].solidArea.width = gp.obj[i].solidAreaDefaultWidth;
-                    gp.obj[i].solidArea.height = gp.obj[i].solidAreaDefaultHeight;
                 }
+                player.solid.x = player.solidDefaultX;
+                player.solid.y = player.solidDefaultY;
+                gp.obj[i].solidArea.x = gp.obj[i].solidAreaDefaultX;
+                gp.obj[i].solidArea.y = gp.obj[i].solidAreaDefaultY;
+                gp.obj[i].solidArea.width = gp.obj[i].solidAreaDefaultWidth;
+                gp.obj[i].solidArea.height = gp.obj[i].solidAreaDefaultHeight;
             }
-            return index;
+        }
+        return index;
     }
 }

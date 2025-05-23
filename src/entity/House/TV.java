@@ -2,18 +2,17 @@ package entity.House;
 
 import java.io.IOException;
 import javax.imageio.ImageIO;
-
 import objects.GameObject;
 
-public class ShippingBin extends GameObject {
-    public ShippingBin() {
-        name = "Shipping Bin";
+public class TV extends GameObject {
+    public TV() {
+        name = "TV";
         collision = true;
-        widthInTiles = 3;
+        widthInTiles = 2;
         heightInTiles = 2;
 
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/objects/ObjectImage/shippingbin.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/objects/ObjectImage/tv.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }   
