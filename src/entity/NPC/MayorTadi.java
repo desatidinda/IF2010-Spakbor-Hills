@@ -29,7 +29,7 @@ public class MayorTadi extends NPC {
         } else if (likedItemNames.contains(itemName)) {
             addHeartPoints(20);
         } else {
-            addHeartPoints(-25); // Semua item lain dianggap hated
+            addHeartPoints(-25);
         }
     }
 }

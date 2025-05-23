@@ -24,7 +24,6 @@ public class Emily extends NPC {
 
     @Override
     public void reactToGift(String itemName) {
-        // Jika itemName mengandung kata "Seed", maka diasumsikan itu jenis benih
         if (itemName.toLowerCase().contains("seed")) {
             addHeartPoints(25);
         } else if (likedItemNames.contains(itemName)) {

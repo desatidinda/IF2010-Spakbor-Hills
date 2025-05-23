@@ -31,7 +31,7 @@ public class Perry extends NPC {
         } else if (likedItemNames.contains(itemName)) {
             addHeartPoints(20);
         } else if (lowerName.contains("fish") || lowerName.contains("salmon") || lowerName.contains("catfish") || lowerName.contains("sardine")) {
-            addHeartPoints(-25); // fish-related, assumed hated
+            addHeartPoints(-25);
         }
     }
 }
