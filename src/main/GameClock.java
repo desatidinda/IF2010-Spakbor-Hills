@@ -22,7 +22,8 @@ public class GameClock {
     }
 
     public static void updateTime(int realSeconds) {
-        int gameMinutesToAdd = realSeconds * 30; // 5 menit game per 1 detik real
+        int gameMinutesToAdd = realSeconds * 30; 
+        //TODO: nanti 30 nya ganti jd 5 skrg buat tes biar ga kelamaan aowkawoakwoawkaowk
 
         minute += gameMinutesToAdd;
         while (minute >= 60) {

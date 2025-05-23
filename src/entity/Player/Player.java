@@ -5,6 +5,7 @@ import input.KeyHandler;
 // import main.Game;
 import main.GamePanel;
 import main.GameStates;
+import state.*;
 
 // import javax.swing.*;
 import java.awt.*;
@@ -335,42 +336,6 @@ public class Player {
     public void setLocation(Point location) { 
         this.location = location; 
     }
-
-
-    // MOVE METHOD
-    // public void moveUp() {
-    //     if (worldY - gp.tileSize >= 0) {
-    //         location.setY(location.getY() - speed);
-    //         worldY -= gp.tileSize;
-    //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
-    //     }
-    // }
-    
-    // public void moveDown() {
-    //     if (worldY + gp.tileSize < gp.tileSize * gp.maxWorldRow) {
-    //         location.setY(location.getY() + speed);
-    //         worldY += gp.tileSize;
-    //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
-            
-    //     }
-    // }
-    
-    // public void moveLeft() {
-    //     if (worldX - gp.tileSize >= 0) {
-    //         location.setX(location.getX() - speed);
-    //         worldX -= gp.tileSize;
-    //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
-    //     }
-    // }
-    
-    // public void moveRight() {
-    //     if (worldX + gp.tileSize < gp.tileSize * gp.maxWorldCol) {
-    //         location.setX(location.getX() + speed);
-    //         worldX += gp.tileSize;
-    //         System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
-    //     }
-    // }
-    
 
     // METHOD
     public void addGold(int amount) { 

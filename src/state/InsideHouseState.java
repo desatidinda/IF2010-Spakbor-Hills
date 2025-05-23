@@ -6,7 +6,6 @@ import objects.GameObject;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
 
 import entity.House.KingBed;
@@ -26,7 +25,7 @@ public class InsideHouseState implements StateHandler {
         deployFurniture();
     }
 
-    private void loadBackground() {
+    protected void loadBackground() {
         try {
             image = ImageIO.read(getClass().getResourceAsStream("/res/floor.jpg"));
         } catch (Exception e) {
@@ -55,7 +54,7 @@ public class InsideHouseState implements StateHandler {
 
     }
 
-    private void deployFurniture() {
+    protected void deployFurniture() {
         KingBed kingbed = new KingBed();
         kingbed.worldX = 8;
         kingbed.worldY = 0;
