@@ -6,8 +6,8 @@ public class Crops extends Item{
     private int quantityPerHarvest;
     private int energyRestored;
 
-    public Crops(String cropName, Double buyPrice, double sellPrice, int quantityPerHarvest, int energyRestored){
-        super(cropName, "Crops");
+    public Crops(String itemName, Double buyPrice, double sellPrice, int quantityPerHarvest, int energyRestored){
+        super(itemName, "Crops");
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
         this.quantityPerHarvest = quantityPerHarvest;
