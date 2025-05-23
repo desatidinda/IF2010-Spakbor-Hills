@@ -1,11 +1,11 @@
 package entity.Item;
 
 public abstract class Misc extends Item{
-    private double buyPrice;
-    private double sellPrice;
+    protected double buyPrice;
+    protected double sellPrice;
 
-    public Misc(String miscName, double buyPrice, double sellPrice){
-        super(miscName, "Misc.");
+    public Misc(String itemName, double buyPrice, double sellPrice){
+        super(itemName, "Misc.");
         if (sellPrice >= buyPrice){
             throw new IllegalArgumentException("Sell price harus lebih kecil dari buy price!!!");
         }
