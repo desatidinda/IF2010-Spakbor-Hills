@@ -2,13 +2,17 @@ package entity.Item;
 
 
 public class Fish extends Item{
+    public enum Rarity{
+        COMMON, REGULAR, LEGENDARY
+    }
+
     private String season;
     private String weather;
     private String location;
     private String rarity;
 
-    public Fish(String fishName, String season, String weather, String location, String rarity){
-        super(fishName, "Fish");
+    public Fish(String itemName, String season, String weather, String location, String rarity){
+        super(itemName, "Fish");
         this.season = season;
         this.weather = weather;
         this.location = location;
