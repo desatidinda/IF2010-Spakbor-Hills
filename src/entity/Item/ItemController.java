@@ -3,7 +3,7 @@ package entity.Item;
 public class ItemController {
     public static void main(String[] args){
         Seeds parsnipSeed = new Seeds("Parsnip Seed", "Spring", 1, 20);
-        Seeds cauliflowerSeeds = new Seeds("Cauliflower Seeds", "Spring", 5, 80);
+        Seeds cauliflowerSeed = new Seed("Cauliflower Seed", "Spring", 5, 80);
 
         Fish bullhead = new Fish("Bullhead", "Any", "Any", "Mountain Lake", "Common");
 
