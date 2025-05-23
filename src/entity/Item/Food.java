@@ -5,8 +5,8 @@ public class Food extends Item{
     private Double buyPrice;
     private double sellPrice;
 
-    public Food(String foodName, int energyRestored, Double buyPrice, double sellPrice){
-        super(foodName, "Food");
+    public Food(String itemName, int energyRestored, Double buyPrice, double sellPrice){
+        super(itemName, "Food");
         this.energyRestored = energyRestored;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
