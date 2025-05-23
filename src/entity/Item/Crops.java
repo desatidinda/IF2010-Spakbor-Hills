@@ -1,12 +1,12 @@
 package entity.Item;
 
 public class Crops extends Item{
-    private double buyPrice;
+    private Double buyPrice;
     private double sellPrice;
     private int quantityPerHarvest;
     private int energyRestored;
 
-    public Crops(String cropName, double buyPrice, double sellPrice, int quantityPerHarvest, int energyRestored){
+    public Crops(String cropName, Double buyPrice, double sellPrice, int quantityPerHarvest, int energyRestored){
         super(cropName, "Crops");
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
@@ -14,7 +14,7 @@ public class Crops extends Item{
         this.energyRestored = energyRestored;
     }
 
-    public double getBuyPrice() {
+    public Double getBuyPrice() {
         return buyPrice;
     }
 

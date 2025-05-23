@@ -2,10 +2,10 @@ package entity.Item;
 
 public class Food extends Item{
     private int energyRestored;
-    private double buyPrice;
+    private Double buyPrice;
     private double sellPrice;
 
-    public Food(String foodName, int energyRestored, double buyPrice, double sellPrice){
+    public Food(String foodName, int energyRestored, Double buyPrice, double sellPrice){
         super(foodName, "Food");
         this.energyRestored = energyRestored;
         this.buyPrice = buyPrice;
@@ -16,7 +16,7 @@ public class Food extends Item{
         return energyRestored;
     }
 
-    public double getBuyPrice() {
+    public Double getBuyPrice() {
         return buyPrice;
     }
 
