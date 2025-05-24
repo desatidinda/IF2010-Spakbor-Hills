@@ -13,7 +13,7 @@ public class MapState implements StateHandler {
 
     private final GamePanel gp;
     private int selectedTeleportIndex = 0;
-    private final String[] teleportOptions = {"Lake A", "Mayor Tadi House", "Caroline House", "Perry House", "Dasco House", "Emily House", "Abigail House"};
+    private final String[] teleportOptions = {"Mountain Lake", "Forest River", "Ocean", "Mayor Tadi House", "Caroline House", "Perry House", "Dasco House", "Emily House", "Abigail House"};
     private Font vt323;
 
     public MapState(GamePanel gp) {
@@ -117,9 +117,13 @@ public class MapState implements StateHandler {
     }
 
     public void teleportPlayerTo(String location) {
-        if (location.equals("Lake A")) {
+        if (location.equals("Mountain Lake") || location.equals("Forest River") || location.equals("Ocean")) {
+            FishingState fishingState = (FishingState) gp.stateHandlers.get(GameStates.FISHING);
+            fishingState.setFishingLocation(location);
+            
             gp.gameState = GameStates.FISHING;
             gp.player.update();
+            gp.player.teleportMode = false;
         } else if (location.endsWith("House")) {
             gp.player.houseX = gp.screenWidth / 2 - (gp.tileSize / 2);
             gp.player.houseY = gp.screenHeight / 2 - (gp.tileSize / 2);
@@ -153,6 +157,7 @@ public class MapState implements StateHandler {
             }
             gp.stateHandlers.put(GameStates.NPC_HOUSE, new NPCHouseState(gp, npc));
             gp.gameState = GameStates.NPC_HOUSE;
+            gp.player.teleportMode = false;
         }
     }
 }
