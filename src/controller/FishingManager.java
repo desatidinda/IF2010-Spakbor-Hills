@@ -65,7 +65,7 @@ public class FishingManager {
 
         if (success) {
             System.out.println("Selamat! Kamu berhasil menebak angkanya.");
-            player.getInventory().addItem(selectedFish.getName());
+            player.getInventory().addItem(selectedFish.getName(), 1);
             System.out.println("Selamat! Kamu menangkap: " + selectedFish.getName());
         } else {
             System.out.println("Sayang sekali! Ikan tersebut lepas...");
