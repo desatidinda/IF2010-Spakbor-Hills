@@ -3,6 +3,8 @@ package main;
 import java.util.Random;
 import entity.Farm.Season;
 import entity.Farm.Weather;
+import entity.Farm.Season;
+import entity.Farm.Weather;
 
 public class GameClock {
     private static int minute = 0;
