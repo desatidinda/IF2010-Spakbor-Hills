@@ -1,11 +1,10 @@
 package controller;
 
 import entity.Item.*;
-import main.GameClock;
-
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import main.GameClock;
 
 public class ItemManager {
     private static final Map<String, Food> FOOD_ITEMS = new HashMap<>();
@@ -13,6 +12,7 @@ public class ItemManager {
     private static final Map<String, Crops> CROP_ITEMS = new HashMap<>();
 
     static{
+        //Food(String itemName, int energyRestored, Double buyPrice, double sellPrice)
         Food fishNChips = new Food("Fish n' Chips", 50, 150.0, 135.0);
         FOOD_ITEMS.put(fishNChips.getItemName(), fishNChips);
         Food baguette = new Food("Baguette", 25, 100.0, 80.0);
@@ -38,6 +38,7 @@ public class ItemManager {
         Food cookedPigsHead = new Food("Cooked Pig's Head", 100, 1000.0, 0.0);
         FOOD_ITEMS.put(cookedPigsHead.getItemName(), cookedPigsHead);
         
+        //Seeds(String itemName, EnumSet.of(GameClock.Season.XXX), int daysToHarvest, Double buyPrice)
         Seeds parsnipSeeds = new Seeds("Parsnip Seeds", EnumSet.of(GameClock.Season.SPRING), 1, 20.0);
         SEED_ITEMS.put(parsnipSeeds.getItemName(), parsnipSeeds);
         Seeds cauliflowerSeeds = new Seeds("Cauliflower Seeds", EnumSet.of(GameClock.Season.SPRING), 5, 80.0);
@@ -61,6 +62,7 @@ public class ItemManager {
         Seeds melonSeeds = new Seeds("Melon Seeds", EnumSet.of(GameClock.Season.SUMMER), 4, 80.0);
         SEED_ITEMS.put(melonSeeds.getItemName(), melonSeeds);
 
+        //Crops(String itemName, Double buyPrice, double sellPrice, int quantityPerHarvest, int energyRestored)
         Crops parsnip = new Crops("Parsnip", 50.0, 35.0, 1, 3);
         CROP_ITEMS.put(parsnip.getItemName(), parsnip);
         Crops cauliflower = new Crops("Cauliflower", 200.0, 150.0, 1, 3);
