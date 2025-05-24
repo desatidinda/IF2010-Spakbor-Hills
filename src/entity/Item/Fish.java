@@ -17,6 +17,7 @@ public class Fish extends Item{
     private List<String> locations;
 
     public Fish(String name, FishType type, List<Season> seasons, String timeRange, List<Weather> weathers, List<String> locations) {
+        super(name, name);
         this.name = name;
         this.type = type;
         this.seasons = seasons;
