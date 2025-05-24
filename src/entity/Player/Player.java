@@ -102,26 +102,18 @@ public class Player {
                         case "up":
                             worldY -= gp.tileSize;
                             getLocation().setY(getLocation().getY() - speed);
-                            // moveUp();
-                            //worldY -= speed;
                             break;
                         case "down":
                             worldY += gp.tileSize;
                             getLocation().setY(getLocation().getY() + speed);
-                            // moveDown();
-                            //worldY += speed;
                             break;
                         case "left":
                             worldX -= gp.tileSize;
                             getLocation().setX(getLocation().getX() - speed);
-                            // moveLeft();
-                            //worldX -= speed;
                             break;
                         case "right":
                             worldX += gp.tileSize;
                             getLocation().setX(getLocation().getX() + speed);
-                            // moveRight();
-                            //worldX += speed;
                             break;
                     }
                     System.out.println("Location: (" + location.getX() + ", " + location.getY() + ")");

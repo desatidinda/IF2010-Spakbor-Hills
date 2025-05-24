@@ -17,8 +17,6 @@ public class TileManager {
     GamePanel gp;
     Tile[] tile;
     int mapTileNum[][];
-    
-    // private final int size = 32;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;

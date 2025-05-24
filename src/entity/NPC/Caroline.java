@@ -22,11 +22,13 @@ public class Caroline extends NPC {
 
     public Caroline(GamePanel gp) {
         super("Caroline", gp);
+        this.gp = gp;
+        getImage();
     }
 
     public void getImage() {
         try {
-            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/mayortadi.png"));
+            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/caroline.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }

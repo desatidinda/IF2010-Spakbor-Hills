@@ -22,12 +22,13 @@ public class Dasco extends NPC {
 
     public Dasco(GamePanel gp) {
         super("Dasco", gp);
+        this.gp = gp;
+        getImage();
     }
 
     public void getImage() {
         try {
-            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/mayortadi.png"));
-            //TODO: ganti resource image smua npc
+            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/dasco.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }

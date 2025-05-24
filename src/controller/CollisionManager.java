@@ -259,13 +259,13 @@ public class CollisionManager {
                     }
                 }
                 
-                // Reset furniture solid area
+                // reset posisi solid furniture
                 gp.furniture[i].solidArea.x = furnitureOriginalX;
                 gp.furniture[i].solidArea.y = furnitureOriginalY;
             }
         }
         
-        // Reset player solid to original position
+        // reset posisi solid player
         player.solid.x = originalX;
         player.solid.y = originalY;
         

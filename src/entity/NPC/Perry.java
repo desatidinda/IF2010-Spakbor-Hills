@@ -24,7 +24,7 @@ public class Perry extends NPC {
 
     public void getImage() {
         try {
-            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/nantinamanya.png"));
+            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/perry.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }

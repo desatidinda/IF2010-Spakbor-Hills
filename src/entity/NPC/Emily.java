@@ -18,11 +18,13 @@ public class Emily extends NPC {
 
     public Emily(GamePanel gp) {
         super("Emily", gp);
+        this.gp = gp;
+        getImage();
     }
 
     public void getImage() {
         try {
-            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/mayortadi.png"));
+            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/emily.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
-// import java.awt.Color;
-// import java.awt.Font;
 
 
 import main.GamePanel;
@@ -59,14 +57,12 @@ public class UIController {
         g2.setColor(Color.WHITE);
         if (gp.gameState == GameStates.INITIAL) {
             drawInitial();
-        // } else if (gp.gameState == GameStates.INFORMATION) {
-        //     drawInformation();
         } else if (gp.gameState == GameStates.MAP) {
             drawMap();
         } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
             
         } else if (gp.gameState == GameStates.MENU) {
-            //drawMenu();
+
         } else if (gp.gameState == GameStates.ITEMLIST) {
             
         } else if (gp.gameState == GameStates.STATISTCS) {

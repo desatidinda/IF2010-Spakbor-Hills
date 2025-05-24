@@ -19,7 +19,6 @@ public abstract class NPC {
     protected int countVisiting = 0;
     protected BufferedImage imageNPC;
     public int worldX, worldY;
-    public int heightInTiles = 2, widthInTiles = 1;
     GamePanel gp;
 
     public NPC(String name, GamePanel gp) {
@@ -93,7 +92,7 @@ public abstract class NPC {
         this.heartPoints = Math.min(this.heartPoints + amount, maxHP);
     }
 
-    // Abstract methods di implementasi di subclass
+    // method abstract di implementasinya di subclass ya
     public abstract void reactToGift(String itemName);
 
     public abstract void chat();

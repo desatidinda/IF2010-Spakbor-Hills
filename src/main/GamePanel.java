@@ -7,7 +7,7 @@ import state.FishingState;
 import state.InitialState;
 import state.InsideHouseState;
 import state.MapState;
-import state.MayorTadiHouse;
+import state.NPCHouseState;
 import input.KeyHandler;
 import objects.GameObject;
 import entity.NPC.*;
@@ -44,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player("Labpro", "Female", "MyFarm", this, keyHandler);
     public GameObject obj[] = new GameObject[10];
     public GameObject furniture[] = new GameObject[10];
-    public NPC npc[] = new NPC[1];
+    public NPC npc[] = new NPC[6];
 
     // game state
     public GameStates gameState;
@@ -57,6 +57,13 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
 
+        npc[0] = new MayorTadi(this);
+        npc[1] = new Caroline(this);
+        npc[2] = new Perry(this);
+        npc[3] = new Dasco(this);
+        npc[4] = new Emily(this);
+        npc[5] = new Abigail(this);
+
         setupGame();
     }
 
@@ -68,7 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
         stateHandlers.put(GameStates.MAP, new MapState(this));
         stateHandlers.put(GameStates.INSIDE_HOUSE, new InsideHouseState(this));
         stateHandlers.put(GameStates.FISHING, new FishingState(this));
-        stateHandlers.put(GameStates.NPC_HOUSE, new MayorTadiHouse(this));
+        stateHandlers.put(GameStates.NPC_HOUSE, new NPCHouseState(this, npc[0]));
 
         GameClock.init();
     }

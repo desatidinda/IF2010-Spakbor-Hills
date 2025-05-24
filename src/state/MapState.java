@@ -2,6 +2,7 @@ package state;
 
 import main.GamePanel;
 import main.GameStates;
+import entity.NPC.*;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -12,7 +13,7 @@ public class MapState implements StateHandler {
 
     private final GamePanel gp;
     private int selectedTeleportIndex = 0;
-    private final String[] teleportOptions = {"Lake A", "NPC A House"};
+    private final String[] teleportOptions = {"Lake A", "Mayor Tadi House", "Caroline House", "Perry House", "Dasco House", "Emily House", "Abigail House"};
     private Font vt323;
 
     public MapState(GamePanel gp) {
@@ -119,19 +120,39 @@ public class MapState implements StateHandler {
         if (location.equals("Lake A")) {
             gp.gameState = GameStates.FISHING;
             gp.player.update();
-        } else if (location.equals("NPC A House")) {
-            gp.gameState = GameStates.NPC_HOUSE;
-
+        } else if (location.endsWith("House")) {
             gp.player.houseX = gp.screenWidth / 2 - (gp.tileSize / 2);
             gp.player.houseY = gp.screenHeight / 2 - (gp.tileSize / 2);
-
-            // Posisi di dunia (indoor map), misalnya tile 16,16
+            // ini posisi kl indoor ya
             gp.player.worldX = gp.tileSize * 16;
             gp.player.worldY = gp.tileSize * 16;
-
             gp.player.solid.x = gp.player.houseX;
             gp.player.solid.y = gp.player.houseY;
             gp.player.update();
+
+            NPC npc = null;
+            switch (location) {
+                case "Mayor Tadi House":
+                    npc = gp.npc[0];
+                    break;
+                case "Caroline House":
+                    npc = gp.npc[1];
+                    break;
+                case "Perry House":
+                    npc = gp.npc[2];
+                    break;
+                case "Dasco House":
+                    npc = gp.npc[3];
+                    break;
+                case "Emily House":
+                    npc = gp.npc[4];
+                    break;
+                case "Abigail House":
+                    npc = gp.npc[5];
+                    break;
+            }
+            gp.stateHandlers.put(GameStates.NPC_HOUSE, new NPCHouseState(gp, npc));
+            gp.gameState = GameStates.NPC_HOUSE;
         }
     }
 }
