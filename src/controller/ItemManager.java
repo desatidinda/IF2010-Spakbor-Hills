@@ -10,6 +10,8 @@ public class ItemManager {
     private static final Map<String, Food> FOOD_ITEMS = new HashMap<>();
     private static final Map<String, Seeds> SEED_ITEMS = new HashMap<>();
     private static final Map<String, Crops> CROP_ITEMS = new HashMap<>();
+    private static final Map<String, Equipment> EQUIPMENT_ITEMS = new HashMap<>();
+    private static final Map<String, Misc> MISC_ITEMS = new HashMap<>();
 
     static{
         //Food(String itemName, int energyRestored, Double buyPrice, double sellPrice)
@@ -85,6 +87,15 @@ public class ItemManager {
         CROP_ITEMS.put(pumpkin.getItemName(), pumpkin);
         Crops grape = new Crops("Grape", 100.0, 10.0, 20, 3);
         CROP_ITEMS.put(grape.getItemName(), grape);
+
+        EQUIPMENT_ITEMS.put("hoe", new Hoe());
+        EQUIPMENT_ITEMS.put("pickaxe", new Pickaxe());
+        EQUIPMENT_ITEMS.put("wateringCan", new WateringCan());
+        EQUIPMENT_ITEMS.put("fishingRod", new FishingRod());
+
+        //Firewood(String itemName, Double buyPrice, double sellPrice)
+        MISC_ITEMS.put("firewood", new Firewood("Firewood", 3.0, 1.0));
+        MISC_ITEMS.put("coal", new Coal("Coal", 3.0, 1.0));
     }
 
     public static Food getFoodItem(String itemName){
