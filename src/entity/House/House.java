@@ -23,8 +23,8 @@ public class House extends GameObject {
     }
 
     public void sleep(Player player) {
-        player.sleep();              // Pulihkan energi sesuai spesifikasi
-        GameClock.skipToMorning();  // Reset waktu ke jam 06:00 dan tambah hari
+        player.sleep();             
+        GameClock.skipToMorning();  
         System.out.println("You slept in your house. It's now morning.");
     }
 
