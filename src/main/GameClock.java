@@ -87,6 +87,19 @@ public class GameClock {
             case WINTER -> Season.SPRING;
         };
     }
+    
+    public static void skipToMorning() {
+    hour = 6;
+    minute = 0;
+    day++;
+
+    currentWeather = generateWeather();
+
+    if (day > 10) {
+        day = 1;
+        nextSeason();
+    }
+}
 
     // public enum Season {
     //     SPRING, SUMMER, FALL, WINTER

@@ -3,9 +3,12 @@ package entity.House;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+import entity.Player.Player;
+import main.GameClock;
 import objects.GameObject;
 
-public class House extends GameObject{
+public class House extends GameObject {
+
     public House() {
         name = "House";
         collision = true;
@@ -16,8 +19,17 @@ public class House extends GameObject{
             image = ImageIO.read(getClass().getResourceAsStream("/objects/ObjectImage/house.png"));
         } catch (IOException e) {
             e.printStackTrace();
-        }   
-        collision = true;
+        }
     }
-    
+
+    public void sleep(Player player) {
+        player.sleep();              // Pulihkan energi sesuai spesifikasi
+        GameClock.skipToMorning();  // Reset waktu ke jam 06:00 dan tambah hari
+        System.out.println("You slept in your house. It's now morning.");
+    }
+
+    @Override
+    public String toString() {
+        return "House (size: " + widthInTiles + "x" + heightInTiles + ")";
+    }
 }
