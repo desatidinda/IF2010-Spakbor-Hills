@@ -3,6 +3,11 @@ package entity.NPC;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import java.awt.Graphics2D;
+
+import main.GamePanel;
+
 public class Abigail extends NPC {
 
     private final List<String> lovedItemNames = Arrays.asList(
@@ -17,8 +22,20 @@ public class Abigail extends NPC {
             "Hot Pepper", "Cauliflower", "Parsnip", "Wheat"
     );
 
-    public Abigail() {
-        super("Abigail");
+    public Abigail(GamePanel gp) {
+        super("Abigail", gp);
+    }
+
+    public void getImage() {
+        try {
+            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/mayortadi.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void draw(Graphics2D g2) {
+        g2.drawImage(imageNPC, worldX, worldY, gp.tileSize * widthInTiles, gp.tileSize * heightInTiles, null);
     }
 
     @Override

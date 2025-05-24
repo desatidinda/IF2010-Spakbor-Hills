@@ -1,7 +1,6 @@
 package state;
 
 import main.GamePanel;
-import objects.GameObject;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -15,12 +14,10 @@ import entity.House.TV;
 public class InsideHouseState implements StateHandler {
 
     private final GamePanel gp;
-    // private GameObject[] furniture;
     private BufferedImage image;
 
     public InsideHouseState(GamePanel gp) {
         this.gp = gp;
-        // furniture = gp.furniture;
         loadBackground();
         deployFurniture();
     }
@@ -84,7 +81,7 @@ public class InsideHouseState implements StateHandler {
         } else if (key == KeyEvent.VK_D) {
             gp.keyHandler.rightPressed = true;
         } else if (key == KeyEvent.VK_ESCAPE) {
-            gp.player.teleportOut();;
+            gp.player.teleportOut();
         } else if (key == KeyEvent.VK_SPACE) {
             gp.keyHandler.spacePressed = true;
         }

@@ -79,10 +79,10 @@ public class MapState implements StateHandler {
                     selectedTeleportIndex = 0;
                 }
             } else if (key == KeyEvent.VK_ENTER) {
-                teleportPlayerTo(teleportOptions[selectedTeleportIndex]);
                 gp.player.savedWorldX = gp.player.worldX;
                 gp.player.savedWorldY = gp.player.worldY;
-                gp.player.teleportMode = false; 
+                teleportPlayerTo(teleportOptions[selectedTeleportIndex]);
+                //gp.player.teleportMode = false; 
             }
         } else {
             if (key == KeyEvent.VK_W) {
@@ -120,7 +120,17 @@ public class MapState implements StateHandler {
             gp.gameState = GameStates.FISHING;
             gp.player.update();
         } else if (location.equals("NPC A House")) {
-            gp.gameState = GameStates.INSIDE_HOUSE;
+            gp.gameState = GameStates.NPC_HOUSE;
+
+            gp.player.houseX = gp.screenWidth / 2 - (gp.tileSize / 2);
+            gp.player.houseY = gp.screenHeight / 2 - (gp.tileSize / 2);
+
+            // Posisi di dunia (indoor map), misalnya tile 16,16
+            gp.player.worldX = gp.tileSize * 16;
+            gp.player.worldY = gp.tileSize * 16;
+
+            gp.player.solid.x = gp.player.houseX;
+            gp.player.solid.y = gp.player.houseY;
             gp.player.update();
         }
     }

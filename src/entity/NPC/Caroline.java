@@ -2,6 +2,9 @@ package entity.NPC;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.imageio.ImageIO;
+
+import main.GamePanel;
 
 public class Caroline extends NPC {
 
@@ -17,8 +20,16 @@ public class Caroline extends NPC {
             "Hot Pepper"
     );
 
-    public Caroline() {
-        super("Caroline");
+    public Caroline(GamePanel gp) {
+        super("Caroline", gp);
+    }
+
+    public void getImage() {
+        try {
+            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/mayortadi.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

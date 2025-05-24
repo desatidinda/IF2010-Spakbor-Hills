@@ -2,20 +2,17 @@ package state;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import entity.NPC.MayorTadi;
 
 public class MayorTadiHouse extends InsideHouseState {
     private final GamePanel gp;
-    private BufferedImage imageNPC;
     public MayorTadiHouse(GamePanel gp) {
         super(gp);
         this.gp = gp;
         super.loadBackground();
         super.deployFurniture();
-        loadNPC();
         deployNPC();
     }
 
@@ -27,6 +24,12 @@ public class MayorTadiHouse extends InsideHouseState {
     @Override
     public void draw(Graphics2D g2) {
         super.draw(g2);
+        gp.npc[0].draw(g2);
+        // for (int i = 0; i < gp.npc.length; i++) {
+        //     if (gp.npc[i] != null) {
+        //         gp.npc[i].draw(g2);
+        //     }
+        // }
     }
 
     @Override
@@ -39,18 +42,10 @@ public class MayorTadiHouse extends InsideHouseState {
         super.keyReleased(e);
     }
 
-    public void loadNPC() {
-        try {
-            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/mayortadi.png"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     protected void deployNPC() {
-        // KingBed kingbed = new KingBed();
-        // kingbed.worldX = 8;
-        // kingbed.worldY = 0;
-        // gp.furniture[10] = kingbed;
+        MayorTadi mayorTadi = new MayorTadi(gp);
+        mayorTadi.worldX = gp.player.houseX + gp.tileSize;
+        mayorTadi.worldY = gp.player.houseY + 9 * gp.tileSize;
+        gp.npc[0] = mayorTadi;
     }
 }

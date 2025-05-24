@@ -8,7 +8,6 @@ import map.Point;
 import input.KeyHandler;
 import main.GamePanel;
 import main.GameStates;
-import state.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -93,6 +92,7 @@ public class Player {
             }
 
             // cek collision di tiap state
+            collision = false;
             if (gp.gameState == GameStates.MAP) {
                 gp.cm.checkTile(this); 
                 int objectIndex = gp.cm.checkObject(this, true);
@@ -126,27 +126,31 @@ public class Player {
                     }
                     System.out.println("Location: (" + location.getX() + ", " + location.getY() + ")");
                 } 
-            } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
+            } else if (gp.gameState == GameStates.INSIDE_HOUSE || gp.gameState == GameStates.NPC_HOUSE) {
                     //TODO: bikin collision inside house
-                    switch (direction) {
-                        case "up":
-                            houseY -= gp.tileSize;
-                            getLocation().setY(getLocation().getY() - speed);
-                            break;
-                        case "down":
-                            houseY += gp.tileSize;
-                            getLocation().setY(getLocation().getY() + speed);
-                            break;
-                        case "left":
-                            houseX -= gp.tileSize;
-                            getLocation().setX(getLocation().getX() - speed);
-                            break;
-                        case "right":
-                            houseX += gp.tileSize;
-                            getLocation().setX(getLocation().getX() + speed);
-                            break;
+                    int furnitureIndex = gp.cm.checkIndoorObject(this, true);
+                    //TODO: lakuin aktivitas sesuai apa yg ditabrak
+                    if (collision == false) {
+                        switch (direction) {
+                            case "up":
+                                houseY -= gp.tileSize;
+                                //getLocation().setY(getLocation().getY() - speed);
+                                break;
+                            case "down":
+                                houseY += gp.tileSize;
+                                //getLocation().setY(getLocation().getY() + speed);
+                                break;
+                            case "left":
+                                houseX -= gp.tileSize;
+                                //getLocation().setX(getLocation().getX() - speed);
+                                break;
+                            case "right":
+                                houseX += gp.tileSize;
+                                //getLocation().setX(getLocation().getX() + speed);
+                                break;
+                        }
+                        //System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
                     }
-                    System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
             }
     
             spriteCounter++;
@@ -193,6 +197,7 @@ public class Player {
         gp.gameState = GameStates.MAP;
         worldX = savedWorldX;
         worldY = savedWorldY;
+        teleportMode = false;
         location.setX(worldX / gp.tileSize);
         location.setY(worldY / gp.tileSize);
     }
@@ -239,7 +244,7 @@ public class Player {
         //g2.drawImage(image, location.getX() * gp.tileSize, location.getY() * gp.tileSize, gp.tileSize, gp.tileSize, null);
         if (gp.gameState == GameStates.MAP) {
             g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-        } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
+        } else if (gp.gameState == GameStates.INSIDE_HOUSE || gp.gameState == GameStates.NPC_HOUSE) {
             g2.drawImage(image, houseX, houseY, gp.tileSize, gp.tileSize, null);
         } else if (gp.gameState == GameStates.FISHING) {
             g2.drawImage(image, gp.tileSize * 8 - 8, gp.tileSize * 9, gp.tileSize, gp.tileSize, null);

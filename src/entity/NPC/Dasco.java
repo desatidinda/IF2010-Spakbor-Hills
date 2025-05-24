@@ -2,6 +2,9 @@ package entity.NPC;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.imageio.ImageIO;
+
+import main.GamePanel;
 
 public class Dasco extends NPC {
 
@@ -17,8 +20,17 @@ public class Dasco extends NPC {
             "Legend", "Grape", "Cauliflower", "Wheat", "Pufferfish", "Salmon"
     );
 
-    public Dasco() {
-        super("Dasco");
+    public Dasco(GamePanel gp) {
+        super("Dasco", gp);
+    }
+
+    public void getImage() {
+        try {
+            imageNPC = ImageIO.read(getClass().getResourceAsStream("/entity/NPC/NPCImage/mayortadi.png"));
+            //TODO: ganti resource image smua npc
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

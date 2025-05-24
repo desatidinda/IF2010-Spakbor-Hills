@@ -1,6 +1,10 @@
 package entity.NPC;
 import entity.Item.Item;
+import main.GamePanel;
+
 import java.util.ArrayList;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 public abstract class NPC {
     protected String name;
@@ -13,9 +17,20 @@ public abstract class NPC {
     protected int countChatting = 0;
     protected int countGifting = 0;
     protected int countVisiting = 0;
+    protected BufferedImage imageNPC;
+    public int worldX, worldY;
+    public int heightInTiles = 2, widthInTiles = 1;
+    GamePanel gp;
 
-    public NPC(String name) {
+    public NPC(String name, GamePanel gp) {
         this.name = name;
+        this.gp = gp;
+    }
+
+    public abstract void getImage();
+
+    public void draw(Graphics2D g2) {
+        g2.drawImage(imageNPC, worldX, worldY, gp.tileSize, gp.tileSize, null);
     }
 
     public String getName() {

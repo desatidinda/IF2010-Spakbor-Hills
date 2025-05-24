@@ -7,9 +7,10 @@ import state.FishingState;
 import state.InitialState;
 import state.InsideHouseState;
 import state.MapState;
+import state.MayorTadiHouse;
 import input.KeyHandler;
 import objects.GameObject;
-import main.GameClock;
+import entity.NPC.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,6 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player("Labpro", "Female", "MyFarm", this, keyHandler);
     public GameObject obj[] = new GameObject[10];
     public GameObject furniture[] = new GameObject[10];
+    public NPC npc[] = new NPC[1];
 
     // game state
     public GameStates gameState;
@@ -66,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
         stateHandlers.put(GameStates.MAP, new MapState(this));
         stateHandlers.put(GameStates.INSIDE_HOUSE, new InsideHouseState(this));
         stateHandlers.put(GameStates.FISHING, new FishingState(this));
+        stateHandlers.put(GameStates.NPC_HOUSE, new MayorTadiHouse(this));
 
         GameClock.init();
     }

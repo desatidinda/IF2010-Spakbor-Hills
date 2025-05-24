@@ -3,8 +3,6 @@ package controller;
 import main.GamePanel;
 import entity.Player.*;
 
-import java.awt.Rectangle;
-
 public class CollisionManager {
     GamePanel gp;
 
@@ -51,7 +49,6 @@ public class CollisionManager {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("Warning: Array bound check in UP direction: " + e.getMessage());
                     player.collision = true;
-                    player.teleportMode = true;
                 }
                 break;
                 
