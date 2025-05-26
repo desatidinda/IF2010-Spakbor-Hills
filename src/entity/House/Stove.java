@@ -2,8 +2,9 @@ package entity.House;
 
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import objects.GameObject;
 import java.awt.Rectangle;
+import objects.GameObject;
+import entity.Player.Player;
 
 public class Stove extends GameObject {
     public Stove() {
@@ -21,4 +22,9 @@ public class Stove extends GameObject {
             e.printStackTrace();
         }   
     }
+
+        @Override
+        public void playerInteract(Player player) {
+            //TODO: implement cook nanti
+        }
 }

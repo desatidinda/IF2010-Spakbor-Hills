@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import entity.Player.Player;
 import main.GamePanel;
 
 public class GameObject {
@@ -38,5 +39,8 @@ public class GameObject {
 
     public String getName() {
         return name;
+    }
+
+    public void playerInteract(Player player) {
     }
 }

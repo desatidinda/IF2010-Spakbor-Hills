@@ -4,6 +4,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.Rectangle;
 import objects.GameObject;
+import entity.Player.Player;
+import main.GameClock;
 
 public class KingBed extends GameObject {
     public KingBed() {
@@ -11,7 +13,7 @@ public class KingBed extends GameObject {
         collision = true;
         widthInTiles = 3;
         heightInTiles = 4;
-        solidArea = new Rectangle(0, 0, 96, 144); // sesuai ukuran (misal 2 tile * 48)
+        solidArea = new Rectangle(0, 0, 96, 120); // sesuai ukuran (misal 2 tile * 48)
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
@@ -20,5 +22,11 @@ public class KingBed extends GameObject {
         } catch (IOException e) {
             e.printStackTrace();
         }   
+    }
+
+    @Override
+    public void playerInteract(Player player) {
+        player.sleep();
+        GameClock.skipToMorning();  
     }
 }

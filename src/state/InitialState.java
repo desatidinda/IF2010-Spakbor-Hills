@@ -1,5 +1,6 @@
 package state;
 
+import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
 import entity.Player.Player;
@@ -88,6 +89,7 @@ public class InitialState implements StateHandler {
                     gp.player.setFarmName(gp.ui.farmName);
 
                     gp.gameState = GameStates.MAP;
+                    GameClock.init();
                 } else if (key == KeyEvent.VK_BACK_SPACE) {
                     if (!gp.ui.inputBuffer.isEmpty()) {
                         gp.ui.inputBuffer = gp.ui.inputBuffer.substring(0, gp.ui.inputBuffer.length() - 1);

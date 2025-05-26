@@ -8,6 +8,7 @@ public class GameClock {
     private static int minute = 0;
     private static int hour = 6;
     private static int day = 1;
+    private static int dayfix = 1;
     private static Season currentSeason = Season.SPRING;
     private static Weather currentWeather = Weather.SUNNY;
 
@@ -17,7 +18,7 @@ public class GameClock {
     public static void init() {
         hour = 6;
         minute = 0;
-        day = 1;
+        day = dayfix = 1;
         currentSeason = Season.SPRING;
         currentWeather = generateWeather();
         rainyDayCounter = currentWeather == Weather.RAINY ? 1 : 0;
@@ -36,14 +37,11 @@ public class GameClock {
         if (hour >= 24) {
             hour = 0;
             day++;
+            dayfix++;
             currentWeather = generateWeather();
         }
 
-        // Season change per 10 hari
-        if (day > 10) {
-            day = 1;
-            nextSeason();
-        }
+        checkSeasonChange();
     }
 
     public static String getFormattedTime() {
@@ -59,7 +57,7 @@ public class GameClock {
     }
 
     public static int getDay() {
-        return day;
+        return dayfix;
     }
 
     public static Season getCurrentSeason() {
@@ -79,6 +77,13 @@ public class GameClock {
         }
     }
 
+    private static void checkSeasonChange() {
+    if (day > 10) {
+        day = 1;
+        nextSeason();
+    }
+}
+
     private static void nextSeason() {
         currentSeason = switch (currentSeason) {
             case SPRING -> Season.SUMMER;
@@ -89,23 +94,13 @@ public class GameClock {
     }
     
     public static void skipToMorning() {
-    hour = 6;
-    minute = 0;
-    day++;
+        hour = 6;
+        minute = 0;
+        day++;
+        dayfix++;
 
-    currentWeather = generateWeather();
+        currentWeather = generateWeather();
 
-    if (day > 10) {
-        day = 1;
-        nextSeason();
+        checkSeasonChange();
     }
-}
-
-    // public enum Season {
-    //     SPRING, SUMMER, FALL, WINTER
-    // }
-
-    // public enum Weather {
-    //     SUNNY, RAINY
-    // }
 }

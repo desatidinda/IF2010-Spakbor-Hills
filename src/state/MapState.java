@@ -39,27 +39,26 @@ public class MapState implements StateHandler {
         gp.ui.draw(g2);
 
         if (gp.player.teleportMode) {
-            int boxWidth = 300;
-            int boxHeight = 200;
+            int boxWidth = 400;
+            int boxHeight = 60 + teleportOptions.length * 32;
             int boxX = (gp.screenWidth - boxWidth) / 2;
             int boxY = (gp.screenHeight - boxHeight) / 2;
 
-            g2.setColor(new Color(0, 0, 0, 250));
-            g2.fillRect(boxX, boxY, boxWidth, boxHeight);
+            gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
 
-            g2.setColor(Color.WHITE);
-            g2.setFont(vt323);
-            g2.drawString("Choose Destination:", boxX + 10, boxY + 30);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+            gp.ui.drawCenteredText(g2, "Choose Destination:", boxX, boxY + 38, boxWidth);
 
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 18F));
             for (int i = 0; i < teleportOptions.length; i++) {
-                int textY = boxY + 60 + i * 30;
+                int textY = boxY + 70 + i * 32;
                 if (i == selectedTeleportIndex) {
-                    g2.setColor(Color.YELLOW);
-                    g2.drawString(">", boxX + 10, textY);
+                    g2.setColor(new Color(255, 215, 0)); 
+                    gp.ui.drawCenteredText(g2, "> " + teleportOptions[i], boxX, textY, boxWidth);
                 } else {
                     g2.setColor(Color.WHITE);
+                    gp.ui.drawCenteredText(g2, teleportOptions[i], boxX, textY, boxWidth);
                 }
-                g2.drawString(teleportOptions[i], boxX + 40, textY);
             }
         }
     }

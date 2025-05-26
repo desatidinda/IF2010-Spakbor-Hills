@@ -2,6 +2,9 @@ package entity.House;
 
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
+import entity.Player.Player;
+import main.GameClock;
 import objects.GameObject;
 import java.awt.Rectangle;
 
@@ -11,7 +14,7 @@ public class TV extends GameObject {
         collision = true;
         widthInTiles = 2;
         heightInTiles = 2;
-        solidArea = new Rectangle(0, 0, 48, 48); // sesuai ukuran (misal 2 tile * 48)
+        solidArea = new Rectangle(0, 0, 54, 48); // sesuai ukuran (misal 2 tile * 48)
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
@@ -20,5 +23,11 @@ public class TV extends GameObject {
         } catch (IOException e) {
             e.printStackTrace();
         }   
+    }
+
+    @Override
+    public void playerInteract(Player player) {
+        //TODO: Implement TV interaction logic
+        System.out.println("You watched TV. Today's weather is " + GameClock.getCurrentWeather() + ".");  
     }
 }

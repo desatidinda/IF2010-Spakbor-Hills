@@ -2,12 +2,7 @@ package main;
 
 import entity.Player.*;
 import controller.*;
-import state.StateHandler;
-import state.FishingState;
-import state.InitialState;
-import state.InsideHouseState;
-import state.MapState;
-import state.NPCHouseState;
+import state.*;
 import input.KeyHandler;
 import objects.GameObject;
 import entity.NPC.*;
@@ -76,8 +71,9 @@ public class GamePanel extends JPanel implements Runnable {
         stateHandlers.put(GameStates.INSIDE_HOUSE, new InsideHouseState(this));
         stateHandlers.put(GameStates.FISHING, new FishingState(this));
         stateHandlers.put(GameStates.NPC_HOUSE, new NPCHouseState(this, npc[0]));
+        stateHandlers.put(GameStates.INVENTORY, new InventoryState(this));
 
-        GameClock.init();
+        //GameClock.init();
     }
 
     public void startGameThread() {
@@ -129,11 +125,6 @@ public class GamePanel extends JPanel implements Runnable {
         StateHandler handler = stateHandlers.get(gameState);
         if (handler != null) {
             handler.draw(g2);
-            g2.setColor(Color.WHITE);
-            g2.drawString("Time: " + GameClock.getFormattedTime(), 20, 20);
-            g2.drawString("Season: " + GameClock.getCurrentSeason(), 20, 40);
-            g2.drawString("Weather: " + GameClock.getCurrentWeather(), 20, 60);
-            g2.drawString("Day: " + GameClock.getDay(), 20, 80);
         }
 
         g2.dispose();

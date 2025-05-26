@@ -1,6 +1,7 @@
 package controller;
 
 import main.GamePanel;
+import entity.NPC.NPC;
 import entity.Player.*;
 
 public class CollisionManager {
@@ -206,7 +207,7 @@ public class CollisionManager {
         int originalY = player.solid.y;
         
         // krn di dalem house pake housex
-        int playerHouseX = player.houseX - 384;
+        int playerHouseX = player.houseX - 378;
         int playerHouseY = player.houseY - 288;
         
         // prediksi abis ini dmn yh
@@ -232,8 +233,8 @@ public class CollisionManager {
         player.solid.x = predictedX;
         player.solid.y = predictedY;
         
-        System.out.println("DEBUG - Player house coords: (" + playerHouseX + "," + playerHouseY + ")");
-        System.out.println("DEBUG - Player predicted position: (" + predictedX + "," + predictedY + ") direction: " + player.direction);
+        // System.out.println("DEBUG - Player house coords: (" + playerHouseX + "," + playerHouseY + ")");
+        // System.out.println("DEBUG - Player predicted position: (" + predictedX + "," + predictedY + ") direction: " + player.direction);
         
         for (int i = 0; i < gp.furniture.length; i++) {
             if (gp.furniture[i] != null) {
@@ -248,7 +249,7 @@ public class CollisionManager {
                 gp.furniture[i].solidArea.x = gp.furniture[i].worldX + gp.furniture[i].solidAreaDefaultX;
                 gp.furniture[i].solidArea.y = gp.furniture[i].worldY + gp.furniture[i].solidAreaDefaultY;
                 
-                System.out.println("DEBUG: Furniture[" + i + "] solid: (" + gp.furniture[i].solidArea.x + "," + gp.furniture[i].solidArea.y + ") size: " + gp.furniture[i].solidArea.width + "x" + gp.furniture[i].solidArea.height);
+                // System.out.println("DEBUG: Furniture[" + i + "] solid: (" + gp.furniture[i].solidArea.x + "," + gp.furniture[i].solidArea.y + ") size: " + gp.furniture[i].solidArea.width + "x" + gp.furniture[i].solidArea.height);
                 
                 // Cek collision
                 if (player.solid.intersects(gp.furniture[i].solidArea)) {
@@ -270,5 +271,45 @@ public class CollisionManager {
         player.solid.y = originalY;
         
         return index;
+    }
+
+    public void checkNPCCollision(Player player, NPC npcInHouse) {
+        int originalX = player.solid.x;
+        int originalY = player.solid.y;
+
+        int playerHouseX = player.houseX - 384;
+        int playerHouseY = player.houseY - 288;
+
+        int predictedX = playerHouseX + player.solid.x;
+        int predictedY = playerHouseY + player.solid.y;
+
+        switch (player.direction) {
+            case "up": predictedY -= gp.tileSize; break;
+            case "down": predictedY += gp.tileSize; break;
+            case "left": predictedX -= gp.tileSize; break;
+            case "right": predictedX += gp.tileSize; break;
+        }
+
+        player.solid.x = predictedX;
+        player.solid.y = predictedY;
+
+        if (npcInHouse != null && npcInHouse.solidArea != null) {
+            int npcOriginalX = npcInHouse.solidArea.x;
+            int npcOriginalY = npcInHouse.solidArea.y;
+
+            npcInHouse.solidArea.x = npcInHouse.worldX + npcInHouse.solidAreaDefaultX;
+            npcInHouse.solidArea.y = npcInHouse.worldY + npcInHouse.solidAreaDefaultY;
+
+            if (player.solid.intersects(npcInHouse.solidArea)) {
+                player.collision = true;
+                System.out.println("COLLISION DETECTED with " + npcInHouse.getName() + "!");
+            }
+
+            npcInHouse.solidArea.x = npcOriginalX;
+            npcInHouse.solidArea.y = npcOriginalY;
+        }
+
+        player.solid.x = originalX;
+        player.solid.y = originalY;
     }
 }

@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import java.awt.Color;
+import java.awt.Font;
 
 import entity.House.KingBed;
 import entity.House.Stove;
@@ -15,6 +17,8 @@ public class InsideHouseState implements StateHandler {
 
     private final GamePanel gp;
     private BufferedImage image;
+    private int interactedFurnitureIndex = -1;
+    private boolean showPopup = false;
 
     public InsideHouseState(GamePanel gp) {
         this.gp = gp;
@@ -24,7 +28,7 @@ public class InsideHouseState implements StateHandler {
 
     protected void loadBackground() {
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/res/floor.jpg"));
+            image = ImageIO.read(getClass().getResourceAsStream("/res/floor.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -33,6 +37,14 @@ public class InsideHouseState implements StateHandler {
     @Override
     public void update() {
         gp.player.update();
+        int furnitureIndex = gp.cm.checkIndoorObject(gp.player, true);
+        if (furnitureIndex != -1) {
+            interactedFurnitureIndex = furnitureIndex;
+            showPopup = true;
+        } else {
+            showPopup = false;
+            interactedFurnitureIndex = -1;
+        }
     }
 
     @Override
@@ -49,21 +61,27 @@ public class InsideHouseState implements StateHandler {
         gp.player.draw(g2);
         gp.ui.draw(g2);
 
+        if (showPopup && interactedFurnitureIndex >= 0 && interactedFurnitureIndex < gp.furniture.length && gp.furniture[interactedFurnitureIndex] != null) {
+            gp.ui.drawPopupWindow(g2, gp.screenWidth/2 - 400/2, 445, 400, 60);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
+            g2.setColor(java.awt.Color.WHITE);
+            gp.ui.drawCenteredText(g2, "Press SPACE to interact with " + gp.furniture[interactedFurnitureIndex].getName(), 0, 480, gp.screenWidth);
+        }
     }
 
     protected void deployFurniture() {
         KingBed kingbed = new KingBed();
-        kingbed.worldX = 8;
-        kingbed.worldY = 0;
+        kingbed.worldX = 16;
+        kingbed.worldY = 8;
         gp.furniture[0] = kingbed;
 
         Stove stove = new Stove();
-        stove.worldX = gp.tileSize * 14 - 8;
-        stove.worldY = gp.tileSize * 10 - 8;
+        stove.worldX = gp.tileSize * 14 - 16;
+        stove.worldY = gp.tileSize * 10 - 16;
         gp.furniture[1] = stove;
 
         TV tv = new TV();
-        tv.worldX = gp.tileSize * 5;
+        tv.worldX = gp.tileSize * 5 - 20;
         tv.worldY = 0;
         gp.furniture[2] = tv;
     }
@@ -84,6 +102,11 @@ public class InsideHouseState implements StateHandler {
             gp.player.teleportOut();
         } else if (key == KeyEvent.VK_SPACE) {
             gp.keyHandler.spacePressed = true;
+        }
+
+        if (showPopup && interactedFurnitureIndex != 999 && key == KeyEvent.VK_SPACE) {
+            gp.furniture[interactedFurnitureIndex].playerInteract(gp.player);
+            showPopup = false;
         }
     }
 
