@@ -42,4 +42,8 @@ public class NPCHouseState extends InsideHouseState {
     public void keyReleased(KeyEvent e) {
         super.keyReleased(e);
     }
+
+    public NPC getNpcInHouse() {
+        return npcInHouse;
+    }
 }

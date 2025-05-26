@@ -5,6 +5,7 @@ import main.GamePanel;
 import java.util.ArrayList;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.Rectangle;
 
 public abstract class NPC {
     protected String name;
@@ -18,7 +19,11 @@ public abstract class NPC {
     protected int countGifting = 0;
     protected int countVisiting = 0;
     protected BufferedImage imageNPC;
+    public final boolean collision = true;
     public int worldX, worldY;
+    public Rectangle solidArea = new Rectangle(0, 0, 16, 16);
+    public int solidAreaDefaultX = solidArea.x;
+    public int solidAreaDefaultY = solidArea.y;
     GamePanel gp;
 
     public NPC(String name, GamePanel gp) {

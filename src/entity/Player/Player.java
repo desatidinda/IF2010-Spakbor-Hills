@@ -119,32 +119,37 @@ public class Player {
                     System.out.println("Location: (" + location.getX() + ", " + location.getY() + ")");
                 } 
             } else if (gp.gameState == GameStates.INSIDE_HOUSE || gp.gameState == GameStates.NPC_HOUSE) {
-                    //TODO: bikin collision inside house
-                    int furnitureIndex = gp.cm.checkIndoorObject(this, true);
-                    //TODO: lakuin aktivitas sesuai apa yg ditabrak
-                    if (collision == false) {
-                        switch (direction) {
-                            case "up":
-                                houseY -= gp.tileSize;
-                                //getLocation().setY(getLocation().getY() - speed);
-                                break;
-                            case "down":
-                                houseY += gp.tileSize;
-                                //getLocation().setY(getLocation().getY() + speed);
-                                break;
-                            case "left":
-                                houseX -= gp.tileSize;
-                                //getLocation().setX(getLocation().getX() - speed);
-                                break;
-                            case "right":
-                                houseX += gp.tileSize;
-                                //getLocation().setX(getLocation().getX() + speed);
-                                break;
-                        }
-                        //System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
+                if (gp.gameState == GameStates.NPC_HOUSE) {
+                    state.NPCHouseState npcHouseState = (state.NPCHouseState) gp.stateHandlers.get(GameStates.NPC_HOUSE);
+                    if (npcHouseState != null) {
+                        gp.cm.checkNPCCollision(this, npcHouseState.getNpcInHouse());
                     }
+                }
+                int furnitureIndex = gp.cm.checkIndoorObject(this, true);
+                //TODO: lakuin aktivitas sesuai apa yg ditabrak
+                if (collision == false) {
+                    switch (direction) {
+                        case "up":
+                            houseY -= gp.tileSize;
+                            //getLocation().setY(getLocation().getY() - speed);
+                            break;
+                        case "down":
+                            houseY += gp.tileSize;
+                            //getLocation().setY(getLocation().getY() + speed);
+                            break;
+                        case "left":
+                            houseX -= gp.tileSize;
+                            //getLocation().setX(getLocation().getX() - speed);
+                            break;
+                        case "right":
+                            houseX += gp.tileSize;
+                            //getLocation().setX(getLocation().getX() + speed);
+                            break;
+                    }
+                    //System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
+                }
             }
-    
+
             spriteCounter++;
             if (spriteCounter > 1) {
                 if (spriteNum == 1) {
