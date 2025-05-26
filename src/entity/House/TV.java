@@ -2,6 +2,9 @@ package entity.House;
 
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
+import entity.Player.Player;
+import main.GameClock;
 import objects.GameObject;
 import java.awt.Rectangle;
 
@@ -20,5 +23,11 @@ public class TV extends GameObject {
         } catch (IOException e) {
             e.printStackTrace();
         }   
+    }
+
+    @Override
+    public void playerInteract(Player player) {
+        //TODO: Implement TV interaction logic
+        System.out.println("You watched TV. Today's weather is " + GameClock.getCurrentWeather() + ".");  
     }
 }

@@ -233,8 +233,8 @@ public class CollisionManager {
         player.solid.x = predictedX;
         player.solid.y = predictedY;
         
-        System.out.println("DEBUG - Player house coords: (" + playerHouseX + "," + playerHouseY + ")");
-        System.out.println("DEBUG - Player predicted position: (" + predictedX + "," + predictedY + ") direction: " + player.direction);
+        // System.out.println("DEBUG - Player house coords: (" + playerHouseX + "," + playerHouseY + ")");
+        // System.out.println("DEBUG - Player predicted position: (" + predictedX + "," + predictedY + ") direction: " + player.direction);
         
         for (int i = 0; i < gp.furniture.length; i++) {
             if (gp.furniture[i] != null) {
@@ -249,7 +249,7 @@ public class CollisionManager {
                 gp.furniture[i].solidArea.x = gp.furniture[i].worldX + gp.furniture[i].solidAreaDefaultX;
                 gp.furniture[i].solidArea.y = gp.furniture[i].worldY + gp.furniture[i].solidAreaDefaultY;
                 
-                System.out.println("DEBUG: Furniture[" + i + "] solid: (" + gp.furniture[i].solidArea.x + "," + gp.furniture[i].solidArea.y + ") size: " + gp.furniture[i].solidArea.width + "x" + gp.furniture[i].solidArea.height);
+                // System.out.println("DEBUG: Furniture[" + i + "] solid: (" + gp.furniture[i].solidArea.x + "," + gp.furniture[i].solidArea.y + ") size: " + gp.furniture[i].solidArea.width + "x" + gp.furniture[i].solidArea.height);
                 
                 // Cek collision
                 if (player.solid.intersects(gp.furniture[i].solidArea)) {

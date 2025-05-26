@@ -4,6 +4,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.Rectangle;
 import objects.GameObject;
+import entity.Player.Player;
+import main.GameClock;
 
 public class KingBed extends GameObject {
     public KingBed() {
@@ -20,5 +22,11 @@ public class KingBed extends GameObject {
         } catch (IOException e) {
             e.printStackTrace();
         }   
+    }
+
+    @Override
+    public void playerInteract(Player player) {
+        player.sleep();
+        GameClock.skipToMorning();  
     }
 }
