@@ -8,5 +8,6 @@ public enum GameStates {
     FISHING,
     MENU,
     ITEMLIST,
+    INVENTORY,
     STATISTCS;
 }
