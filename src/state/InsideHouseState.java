@@ -1,5 +1,6 @@
 package state;
 
+import entity.Farm.Weather;
 import main.GamePanel;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import entity.House.*;
 import entity.Item.*;
+import entity.House.TV;
 import main.GameClock;
 
 public class InsideHouseState implements StateHandler {
@@ -24,8 +26,8 @@ public class InsideHouseState implements StateHandler {
     private int cookingStartMinute;
     private Recipe pendingRecipe = null;
     private String pendingFuel = null;
-
-    // Pesan popup dalam window resep
+    private boolean watchTV = false;
+    private Weather currentWeather;
     private String cookMessage = null;
     private int cookMessageTimer = 0;
 
@@ -45,20 +47,6 @@ public class InsideHouseState implements StateHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    protected void deployFurniture() {
-        gp.furniture[0] = new KingBed();
-        gp.furniture[0].worldX = 16;
-        gp.furniture[0].worldY = 8;
-
-        gp.furniture[1] = new Stove(gp);
-        gp.furniture[1].worldX = gp.tileSize * 14 - 16;
-        gp.furniture[1].worldY = gp.tileSize * 10 - 16;
-
-        gp.furniture[2] = new TV();
-        gp.furniture[2].worldX = gp.tileSize * 5 - 20;
-        gp.furniture[2].worldY = 0;
     }
 
     @Override
@@ -81,7 +69,7 @@ public class InsideHouseState implements StateHandler {
 
             if (nowTotal - startTotal >= 60 || nowTotal < startTotal) {
                 gp.player.cook(pendingRecipe.getName(), pendingFuel, 1);
-                cookMessage = "✅ Masakan siap: " + pendingRecipe.getName();
+                cookMessage = "Masakan siap: " + pendingRecipe.getName();
                 cookMessageTimer = 180;
 
                 isCookingWait = false;
@@ -111,6 +99,16 @@ public class InsideHouseState implements StateHandler {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
             g2.setColor(Color.WHITE);
             gp.ui.drawCenteredText(g2, "Press SPACE to interact with " + gp.furniture[interactedFurnitureIndex].getName(), 0, 480, gp.screenWidth);
+        }
+
+        if (watchTV) {
+            BufferedImage weatherImg = null;
+            if (currentWeather == Weather.SUNNY) {
+                weatherImg = ((TV)gp.furniture[2]).getTvsunny();
+            } else if (currentWeather == Weather.RAINY) {
+                weatherImg = ((TV)gp.furniture[2]).getTvrainy();
+            }
+            g2.drawImage(weatherImg, 0, 0, gp.screenWidth, gp.screenHeight, null);
         }
 
         if (showRecipeList) {
@@ -183,21 +181,54 @@ public class InsideHouseState implements StateHandler {
         gp.ui.drawCenteredText(g2, "↑↓ untuk navigasi, ENTER untuk masak, R untuk keluar", windowX, windowY + height - 20, width);
     }
 
+    protected void deployFurniture() {
+        KingBed kingbed = new KingBed();
+        kingbed.worldX = gp.tileSize * 13 - 16;
+        kingbed.worldY = 8;
+        gp.furniture[0] = kingbed;
+
+        Stove stove = new Stove(gp);
+        stove.worldX = 0;
+        stove.worldY = gp.tileSize * 10 - 16;
+        gp.furniture[1] = stove;
+
+        TV tv = new TV();
+        tv.worldX = gp.tileSize * 9 - 20;
+        tv.worldY = 0;
+        gp.furniture[2] = tv;
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_W) gp.keyHandler.upPressed = true;
-        else if (key == KeyEvent.VK_S) gp.keyHandler.downPressed = true;
-        else if (key == KeyEvent.VK_A) gp.keyHandler.leftPressed = true;
-        else if (key == KeyEvent.VK_D) gp.keyHandler.rightPressed = true;
-        else if (key == KeyEvent.VK_ESCAPE) gp.player.teleportOut();
-        else if (key == KeyEvent.VK_SPACE) gp.keyHandler.spacePressed = true;
-        else if (key == KeyEvent.VK_R) showRecipeList = !showRecipeList;
+        if (key == KeyEvent.VK_W) {
+            gp.keyHandler.upPressed = true;
+        } else if (key == KeyEvent.VK_S) {
+            gp.keyHandler.downPressed = true;
+        } else if (key == KeyEvent.VK_A) {
+            gp.keyHandler.leftPressed = true;
+        } else if (key == KeyEvent.VK_D) {
+            gp.keyHandler.rightPressed = true;
+        } else if (key == KeyEvent.VK_ESCAPE) {
+            gp.player.teleportOut();
+        } else if (key == KeyEvent.VK_SPACE) {
+            gp.keyHandler.spacePressed = true;
+        } else if (key == KeyEvent.VK_R) showRecipeList = !showRecipeList;
+
 
         if (showPopup && interactedFurnitureIndex != 999 && key == KeyEvent.VK_SPACE) {
+            if (gp.furniture[interactedFurnitureIndex] instanceof TV) {
+                watchTV = true;
+                currentWeather = GameClock.getCurrentWeather();
+            }
             gp.furniture[interactedFurnitureIndex].playerInteract(gp.player);
             showPopup = false;
+        }
+
+        if (watchTV && key == KeyEvent.VK_ENTER) {
+            watchTV = false;
+            currentWeather = null;
         }
     }
 

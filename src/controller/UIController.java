@@ -6,11 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
-
-
+import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
-import main.GameClock;
 
 public class UIController {
     GamePanel gp;
@@ -29,7 +27,8 @@ public class UIController {
 
     double playTime;
     DecimalFormat df = new DecimalFormat("#0.00");
-    BufferedImage gambar;
+    BufferedImage gambar, bgName, bgGender, bgFarmGirl, bgFarmBoy;
+    
 
     public UIController(GamePanel gp) {
         this.gp = gp;
@@ -39,6 +38,11 @@ public class UIController {
             bradrock = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.PLAIN, 40);
             input = getClass().getResourceAsStream("/res/Font/VT323-Regular.ttf");
             vt323 = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.PLAIN, 40);
+
+            bgName = ImageIO.read(getClass().getResourceAsStream("/res/entername.png"));
+            bgGender = ImageIO.read(getClass().getResourceAsStream("/res/choosegender.png"));
+            bgFarmGirl = ImageIO.read(getClass().getResourceAsStream("/res/farmnamegirl.png"));
+            bgFarmBoy = ImageIO.read(getClass().getResourceAsStream("/res/farmnameboy.png"));
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -60,8 +64,8 @@ public class UIController {
             drawInitial();
         } else if (gp.gameState == GameStates.MAP) {
             drawMap();
-        } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
-            
+        } else if (gp.gameState == GameStates.INSIDE_HOUSE || gp.gameState == GameStates.NPC_HOUSE) {
+            drawMap();
         } else if (gp.gameState == GameStates.MENU) {
 
         } else if (gp.gameState == GameStates.ITEMLIST) {
@@ -90,14 +94,18 @@ public class UIController {
         if (initialStep == 0) {
             drawInitialMenu();
         } else if (initialStep == 1) {
-            drawInputField("Enter Player Name: ", inputBuffer);
+            drawInputField(inputBuffer, bgName);
         } else if (initialStep == 2) {
-            drawGenderSelection();
+            drawGenderSelection(bgGender);
         } else if (initialStep == 3) {
-            drawInputField("Enter Farm Name: ", inputBuffer);
+            if (gender.equals("Male")) {
+                drawInputField(inputBuffer, bgFarmBoy);
+            } else if (gender.equals("Female")) {
+                drawInputField(inputBuffer, bgFarmGirl);
+            }
         } else if (initialStep == 4) {
-        drawInformation();
-    }
+            drawInformation();
+        }
     }
 
     private void drawInitialMenu() {
@@ -126,30 +134,33 @@ public class UIController {
         }
     }
 
-    private void drawInputField(String label, String input) {
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
-        int y = gp.screenHeight / 2;
-
-        String text = label + input + "_";
+    private void drawInputField(String input, BufferedImage bgImage) {
+        if (bgImage != null) {
+            g2.drawImage(bgImage, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 50F));
+        int y = gp.screenHeight / 2 + 40;
+        String text = input + "_";
         drawCenteredText(g2, text, 0, y, gp.screenWidth);
     }
 
-    private void drawGenderSelection() {
+    private void drawGenderSelection(BufferedImage bgImage) {
+        if (bgImage != null) {
+            g2.drawImage(bgImage, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
-        int y = gp.screenHeight / 2;
-
+        int y = gp.screenHeight / 2 + 50;
         String[] options = {"Male", "Female"};
         for (int i = 0; i < options.length; i++) {
             String option = options[i];
             int optionWidth = g2.getFontMetrics().stringWidth(option);
             int centerX = gp.screenWidth / 2 - optionWidth / 2;
             int optionY = y + i * 40;
-
             if (commandNum == i) {
                 g2.drawString(">", centerX - 30, optionY);
             }
             g2.drawString(option, centerX, optionY);
-            }
+        }
     }
 
     public void drawInformation() {
@@ -172,51 +183,60 @@ public class UIController {
     public void drawMap() {
         
         int boxWidth = 180;
-        int boxHeight = 96;
+        int boxHeight = 72;
         int boxX = 16;
         int boxY = 16;
 
         gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 14F));
         g2.setColor(Color.WHITE);
 
         int textX = boxX + 16;
-        int textY = boxY + 30;
-        int lineHeight = 24;
+        int textY = boxY + 24;
+        int lineHeight = 16;
 
         g2.drawString("Time: " + GameClock.getFormattedTime(), textX, textY);
         g2.drawString("Season: " + GameClock.getCurrentSeason(), textX, textY + lineHeight);
         g2.drawString("Day: " + GameClock.getDay(), textX, textY + lineHeight * 2);
 
         // ini energy bar
-        int barWidth = 150;
-        int barHeight = 16;
-        int barMargin = 20;
-        int barBoxWidth = barWidth + 90;
-        int barBoxHeight = 72;
-        int barBoxX = gp.screenWidth - barBoxWidth - barMargin;
-        int barBoxY = barMargin;
+        int barWidth = 100;
+        int barHeight = 12;
+        int barBoxWidth = barWidth + 80;
+        int barBoxHeight = 64;
 
-        gp.ui.drawPopupWindow(g2, barBoxX, barBoxY, barBoxWidth, barBoxHeight);
+        gp.ui.drawPopupWindow(g2, boxX, boxY + boxHeight + 8, barBoxWidth, barBoxHeight);
 
         int energy = gp.player != null ? gp.player.getEnergy() : 0;
         int maxEnergy = 100;
         int filledWidth = (int) ((double) energy / maxEnergy * barWidth);
 
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 18F));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 12F));
         g2.setColor(Color.WHITE);
-        g2.drawString("Energy", barBoxX + 20, barBoxY + 26);
+        g2.drawString("Energy", boxX + 16, boxY + boxHeight + 30);
 
-        int barX = barBoxX + 20;
-        int barY = barBoxY + 36;
+        int barX = boxX + 20;
+        int barY = boxY +  boxHeight + 44;
         g2.setColor(Color.GRAY);
-        g2.fillRoundRect(barX, barY, barWidth, barHeight, 10, 10);
+        g2.fillRoundRect(barX, barY, barWidth, barHeight, 5, 5);
         g2.setColor(new Color(50, 220, 80));
-        g2.fillRoundRect(barX, barY, filledWidth, barHeight, 10, 10);
+        g2.fillRoundRect(barX, barY, filledWidth, barHeight, 5, 5);
         g2.setColor(Color.WHITE);
-        g2.drawRoundRect(barX, barY, barWidth, barHeight, 10, 10);
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 14F));
+        g2.drawRoundRect(barX, barY, barWidth, barHeight, 5, 5);
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 10F));
         g2.drawString(energy + " / " + maxEnergy, barX + barWidth + 8, barY + barHeight - 4);
+        
+        // ini button inventory yah
+        int btnW = 131;
+        int btnH = 69;
+        int btnX = gp.screenWidth - btnW - 20;
+        int btnY = gp.screenHeight - btnH - 20;
+        try {
+            BufferedImage btnImg = ImageIO.read(getClass().getResourceAsStream("/res/buttonInventory.png"));
+            g2.drawImage(btnImg, btnX, btnY, btnW, btnH, null);
+        } catch (IOException e) {
+            
+        }
     }
 
     public void drawMenu() {

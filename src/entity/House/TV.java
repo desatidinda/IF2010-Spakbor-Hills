@@ -3,12 +3,17 @@ package entity.House;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+
 import entity.Player.Player;
 import main.GameClock;
 import objects.GameObject;
-import java.awt.Rectangle;
+import entity.Farm.Weather;
 
 public class TV extends GameObject {
+    BufferedImage tvsunny, tvrainy;
     public TV() {
         name = "TV";
         collision = true;
@@ -20,6 +25,8 @@ public class TV extends GameObject {
 
         try {
             image = ImageIO.read(getClass().getResourceAsStream("/objects/ObjectImage/tv.png"));
+            tvsunny = ImageIO.read(getClass().getResourceAsStream("/res/tvsunny.png"));
+            tvrainy = ImageIO.read(getClass().getResourceAsStream("/res/tvrainy.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }   
@@ -27,7 +34,16 @@ public class TV extends GameObject {
 
     @Override
     public void playerInteract(Player player) {
-        //TODO: Implement TV interaction logic
-        System.out.println("You watched TV. Today's weather is " + GameClock.getCurrentWeather() + ".");  
+        player.watchingTV();
+        GameClock.skipMinutes(15);
     }
+
+    public BufferedImage getTvsunny() {
+        return tvsunny;
+    }
+
+    public BufferedImage getTvrainy() {
+        return tvrainy;
+    }
+
 }

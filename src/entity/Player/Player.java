@@ -1,5 +1,6 @@
 package entity.Player;
 
+import entity.Farm.Weather;
 import entity.Item.FuelItem;
 import entity.Item.Recipe;
 import entity.Item.RecipeRegistry;
@@ -47,7 +48,7 @@ public class Player {
     public boolean teleportMode = false;
     public int teleportOption = 0;
 
-
+  
     public Player(String name, String gender, String farmName, GamePanel gp, KeyHandler keyHandler) {
         this.name = name;
         this.gender = gender;
@@ -59,7 +60,7 @@ public class Player {
         this.location = new Point(16, 16); // default starting location (ini ditengah)
         this.indoorLocation = new Point(16, 16); // default indoor location
         this.gp = gp;
-        this.keyHandler = keyHandler;
+        this.keyHandler = keyHandler;   
 
         screenX = gp.screenWidth/2 - gp.tileSize / 2;
         screenY = gp.screenHeight/2 - gp.tileSize / 2;
@@ -81,13 +82,13 @@ public class Player {
         if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed) {
             if (keyHandler.upPressed) {
                 direction = "up";
-            }
+            } 
             else if (keyHandler.downPressed) {
                 direction = "down";
-            }
+            } 
             else if (keyHandler.leftPressed) {
                 direction = "left";
-            }
+            } 
             else if (keyHandler.rightPressed) {
                 direction = "right";
             }
@@ -95,7 +96,7 @@ public class Player {
             // cek collision di tiap state
             collision = false;
             if (gp.gameState == GameStates.MAP) {
-                gp.cm.checkTile(this);
+                gp.cm.checkTile(this); 
                 int objectIndex = gp.cm.checkObject(this, true);
                 teleport(objectIndex);
                 if (collision == false) {
@@ -118,7 +119,7 @@ public class Player {
                             break;
                     }
                     System.out.println("Location: (" + location.getX() + ", " + location.getY() + ")");
-                }
+                } 
             } else if (gp.gameState == GameStates.INSIDE_HOUSE || gp.gameState == GameStates.NPC_HOUSE) {
                 if (gp.gameState == GameStates.NPC_HOUSE) {
                     state.NPCHouseState npcHouseState = (state.NPCHouseState) gp.stateHandlers.get(GameStates.NPC_HOUSE);
@@ -160,7 +161,7 @@ public class Player {
                 }
                 spriteCounter = 0;
             }
-        }
+        }   
     }
 
     public void teleport(int i) {
@@ -208,7 +209,7 @@ public class Player {
             case "up":
                 if (spriteNum == 1) {
                     image = up1;
-                }
+                } 
                 if (spriteNum == 2) {
                     image = up2;
                 }
@@ -216,15 +217,15 @@ public class Player {
             case "down":
                 if (spriteNum == 1) {
                     image = down1;
-                }
+                } 
                 if (spriteNum == 2) {
                     image = down2;
                 }
                 break;
-            case "left":
+            case "left": 
                 if (spriteNum == 1) {
                     image = left1;
-                }
+                } 
                 if (spriteNum == 2) {
                     image = left2;
                 }
@@ -232,7 +233,7 @@ public class Player {
             case "right":
                 if (spriteNum == 1) {
                     image = right1;
-                }
+                } 
                 if (spriteNum == 2) {
                     image = right2;
                 }
@@ -247,7 +248,7 @@ public class Player {
         } else if (gp.gameState == GameStates.FISHING) {
             g2.drawImage(image, gp.tileSize * 8 - 8, gp.tileSize * 9, gp.tileSize, gp.tileSize, null);
         }
-    }
+    } 
 
     public void getImage() {
         try {
@@ -271,42 +272,42 @@ public class Player {
                 left1 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cowo_kiri_1.png"));
                 left2 = ImageIO.read(getClass().getResourceAsStream("/entity/Player/PlayerImage/cowo_kiri_2.png"));
             }
-
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     // GETTER
-    public String getName() {
-        return name;
+    public String getName() { 
+        return name; 
     }
 
-    public String getGender() {
-        return gender;
+    public String getGender() { 
+        return gender; 
     }
 
-    public int getEnergy() {
-        return energy;
+    public int getEnergy() { 
+        return energy; 
     }
 
-    public String getFarmName() {
-        return farmName;
+    public String getFarmName() { 
+        return farmName; 
     }
 
-    public String getPartner() {
-        return partner;
+    public String getPartner() { 
+        return partner; 
     }
 
-    public int getGold() {
-        return gold;
+    public int getGold() { 
+        return gold; 
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    public Inventory getInventory() { 
+        return inventory; 
     }
 
-    public Point getLocation() {
+    public Point getLocation() { 
         if (gp.gameState == GameStates.MAP) {
             return location;
         } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
@@ -317,30 +318,30 @@ public class Player {
 
 
     // SETTER
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name) { 
+        this.name = name; 
     }
 
-    public void setGender(String gender) {
+    public void setGender(String gender) { 
         this.gender = gender;
         getImage();
     }
 
-    public void setFarmName(String farmName) {
-        this.farmName = farmName;
+    public void setFarmName(String farmName) { 
+        this.farmName = farmName; 
     }
 
-    public void setPartner(String partner) {
-        this.partner = partner;
+    public void setPartner(String partner) { 
+        this.partner = partner; 
     }
 
-    public void setLocation(Point location) {
-        this.location = location;
+    public void setLocation(Point location) { 
+        this.location = location; 
     }
 
     // METHOD
-    public void addGold(int amount) {
-        this.gold += amount;
+    public void addGold(int amount) { 
+        this.gold += amount; 
     }
 
     public boolean useGold(int amount) {
@@ -371,10 +372,10 @@ public class Player {
     public void sleep() {
         if (energy < MAX_ENERGY * 0.1) {
             energy = MAX_ENERGY / 2;
-        }
+        } 
         else if (energy == 0) {
             energy = MAX_ENERGY / 2 + 10;
-        }
+        } 
         else {
             energy = MAX_ENERGY;
         }
@@ -494,5 +495,8 @@ public class Player {
         setPartner(npc.getName());
         energy -= 80;
         GameClock.skipTo22();
+    }
+    public void watchingTV() {
+        performAction(5);
     }
 }

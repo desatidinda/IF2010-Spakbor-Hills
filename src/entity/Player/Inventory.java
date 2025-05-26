@@ -62,4 +62,8 @@ public class Inventory {
 
         printContents();
     }
+
+    public Map<String, Integer> getItems() {
+        return items;
+    }
 }
