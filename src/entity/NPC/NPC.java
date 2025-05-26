@@ -25,6 +25,7 @@ public abstract class NPC {
     public int solidAreaDefaultX = solidArea.x;
     public int solidAreaDefaultY = solidArea.y;
     GamePanel gp;
+    private int lastProposalDay = -1;
 
     public NPC(String name, GamePanel gp) {
         this.name = name;
@@ -95,6 +96,14 @@ public abstract class NPC {
 
     public void addHeartPoints(int amount) {
         this.heartPoints = Math.min(this.heartPoints + amount, maxHP);
+    }
+
+    public int getLastProposalDay() {
+        return lastProposalDay;
+    }
+
+    public void setLastProposalDay(int day) {
+        this.lastProposalDay = day;
     }
 
     // method abstract di implementasinya di subclass ya
