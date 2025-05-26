@@ -29,7 +29,8 @@ public class UIController {
 
     double playTime;
     DecimalFormat df = new DecimalFormat("#0.00");
-    BufferedImage gambar;
+    BufferedImage gambar, bgName, bgGender, bgFarmGirl, bgFarmBoy;
+    
 
     public UIController(GamePanel gp) {
         this.gp = gp;
@@ -39,6 +40,11 @@ public class UIController {
             bradrock = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.PLAIN, 40);
             input = getClass().getResourceAsStream("/res/Font/VT323-Regular.ttf");
             vt323 = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.PLAIN, 40);
+
+            bgName = ImageIO.read(getClass().getResourceAsStream("/res/entername.png"));
+            bgGender = ImageIO.read(getClass().getResourceAsStream("/res/choosegender.png"));
+            bgFarmGirl = ImageIO.read(getClass().getResourceAsStream("/res/farmnamegirl.png"));
+            bgFarmBoy = ImageIO.read(getClass().getResourceAsStream("/res/farmnameboy.png"));
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -90,13 +96,17 @@ public class UIController {
         if (initialStep == 0) {
             drawInitialMenu();
         } else if (initialStep == 1) {
-            drawInputField("Enter Player Name: ", inputBuffer);
+            drawInputField(inputBuffer, bgName);
         } else if (initialStep == 2) {
-            drawGenderSelection();
+            drawGenderSelection(bgGender);
         } else if (initialStep == 3) {
-            drawInputField("Enter Farm Name: ", inputBuffer);
+            if (gender.equals("Male")) {
+                drawInputField(inputBuffer, bgFarmBoy);
+            } else if (gender.equals("Female")) {
+                drawInputField(inputBuffer, bgFarmGirl);
+            }
         } else if (initialStep == 4) {
-        drawInformation();
+            drawInformation();
         }
     }
 
@@ -126,30 +136,33 @@ public class UIController {
         }
     }
 
-    private void drawInputField(String label, String input) {
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
-        int y = gp.screenHeight / 2;
-
-        String text = label + input + "_";
+    private void drawInputField(String input, BufferedImage bgImage) {
+        if (bgImage != null) {
+            g2.drawImage(bgImage, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 50F));
+        int y = gp.screenHeight / 2 + 40;
+        String text = input + "_";
         drawCenteredText(g2, text, 0, y, gp.screenWidth);
     }
 
-    private void drawGenderSelection() {
+    private void drawGenderSelection(BufferedImage bgImage) {
+        if (bgImage != null) {
+            g2.drawImage(bgImage, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
-        int y = gp.screenHeight / 2;
-
+        int y = gp.screenHeight / 2 + 50;
         String[] options = {"Male", "Female"};
         for (int i = 0; i < options.length; i++) {
             String option = options[i];
             int optionWidth = g2.getFontMetrics().stringWidth(option);
             int centerX = gp.screenWidth / 2 - optionWidth / 2;
             int optionY = y + i * 40;
-
             if (commandNum == i) {
                 g2.drawString(">", centerX - 30, optionY);
             }
             g2.drawString(option, centerX, optionY);
-            }
+        }
     }
 
     public void drawInformation() {
