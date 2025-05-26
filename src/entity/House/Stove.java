@@ -5,9 +5,15 @@ import javax.imageio.ImageIO;
 import java.awt.Rectangle;
 import objects.GameObject;
 import entity.Player.Player;
+import state.InsideHouseState;
+import main.GamePanel;
+import main.GameStates;
 
 public class Stove extends GameObject {
-    public Stove() {
+    private GamePanel gp;
+
+    public Stove(GamePanel gp) {
+        this.gp = gp;
         name = "Stove";
         collision = true;
         widthInTiles = 2;
@@ -26,5 +32,6 @@ public class Stove extends GameObject {
         @Override
         public void playerInteract(Player player) {
             //TODO: implement cook nanti
+            ((InsideHouseState) gp.stateHandlers.get(GameStates.INSIDE_HOUSE)).setShowRecipeList(true);
         }
 }

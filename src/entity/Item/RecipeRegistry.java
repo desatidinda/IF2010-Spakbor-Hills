@@ -1,6 +1,7 @@
 package entity.Item;
 
 import java.util.*;
+import entity.Item.Recipe;
 
 public class RecipeRegistry {
     private static final Map<String, Recipe> recipes = new HashMap<>();

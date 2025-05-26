@@ -23,4 +23,12 @@ public class Recipe {
     public int getRequiredFuel() { return requiredFuel; }
     public boolean isUnlocked() { return unlocked; }
     public void unlock() { this.unlocked = true; }
+    public String getFormattedIngredients() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : ingredients.entrySet()) {
+            sb.append(entry.getValue()).append("x ").append(entry.getKey()).append(", ");
+        }
+        if (sb.length() > 2) sb.setLength(sb.length() - 2); // hapus koma terakhir
+        return sb.toString();
+    }
 }
