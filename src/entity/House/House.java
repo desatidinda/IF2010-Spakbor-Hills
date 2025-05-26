@@ -22,12 +22,6 @@ public class House extends GameObject {
         }
     }
 
-    public void sleep(Player player) {
-        player.sleep();             
-        GameClock.skipToMorning();  
-        System.out.println("You slept in your house. It's now morning.");
-    }
-
     @Override
     public String toString() {
         return "House (size: " + widthInTiles + "x" + heightInTiles + ")";
