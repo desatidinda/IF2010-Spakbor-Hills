@@ -65,7 +65,7 @@ public class UIController {
         } else if (gp.gameState == GameStates.MAP) {
             drawMap();
         } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
-            
+            drawMap();
         } else if (gp.gameState == GameStates.MENU) {
 
         } else if (gp.gameState == GameStates.ITEMLIST) {
@@ -183,50 +183,47 @@ public class UIController {
     public void drawMap() {
         
         int boxWidth = 180;
-        int boxHeight = 96;
+        int boxHeight = 72;
         int boxX = 16;
         int boxY = 16;
 
         gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 14F));
         g2.setColor(Color.WHITE);
 
         int textX = boxX + 16;
-        int textY = boxY + 30;
-        int lineHeight = 24;
+        int textY = boxY + 24;
+        int lineHeight = 16;
 
         g2.drawString("Time: " + GameClock.getFormattedTime(), textX, textY);
         g2.drawString("Season: " + GameClock.getCurrentSeason(), textX, textY + lineHeight);
         g2.drawString("Day: " + GameClock.getDay(), textX, textY + lineHeight * 2);
 
         // ini energy bar
-        int barWidth = 150;
-        int barHeight = 16;
-        int barMargin = 20;
-        int barBoxWidth = barWidth + 90;
-        int barBoxHeight = 72;
-        int barBoxX = gp.screenWidth - barBoxWidth - barMargin;
-        int barBoxY = barMargin;
+        int barWidth = 100;
+        int barHeight = 12;
+        int barBoxWidth = barWidth + 80;
+        int barBoxHeight = 64;
 
-        gp.ui.drawPopupWindow(g2, barBoxX, barBoxY, barBoxWidth, barBoxHeight);
+        gp.ui.drawPopupWindow(g2, boxX, boxY + boxHeight + 8, barBoxWidth, barBoxHeight);
 
         int energy = gp.player != null ? gp.player.getEnergy() : 0;
         int maxEnergy = 100;
         int filledWidth = (int) ((double) energy / maxEnergy * barWidth);
 
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 18F));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 12F));
         g2.setColor(Color.WHITE);
-        g2.drawString("Energy", barBoxX + 20, barBoxY + 26);
+        g2.drawString("Energy", boxX + 16, boxY + boxHeight + 30);
 
-        int barX = barBoxX + 20;
-        int barY = barBoxY + 36;
+        int barX = boxX + 20;
+        int barY = boxY +  boxHeight + 44;
         g2.setColor(Color.GRAY);
-        g2.fillRoundRect(barX, barY, barWidth, barHeight, 10, 10);
+        g2.fillRoundRect(barX, barY, barWidth, barHeight, 5, 5);
         g2.setColor(new Color(50, 220, 80));
-        g2.fillRoundRect(barX, barY, filledWidth, barHeight, 10, 10);
+        g2.fillRoundRect(barX, barY, filledWidth, barHeight, 5, 5);
         g2.setColor(Color.WHITE);
-        g2.drawRoundRect(barX, barY, barWidth, barHeight, 10, 10);
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 14F));
+        g2.drawRoundRect(barX, barY, barWidth, barHeight, 5, 5);
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 10F));
         g2.drawString(energy + " / " + maxEnergy, barX + barWidth + 8, barY + barHeight - 4);
         
         // ini button inventory yah
