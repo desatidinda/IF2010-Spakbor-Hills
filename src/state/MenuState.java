@@ -16,23 +16,36 @@ public class MenuState {
     }
 
     public void draw(Graphics2D g2) {
-        g2.setColor(Color.BLACK);
-        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        int boxWidth = 400;
+        int lineHeight = 32;
+        int infoCount = 8; 
+        int boxHeight = 60 + infoCount * lineHeight;
 
-        g2.setColor(Color.WHITE);
+        int boxX = (gp.screenWidth - boxWidth) / 2;
+        int boxY = (gp.screenHeight - boxHeight) / 2;
+       
+        gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
+
+        // HEADER
         g2.setFont(new Font("Arial", Font.BOLD, 24));
+        gp.ui.drawCenteredText(g2, "PLAYER STATUS", boxX, boxY + 38, boxWidth);
 
-        int x = 50;
-        int y = 60;
-        int lineHeight = 40;
+        g2.setFont(new Font("Arial", Font.PLAIN, 18));
+        int textY = boxY + 70;
 
-        g2.drawString("PLAYER STATUS", x, y); y += lineHeight;
-        g2.drawString("Name     : " + player.getName(), x, y); y += lineHeight;
-        g2.drawString("Gender   : " + player.getGender(), x, y); y += lineHeight;
-        g2.drawString("Farm     : " + player.getFarmName(), x, y); y += lineHeight;
-        g2.drawString("Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"), x, y); y += lineHeight;
-        g2.drawString("Status   : " + player.getRelationshipStatus(), x, y); y += lineHeight;
-        g2.drawString("Energy   : " + player.getEnergy(), x, y); y += lineHeight;
-        g2.drawString("Gold     : " + player.getGold(), x, y); y += lineHeight;
+        String[] lines = {
+            "Name     : " + player.getName(),
+            "Gender   : " + player.getGender(),
+            "Farm     : " + player.getFarmName(),
+            "Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"),
+            "Status   : " + player.getRelationshipStatus(),
+            "Energy   : " + player.getEnergy(),
+            "Gold     : " + player.getGold()
+        };
+
+        for (String line : lines) {
+            gp.ui.drawCenteredText(g2, line, boxX, textY, boxWidth);
+            textY += lineHeight;
+        }
     }
 }
