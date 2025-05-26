@@ -377,7 +377,7 @@ public class Player {
         else {
             energy = MAX_ENERGY;
         }
-        System.out.println(name + " has slept and recovered energy.");
+        //System.out.println(name + " has slept and recovered energy.");
     }
 
     public void displayStatus() {
@@ -462,6 +462,10 @@ public class Player {
         energy -= 10 * quantity;
 
         System.out.println("Berhasil memasak " + quantity + "x " + recipe.getName() + "!");
+    }
+
+    public void watchingTV() {
+        performAction(5);
     }
 }
 

@@ -25,7 +25,7 @@ public class GameClock {
     }
 
     public static void updateTime(int realSeconds) {
-        int gameMinutesToAdd = realSeconds * 30; 
+        int gameMinutesToAdd = realSeconds * 5; 
         //TODO: nanti 30 nya ganti jd 5 skrg buat tes biar ga kelamaan aowkawoakwoawkaowk
 
         minute += gameMinutesToAdd;
@@ -102,5 +102,20 @@ public class GameClock {
         currentWeather = generateWeather();
 
         checkSeasonChange();
+    }
+
+    public static void skipMinutes(int minutes) {
+        minute += minutes;
+        while (minute >= 60) {
+            minute -= 60;
+            hour++;
+        }
+        while (hour >= 24) {
+            hour -= 24;
+            day++;
+            dayfix++;
+            currentWeather = generateWeather();
+            checkSeasonChange();
+        }
     }
 }

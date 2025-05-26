@@ -34,7 +34,8 @@ public class TV extends GameObject {
 
     @Override
     public void playerInteract(Player player) {
-        //TODO: Implement TV interaction logic
+        player.watchingTV();
+        GameClock.skipMinutes(15);
     }
 
     public BufferedImage getTvsunny() {
