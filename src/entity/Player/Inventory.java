@@ -60,7 +60,6 @@ public class Inventory {
             addItem(item, qty);
         }
 
-        System.out.println("Inventory diisi otomatis untuk testing:");
         printContents();
     }
 }
