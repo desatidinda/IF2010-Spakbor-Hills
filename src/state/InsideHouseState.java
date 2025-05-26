@@ -1,6 +1,7 @@
 package state;
 
 import main.GamePanel;
+import main.GameClock;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -12,6 +13,7 @@ import java.awt.Font;
 import entity.House.KingBed;
 import entity.House.Stove;
 import entity.House.TV;
+import entity.Farm.Weather;
 
 public class InsideHouseState implements StateHandler {
 
@@ -19,6 +21,9 @@ public class InsideHouseState implements StateHandler {
     private BufferedImage image;
     private int interactedFurnitureIndex = -1;
     private boolean showPopup = false;
+    private boolean watchTV = false;
+    private Weather currentWeather;
+
 
     public InsideHouseState(GamePanel gp) {
         this.gp = gp;
@@ -67,6 +72,16 @@ public class InsideHouseState implements StateHandler {
             g2.setColor(java.awt.Color.WHITE);
             gp.ui.drawCenteredText(g2, "Press SPACE to interact with " + gp.furniture[interactedFurnitureIndex].getName(), 0, 480, gp.screenWidth);
         }
+
+        if (watchTV) {
+            BufferedImage weatherImg = null;
+            if (currentWeather == Weather.SUNNY) {
+                weatherImg = ((TV)gp.furniture[2]).getTvsunny();
+            } else if (currentWeather == Weather.RAINY) {
+                weatherImg = ((TV)gp.furniture[2]).getTvrainy();
+            }
+            g2.drawImage(weatherImg, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
     }
 
     protected void deployFurniture() {
@@ -105,8 +120,17 @@ public class InsideHouseState implements StateHandler {
         }
 
         if (showPopup && interactedFurnitureIndex != 999 && key == KeyEvent.VK_SPACE) {
+            if (gp.furniture[interactedFurnitureIndex] instanceof TV) {
+                watchTV = true;
+                currentWeather = GameClock.getCurrentWeather();
+            }
             gp.furniture[interactedFurnitureIndex].playerInteract(gp.player);
             showPopup = false;
+        }
+
+        if (watchTV && key == KeyEvent.VK_ENTER) {
+            watchTV = false;
+            currentWeather = null;
         }
     }
 

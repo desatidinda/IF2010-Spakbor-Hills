@@ -20,8 +20,8 @@ public class NPCHouseState extends InsideHouseState {
         super(gp);
         this.gp = gp;
         this.npcInHouse = npc;
-        npcInHouse.worldX = gp.player.houseX + 7 * gp.tileSize;
-        npcInHouse.worldY = gp.player.houseY - 5 * gp.tileSize;
+        npcInHouse.worldX = gp.player.houseX + gp.tileSize * 2 - 16;
+        npcInHouse.worldY = gp.player.houseY - gp.tileSize * 3;
         super.loadBackground();
         super.deployFurniture();
     }

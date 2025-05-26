@@ -64,7 +64,7 @@ public class UIController {
             drawInitial();
         } else if (gp.gameState == GameStates.MAP) {
             drawMap();
-        } else if (gp.gameState == GameStates.INSIDE_HOUSE) {
+        } else if (gp.gameState == GameStates.INSIDE_HOUSE || gp.gameState == GameStates.NPC_HOUSE) {
             drawMap();
         } else if (gp.gameState == GameStates.MENU) {
 
