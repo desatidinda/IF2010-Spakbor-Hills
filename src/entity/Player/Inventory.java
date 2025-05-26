@@ -2,10 +2,14 @@ package entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class Inventory {
     private final Map<String, Integer> items = new HashMap<>();
 
+     Inventory() {
+        initDebugInventory();
+    }
     public void addItem(String itemName, int quantity) {
         items.put(itemName, items.getOrDefault(itemName, 0) + quantity);
     }
@@ -42,7 +46,21 @@ public class Inventory {
         }
     }
 
-    public Map<String, Integer> getItems() {
-        return items;
+    private void initDebugInventory() {
+        String[] seedItems = {
+                "Wheat", "Tomato", "Pumpkin", "Potato", "Parsnip",
+                "Hot Pepper", "Egg", "Melon", "Blueberry", "Cranberry",
+                "Grape", "Cauliflower", "Salmon", "Pufferfish", "Legend",
+                "Any Fish", "Coal", "Firewood"
+        };
+
+        Random rand = new Random();
+        for (String item : seedItems) {
+            int qty = 2 + rand.nextInt(4); // 2-5 item acak
+            addItem(item, qty);
+        }
+
+        System.out.println("Inventory diisi otomatis untuk testing:");
+        printContents();
     }
 }
