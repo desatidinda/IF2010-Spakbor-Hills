@@ -2,12 +2,7 @@ package main;
 
 import entity.Player.*;
 import controller.*;
-import state.StateHandler;
-import state.FishingState;
-import state.InitialState;
-import state.InsideHouseState;
-import state.MapState;
-import state.NPCHouseState;
+import state.*;
 import input.KeyHandler;
 import objects.GameObject;
 import entity.NPC.*;
@@ -76,6 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
         stateHandlers.put(GameStates.INSIDE_HOUSE, new InsideHouseState(this));
         stateHandlers.put(GameStates.FISHING, new FishingState(this));
         stateHandlers.put(GameStates.NPC_HOUSE, new NPCHouseState(this, npc[0]));
+        stateHandlers.put(GameStates.INVENTORY, new InventoryState(this));
 
         //GameClock.init();
     }
