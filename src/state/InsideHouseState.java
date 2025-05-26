@@ -219,7 +219,7 @@ public class InsideHouseState implements StateHandler {
             } else if (key == KeyEvent.VK_ENTER) {
                 Recipe selected = RecipeRegistry.getAll().get(selectedRecipeIndex);
                 if (!selected.isUnlocked()) {
-                    cookMessage = "❌ Resep belum dipelajari!";
+                    cookMessage = "Resep belum dipelajari!";
                     cookMessageTimer = 180;
                     return;
                 }
@@ -229,7 +229,7 @@ public class InsideHouseState implements StateHandler {
                 else if (gp.player.getInventory().hasItem("Coal")) fuel = "Coal";
 
                 if (fuel == null) {
-                    cookMessage = "❌ Tidak ada fuel di inventory!";
+                    cookMessage = "Tidak ada fuel di inventory!";
                     cookMessageTimer = 180;
                     return;
                 }
@@ -238,7 +238,7 @@ public class InsideHouseState implements StateHandler {
                     String item = entry.getKey();
                     int qty = entry.getValue();
                     if (!gp.player.getInventory().hasItem(item, qty)) {
-                        cookMessage = "❌ Bahan tidak cukup: " + item;
+                        cookMessage = "Bahan tidak cukup: " + item;
                         cookMessageTimer = 180;
                         return;
                     }
@@ -249,7 +249,7 @@ public class InsideHouseState implements StateHandler {
                 cookingStartMinute = GameClock.getMinute();
                 pendingRecipe = selected;
                 pendingFuel = fuel;
-                cookMessage = "⏳ Memasak " + selected.getName() + "... tunggu 1 jam in-game.";
+                cookMessage = "Memasak " + selected.getName() + "... tunggu 1 jam in-game.";
                 cookMessageTimer = 180;
             } else if (key == KeyEvent.VK_R || key == KeyEvent.VK_ESCAPE) {
                 showRecipeList = false;
