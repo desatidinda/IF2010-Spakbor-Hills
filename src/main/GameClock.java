@@ -118,4 +118,28 @@ public class GameClock {
             checkSeasonChange();
         }
     }
+
+    public static void addMinutes(int minutesToAdd) {
+        minute += minutesToAdd;
+        while (minute >= 60) {
+            minute -= 60;
+            hour++;
+        }
+
+        if (hour >= 24) {
+            hour = 0;
+            day++;
+            dayfix++;
+            currentWeather = generateWeather();
+        }
+
+        if (day > 10) {
+            day = 1;
+            nextSeason();
+        }
+    }
+    public static void skipTo22() {
+        hour = 22;
+        minute = 0;
+    }
 }
