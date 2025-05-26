@@ -6,11 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
-
-
+import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
-import main.GameClock;
 
 public class UIController {
     GamePanel gp;
@@ -230,6 +228,18 @@ public class UIController {
         g2.drawRoundRect(barX, barY, barWidth, barHeight, 10, 10);
         g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 14F));
         g2.drawString(energy + " / " + maxEnergy, barX + barWidth + 8, barY + barHeight - 4);
+        
+        // ini button inventory yah
+        int btnW = 131;
+        int btnH = 69;
+        int btnX = gp.screenWidth - btnW - 20;
+        int btnY = gp.screenHeight - btnH - 20;
+        try {
+            BufferedImage btnImg = ImageIO.read(getClass().getResourceAsStream("/res/buttonInventory.png"));
+            g2.drawImage(btnImg, btnX, btnY, btnW, btnH, null);
+        } catch (IOException e) {
+            
+        }
     }
 
     public void drawMenu() {
