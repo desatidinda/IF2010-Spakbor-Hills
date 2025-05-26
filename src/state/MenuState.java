@@ -31,6 +31,7 @@ public class MenuState {
         g2.drawString("Gender   : " + player.getGender(), x, y); y += lineHeight;
         g2.drawString("Farm     : " + player.getFarmName(), x, y); y += lineHeight;
         g2.drawString("Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"), x, y); y += lineHeight;
+        g2.drawString("Status   : " + player.getRelationshipStatus(), x, y); y += lineHeight;
         g2.drawString("Energy   : " + player.getEnergy(), x, y); y += lineHeight;
         g2.drawString("Gold     : " + player.getGold(), x, y); y += lineHeight;
     }

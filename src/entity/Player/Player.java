@@ -21,6 +21,7 @@ public class Player {
     private int energy;
     private String farmName;
     private String partner;
+    private String relationshipStatus = "Single"; //status: Single, Engaged, Married
     private int gold;
     private Inventory inventory;
     private Point location;
@@ -286,11 +287,15 @@ public class Player {
 
     public String getFarmName() { 
         return farmName; 
-    }
+    }  
 
     public String getPartner() { 
         return partner; 
     }
+
+    public String getRelationshipStatus() {
+        return relationshipStatus;
+    } 
 
     public int getGold() { 
         return gold; 
@@ -326,6 +331,10 @@ public class Player {
 
     public void setPartner(String partner) { 
         this.partner = partner; 
+    }
+
+    public void setRelationshipStatus(String status) {
+        this.relationshipStatus = status;
     }
 
     public void setLocation(Point location) { 
