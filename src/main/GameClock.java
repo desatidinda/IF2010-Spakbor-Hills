@@ -93,14 +93,4 @@ public class GameClock {
         };
     }
     
-    public static void skipToMorning() {
-        hour = 6;
-        minute = 0;
-        day++;
-        dayfix++;
-
-        currentWeather = generateWeather();
-
-        checkSeasonChange();
-    }
 }
