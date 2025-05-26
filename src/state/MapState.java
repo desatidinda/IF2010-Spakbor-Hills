@@ -48,7 +48,7 @@ public class MapState implements StateHandler, MouseListener {
 
         if (gp.player.teleportMode) {
             int boxWidth = 400;
-            int boxHeight = 60 + teleportOptions.length * 32;
+            int boxHeight = 60 + teleportOptions.length * 32 + 60;
             int boxX = (gp.screenWidth - boxWidth) / 2;
             int boxY = (gp.screenHeight - boxHeight) / 2;
 
@@ -68,6 +68,7 @@ public class MapState implements StateHandler, MouseListener {
                     gp.ui.drawCenteredText(g2, teleportOptions[i], boxX, textY, boxWidth);
                 }
             }
+            gp.ui.drawCenteredText(g2, "Press ENTER to teleport, ESC to cancel", boxX, boxY + boxHeight - 30, boxWidth);
         }
     }
 
@@ -91,6 +92,9 @@ public class MapState implements StateHandler, MouseListener {
                 gp.player.savedWorldY = gp.player.worldY;
                 teleportPlayerTo(teleportOptions[selectedTeleportIndex]);
                 //gp.player.teleportMode = false; 
+            } else if (key == KeyEvent.VK_ESCAPE) {
+                gp.player.teleportMode = false;
+                gp.player.update();
             }
         } else {
             if (key == KeyEvent.VK_W) {
