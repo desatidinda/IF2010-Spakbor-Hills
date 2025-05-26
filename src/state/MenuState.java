@@ -16,10 +16,20 @@ public class MenuState {
     }
 
     public void draw(Graphics2D g2) {
+
+        String[] lines = {
+            "Name     : " + player.getName(),
+            "Gender   : " + player.getGender(),
+            "Farm     : " + player.getFarmName(),
+            "Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"),
+            "Status   : " + player.getRelationshipStatus(),
+            "Energy   : " + player.getEnergy(),
+            "Gold     : " + player.getGold()
+        };
+
         int boxWidth = 400;
         int lineHeight = 32;
-        int infoCount = 8; 
-        int boxHeight = 60 + infoCount * lineHeight;
+        int boxHeight = 60 + lines.length * lineHeight;
 
         int boxX = (gp.screenWidth - boxWidth) / 2;
         int boxY = (gp.screenHeight - boxHeight) / 2;
@@ -32,16 +42,6 @@ public class MenuState {
 
         g2.setFont(new Font("Arial", Font.PLAIN, 18));
         int textY = boxY + 70;
-
-        String[] lines = {
-            "Name     : " + player.getName(),
-            "Gender   : " + player.getGender(),
-            "Farm     : " + player.getFarmName(),
-            "Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"),
-            "Status   : " + player.getRelationshipStatus(),
-            "Energy   : " + player.getEnergy(),
-            "Gold     : " + player.getGold()
-        };
 
         for (String line : lines) {
             gp.ui.drawCenteredText(g2, line, boxX, textY, boxWidth);
