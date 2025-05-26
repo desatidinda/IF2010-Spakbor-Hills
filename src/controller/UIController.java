@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.GameStates;
+import main.GameClock;
 
 public class UIController {
     GamePanel gp;
@@ -69,6 +70,20 @@ public class UIController {
             
         }
     }
+
+    public void drawPopupWindow(Graphics2D g2, int x, int y, int width, int height) {
+        g2.setColor(new Color(0, 0, 0, 210));
+        g2.fillRoundRect(x, y, width, height, 25, 25);
+        g2.setColor(Color.WHITE);
+        g2.setStroke(new BasicStroke(3));
+        g2.drawRoundRect(x + 3, y + 3, width - 6, height - 6, 18, 18);
+    }
+
+    public void drawCenteredText(Graphics2D g2, String text, int startX, int y, int width) {
+        int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+        int x = startX + width / 2 - length / 2;
+        g2.drawString(text, x, y);
+    }
     
     public void drawInitial() {
         g2.setFont(vt323);
@@ -116,9 +131,7 @@ public class UIController {
         int y = gp.screenHeight / 2;
 
         String text = label + input + "_";
-        int x = getCenterX(text);
-
-        g2.drawString(text, x, y);
+        drawCenteredText(g2, text, 0, y, gp.screenWidth);
     }
 
     private void drawGenderSelection() {
@@ -127,12 +140,16 @@ public class UIController {
 
         String[] options = {"Male", "Female"};
         for (int i = 0; i < options.length; i++) {
-            int x = getCenterX(options[i]);
-            g2.drawString(options[i], x, y + i * 40);
+            String option = options[i];
+            int optionWidth = g2.getFontMetrics().stringWidth(option);
+            int centerX = gp.screenWidth / 2 - optionWidth / 2;
+            int optionY = y + i * 40;
+
             if (commandNum == i) {
-                g2.drawString(">", x - gp.tileSize, y + i * 40);
+                g2.drawString(">", centerX - 30, optionY);
             }
-        }
+            g2.drawString(option, centerX, optionY);
+            }
     }
 
     public void drawInformation() {
@@ -153,32 +170,64 @@ public class UIController {
 
 
     public void drawMap() {
-        String text = "Player's Energy: " + gp.player.getEnergy();
         
-        int x = gp.tileSize;
-        int y = gp.tileSize;
-        
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
-        g2.drawString(text, x, y);
+        int boxWidth = 180;
+        int boxHeight = 96;
+        int boxX = 16;
+        int boxY = 16;
 
+        gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
+        g2.setColor(Color.WHITE);
+
+        int textX = boxX + 16;
+        int textY = boxY + 30;
+        int lineHeight = 24;
+
+        g2.drawString("Time: " + GameClock.getFormattedTime(), textX, textY);
+        g2.drawString("Season: " + GameClock.getCurrentSeason(), textX, textY + lineHeight);
+        g2.drawString("Day: " + GameClock.getDay(), textX, textY + lineHeight * 2);
+
+        // ini energy bar
+        int barWidth = 150;
+        int barHeight = 16;
+        int barMargin = 20;
+        int barBoxWidth = barWidth + 90;
+        int barBoxHeight = 72;
+        int barBoxX = gp.screenWidth - barBoxWidth - barMargin;
+        int barBoxY = barMargin;
+
+        gp.ui.drawPopupWindow(g2, barBoxX, barBoxY, barBoxWidth, barBoxHeight);
+
+        int energy = gp.player != null ? gp.player.getEnergy() : 0;
+        int maxEnergy = 100;
+        int filledWidth = (int) ((double) energy / maxEnergy * barWidth);
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 18F));
+        g2.setColor(Color.WHITE);
+        g2.drawString("Energy", barBoxX + 20, barBoxY + 26);
+
+        int barX = barBoxX + 20;
+        int barY = barBoxY + 36;
+        g2.setColor(Color.GRAY);
+        g2.fillRoundRect(barX, barY, barWidth, barHeight, 10, 10);
+        g2.setColor(new Color(50, 220, 80));
+        g2.fillRoundRect(barX, barY, filledWidth, barHeight, 10, 10);
+        g2.setColor(Color.WHITE);
+        g2.drawRoundRect(barX, barY, barWidth, barHeight, 10, 10);
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 14F));
+        g2.drawString(energy + " / " + maxEnergy, barX + barWidth + 8, barY + barHeight - 4);
     }
 
     public void drawMenu() {
         String text = "MENU";
-        
-        int x = getCenterX(text);
+
         int y = gp.screenHeight / 2;
+        drawCenteredText(g2, text, 0, y, gp.screenWidth);
 
         String subText = "Press Enter to continue";
 
-        g2.drawString(text, x, y);
-        g2.drawString(subText, x, y + 40);
-    }
-
-    public int getCenterX(String text) {
-        int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-        int x = gp.screenWidth / 2 - length / 2;
-        return x;
+        drawCenteredText(g2, subText, 0, y + 40, gp.screenWidth);
     }
 }
 
