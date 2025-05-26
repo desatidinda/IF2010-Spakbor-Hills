@@ -15,6 +15,7 @@ public class Fish extends Item{
     private String timeRange; // formatnya "06:00-18:00"
     private List<Weather> weathers;
     private List<String> locations;
+    private double sellPrice;
 
     public Fish(String name, FishType type, List<Season> seasons, String timeRange, List<Weather> weathers, List<String> locations) {
         super(name, name);
@@ -24,7 +25,7 @@ public class Fish extends Item{
         this.timeRange = timeRange;
         this.weathers = weathers;
         this.locations = locations;
-        //this.rarity = rarity;
+        this.sellPrice = calculateSellPrice();
     }
 
     public boolean isAvailable() {
@@ -83,5 +84,41 @@ public class Fish extends Item{
         int h = Integer.parseInt(parts[0]);
         int m = Integer.parseInt(parts[1]);
         return h * 60 + m;
-    }    
+    }   
+    
+    
+    private double calculateSellPrice() {
+        int seasonCount = seasons.size();
+
+        int totalMinutes = 0;
+        String[] ranges = timeRange.split(",");
+        for (String range : ranges) {
+            String[] parts = range.trim().split("-");
+            if (parts.length != 2) continue;
+            int start = parseTimeToMinutes(parts[0]);
+            int end = parseTimeToMinutes(parts[1]);
+            int diff;
+            if (start <= end) {
+                diff = end - start;
+            } else {
+                diff = (24 * 60 - start) + end;
+            }
+            totalMinutes += diff;
+        }
+        if (totalMinutes == 0) totalMinutes = 24 * 60;
+        double totalHours = totalMinutes / 60.0;
+
+        int weatherCount = weathers.size();
+        int locationCount = locations.size();
+
+        int c = type.getBasePrice(); 
+
+        double price = (4.0 / seasonCount)
+                    * (24.0 / totalHours)
+                    * (2.0 / weatherCount)
+                    * (4.0 / locationCount)
+                    * c;
+
+        return Math.round(price * 100.0) / 100.0;
+    }
 }

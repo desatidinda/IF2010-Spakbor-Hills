@@ -28,7 +28,7 @@ public class InsideHouseState implements StateHandler {
 
     protected void loadBackground() {
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/res/floor.jpg"));
+            image = ImageIO.read(getClass().getResourceAsStream("/res/floor.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }

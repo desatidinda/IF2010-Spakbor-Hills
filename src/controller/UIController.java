@@ -97,7 +97,7 @@ public class UIController {
             drawInputField("Enter Farm Name: ", inputBuffer);
         } else if (initialStep == 4) {
         drawInformation();
-    }
+        }
     }
 
     private void drawInitialMenu() {
