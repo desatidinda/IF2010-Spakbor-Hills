@@ -74,6 +74,7 @@ public class Player {
         solid.height = gp.tileSize;
 
         getImage();
+        inventory.addItem("Parsnip Seeds", 15);
     }
 
     public void update() {
