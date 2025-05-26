@@ -11,7 +11,7 @@ public class TV extends GameObject {
         collision = true;
         widthInTiles = 2;
         heightInTiles = 2;
-        solidArea = new Rectangle(0, 0, 48, 48); // sesuai ukuran (misal 2 tile * 48)
+        solidArea = new Rectangle(0, 0, 54, 48); // sesuai ukuran (misal 2 tile * 48)
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 

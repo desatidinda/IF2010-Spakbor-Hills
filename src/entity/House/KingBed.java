@@ -11,7 +11,7 @@ public class KingBed extends GameObject {
         collision = true;
         widthInTiles = 3;
         heightInTiles = 4;
-        solidArea = new Rectangle(0, 0, 96, 144); // sesuai ukuran (misal 2 tile * 48)
+        solidArea = new Rectangle(0, 0, 96, 120); // sesuai ukuran (misal 2 tile * 48)
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 

@@ -53,17 +53,17 @@ public class InsideHouseState implements StateHandler {
 
     protected void deployFurniture() {
         KingBed kingbed = new KingBed();
-        kingbed.worldX = 8;
-        kingbed.worldY = 0;
+        kingbed.worldX = 16;
+        kingbed.worldY = 8;
         gp.furniture[0] = kingbed;
 
         Stove stove = new Stove();
-        stove.worldX = gp.tileSize * 14 - 8;
-        stove.worldY = gp.tileSize * 10 - 8;
+        stove.worldX = gp.tileSize * 14 - 16;
+        stove.worldY = gp.tileSize * 10 - 16;
         gp.furniture[1] = stove;
 
         TV tv = new TV();
-        tv.worldX = gp.tileSize * 5;
+        tv.worldX = gp.tileSize * 5 - 20;
         tv.worldY = 0;
         gp.furniture[2] = tv;
     }

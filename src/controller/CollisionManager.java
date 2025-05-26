@@ -207,7 +207,7 @@ public class CollisionManager {
         int originalY = player.solid.y;
         
         // krn di dalem house pake housex
-        int playerHouseX = player.houseX - 384;
+        int playerHouseX = player.houseX - 378;
         int playerHouseY = player.houseY - 288;
         
         // prediksi abis ini dmn yh
