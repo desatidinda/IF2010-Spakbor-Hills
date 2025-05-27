@@ -36,8 +36,7 @@ public class TileManager {
             tile[1].image = ImageIO.read(getClass().getResourceAsStream("/map/TileImage/Tillable.png"));
 
             tile[2] = new Tile(TileType.PLANTED);
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/map/TileImage/Water.png"));
-            tile[2].collision = true;
+            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/map/TileImage/Planted.png"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -101,6 +100,49 @@ public class TileManager {
         }
     }
 
+    public void tillTile(int col, int row) {
+        int tileNum = mapTileNum[col][row];
+        if (tile[tileNum].getType() == TileType.TILLABLE) {
+            mapTileNum[col][row] = 0; // 0 = TILLED
+        }
+    }
+
+    public void recoverTile(int col, int row) {
+        int tileNum = mapTileNum[col][row];
+        if (tile[tileNum].getType() == TileType.TILLED) {
+            mapTileNum[col][row] = 1; // 1 = TILLABLE
+        }
+    }
+
+    public void plantSeed(int col, int row) {
+        int tileNum = mapTileNum[col][row];
+        if (tile[tileNum].getType() == TileType.TILLED) {
+            mapTileNum[col][row] = 2; // 2 = PLANTED
+        }
+    }
+
+    public void waterTile(int col, int row) {
+        int tileNum = mapTileNum[col][row];
+        if (tile[tileNum].getType() == TileType.PLANTED || tile[tileNum].isWatered() == false) {
+            tile[tileNum].setWatered(true);
+        }
+    }
+
+    public void harvestPlant(int col, int row) {
+        int tileNum = mapTileNum[col][row];
+        if (tile[tileNum].getType() == TileType.PLANTED && tile[tileNum].isWatered() == true) {
+            mapTileNum[col][row] = 1;
+            tile[tileNum].setWatered(false);
+        }
+    }
+
+    public int[][] getMapTileNum() {
+        return mapTileNum;
+    }
+
+    public Tile[] getTile() {
+        return tile;
+    }
     // private void generateMap() {
     //     for (int x = 0; x < size; x++) {
     //         for (int y = 0; y < size; y++) {

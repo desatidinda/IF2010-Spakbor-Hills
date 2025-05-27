@@ -9,6 +9,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import main.GamePanel;
 import main.GameStates;
+import map.Point;
+import map.Tile;
+import map.TileType;
 
 public class MapState implements StateHandler, MouseListener {
 
@@ -16,6 +19,11 @@ public class MapState implements StateHandler, MouseListener {
     private int selectedTeleportIndex = 0;
     private final String[] teleportOptions = {"Mountain Lake", "Forest River", "Ocean", "Mayor Tadi House", "Caroline House", "Perry House", "Dasco House", "Emily House", "Abigail House"};
     private Font vt323;
+
+    private boolean showTilePopup = false;
+    private int selectedTileAction = 0;
+    private final String[] tileActions = {"Tilling", "Recover Land", "Planting", "Watering", "Harvesting"};
+    private int interactCol = -1, interactRow = -1;
 
     // ini button inventory yah
     private final int inventoryBtnW = 131;
@@ -70,6 +78,30 @@ public class MapState implements StateHandler, MouseListener {
             }
             gp.ui.drawCenteredText(g2, "Press ENTER to teleport, ESC to cancel", boxX, boxY + boxHeight - 30, boxWidth);
         }
+
+        if (showTilePopup) {
+            int boxWidth = 320;
+            int boxHeight = 60 + tileActions.length * 32 + 40;
+            int boxX = (gp.screenWidth - boxWidth) / 2;
+            int boxY = (gp.screenHeight - boxHeight) / 2;
+
+            gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+            gp.ui.drawCenteredText(g2, "Choose Action:", boxX, boxY + 38, boxWidth);
+
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 18F));
+            for (int i = 0; i < tileActions.length; i++) {
+                int textY = boxY + 70 + i * 32;
+                if (i == selectedTileAction) {
+                    g2.setColor(new Color(255, 215, 0));
+                    gp.ui.drawCenteredText(g2, "> " + tileActions[i], boxX, textY, boxWidth);
+                } else {
+                    g2.setColor(Color.WHITE);
+                    gp.ui.drawCenteredText(g2, tileActions[i], boxX, textY, boxWidth);
+                }
+            }
+            gp.ui.drawCenteredText(g2, "ENTER: Select   ESC: Cancel", boxX, boxY + boxHeight - 20, boxWidth);
+        }
     }
 
     @Override
@@ -96,6 +128,19 @@ public class MapState implements StateHandler, MouseListener {
                 gp.player.teleportMode = false;
                 gp.player.update();
             }
+        } else if (key == KeyEvent.VK_SPACE && !showTilePopup) {
+            Point steppedTile = gp.cm.getTileStepped(gp.player);
+            int col = steppedTile.getX();
+            int row = steppedTile.getY();
+            int tileNum = gp.tileManager.getMapTileNum()[col][row];
+            Tile tile = gp.tileManager.getTile()[tileNum];
+
+            if (tile.getType() == TileType.TILLABLE || tile.getType() == TileType.TILLED || tile.getType() == TileType.PLANTED) {
+                showTilePopup = true;
+                selectedTileAction = 0;
+                interactCol = col;
+                interactRow = row;
+            }
         } else {
             if (key == KeyEvent.VK_W) {
                 gp.keyHandler.upPressed = true;
@@ -107,7 +152,35 @@ public class MapState implements StateHandler, MouseListener {
                 gp.keyHandler.rightPressed = true;
             }
         }
-    }
+
+        if (showTilePopup) {
+            if (key == KeyEvent.VK_UP) {
+                selectedTileAction = (selectedTileAction - 1 + tileActions.length) % tileActions.length;
+            } else if (key == KeyEvent.VK_DOWN) {
+                selectedTileAction = (selectedTileAction + 1) % tileActions.length;
+            } else if (key == KeyEvent.VK_ENTER) {
+                switch (tileActions[selectedTileAction]) {
+                    case "Tilling":
+                        gp.tileManager.tillTile(interactCol, interactRow);
+                        break;
+                    case "Recover Land":
+                        gp.tileManager.recoverTile(interactCol, interactRow);
+                        break;
+                    case "Planting":
+                        gp.tileManager.plantSeed(interactCol, interactRow);
+                        break;
+                    case "Watering":
+                        gp.tileManager.waterTile(interactCol, interactRow);
+                        break;
+
+                }
+                showTilePopup = false;
+            } else if (key == KeyEvent.VK_ESCAPE) {
+                showTilePopup = false;
+            }
+            return; // Supaya aksi lain tidak jalan saat popup aktif
+        }
+}
 
 
     @Override
@@ -170,7 +243,7 @@ public class MapState implements StateHandler, MouseListener {
             gp.gameState = GameStates.NPC_HOUSE;
             gp.player.teleportMode = false;
         }
-    }    
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {

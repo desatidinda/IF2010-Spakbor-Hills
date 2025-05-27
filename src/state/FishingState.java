@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Random;
 import javax.imageio.ImageIO;
+
+import main.Game;
 import main.GameClock;
 import main.GamePanel;
 

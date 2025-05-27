@@ -1,6 +1,7 @@
 package controller;
 
 import main.GamePanel;
+import map.Point;
 import entity.NPC.NPC;
 import entity.Player.*;
 
@@ -312,4 +313,10 @@ public class CollisionManager {
         player.solid.x = originalX;
         player.solid.y = originalY;
     }
+
+    public Point getTileStepped(Player player) {
+        int tileX = player.worldX / gp.tileSize;
+        int tileY = player.worldY / gp.tileSize;
+        return new Point(tileX, tileY);
+}
 }
