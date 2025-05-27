@@ -102,6 +102,10 @@ public class MapState implements StateHandler, MouseListener {
             }
             gp.ui.drawCenteredText(g2, "ENTER: Select   ESC: Cancel", boxX, boxY + boxHeight - 20, boxWidth);
         }
+        else {
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 16F));
+            gp.ui.drawCenteredText(g2, "Press SPACE to interact with tiles",0, gp.screenHeight - 60, gp.screenWidth);
+        }
     }
 
     @Override
@@ -172,13 +176,16 @@ public class MapState implements StateHandler, MouseListener {
                     case "Watering":
                         gp.tileManager.waterTile(interactCol, interactRow);
                         break;
+                    case "Harvesting":
+                        gp.tileManager.harvestPlant(interactCol, interactRow);
+                        break;
 
                 }
                 showTilePopup = false;
             } else if (key == KeyEvent.VK_ESCAPE) {
                 showTilePopup = false;
             }
-            return; // Supaya aksi lain tidak jalan saat popup aktif
+            return;
         }
 }
 

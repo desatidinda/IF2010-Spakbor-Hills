@@ -17,12 +17,14 @@ public class TileManager {
     GamePanel gp;
     Tile[] tile;
     int mapTileNum[][];
+    private boolean[][] wateredMap;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
         tile = new Tile[10];
 
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+        wateredMap = new boolean[gp.maxWorldCol][gp.maxWorldRow];
         getImage();
         loadMap("/map/map.txt");
     }
@@ -111,6 +113,7 @@ public class TileManager {
         int tileNum = mapTileNum[col][row];
         if (tile[tileNum].getType() == TileType.TILLED) {
             mapTileNum[col][row] = 1; // 1 = TILLABLE
+            wateredMap[col][row] = false;
         }
     }
 
@@ -123,16 +126,16 @@ public class TileManager {
 
     public void waterTile(int col, int row) {
         int tileNum = mapTileNum[col][row];
-        if (tile[tileNum].getType() == TileType.PLANTED || tile[tileNum].isWatered() == false) {
-            tile[tileNum].setWatered(true);
+        if (tile[tileNum].getType() == TileType.PLANTED && !wateredMap[col][row]) {
+            wateredMap[col][row] = true;
         }
     }
 
     public void harvestPlant(int col, int row) {
         int tileNum = mapTileNum[col][row];
-        if (tile[tileNum].getType() == TileType.PLANTED && tile[tileNum].isWatered() == true) {
-            mapTileNum[col][row] = 1;
-            tile[tileNum].setWatered(false);
+        if (tile[tileNum].getType() == TileType.PLANTED && wateredMap[col][row]) {
+            mapTileNum[col][row] = 0;
+            wateredMap[col][row] = false;
         }
     }
 

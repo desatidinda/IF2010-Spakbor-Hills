@@ -71,6 +71,7 @@ public class FishingState implements StateHandler {
     public void setFishingLocation(String location) {
         this.currentLocation = location;
         loadBackground(); 
+        showInteractPopup = true;
     }
 
     private void startFishing() {
@@ -337,6 +338,7 @@ public class FishingState implements StateHandler {
             startFishingGame();
         } else if (key == KeyEvent.VK_ESCAPE) {
             showFishInfo = false;
+            showInteractPopup = true;
         }
     }
     
@@ -354,6 +356,7 @@ public class FishingState implements StateHandler {
         } else {
             if (key == KeyEvent.VK_ESCAPE) {
                 showFishingGame = false;
+                showInteractPopup = true;
             } else if (key == KeyEvent.VK_SPACE) {
                 startFishing();
             }
@@ -389,9 +392,9 @@ public class FishingState implements StateHandler {
         else if (key == KeyEvent.VK_D) gp.keyHandler.rightPressed = false;
         else if (key == KeyEvent.VK_SPACE) {
             gp.keyHandler.spacePressed = false;
-            if (!showFishInfo && !showFishingGame) {
-                showInteractPopup = true;
-            }
+            // if (!showFishInfo && !showFishingGame) {
+            //     showInteractPopup = true;
+            // }
         }
         else if (key == KeyEvent.VK_ESCAPE) {
             if (showFishInfo || showFishingGame) {

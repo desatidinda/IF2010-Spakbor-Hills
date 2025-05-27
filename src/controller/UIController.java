@@ -117,20 +117,16 @@ public class UIController {
         }
         g2.drawImage(gambar, 0, 0, gp.screenWidth, gp.screenHeight, null);
         
-        int x = gp.tileSize * 5;
+        String[] menuOptions = {"Start New Game", "Information", "Quit Game"};
+        int x = gp.tileSize * 4;
         int y = gp.tileSize * 8 - 6;
-        
+
         g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 50F));
-        if (commandNum == 0) {
-            g2.drawString(">", x, y);
-        }
-
-        if (commandNum == 1) {
-            g2.drawString(">", x, y += gp.tileSize);
-        }
-
-        if (commandNum == 2) {
-            g2.drawString(">", x, y += gp.tileSize * 2);
+        for (int i = 0; i < menuOptions.length; i++) {
+            gp.ui.drawCenteredText(g2, menuOptions[i], 0, y + i * gp.tileSize, gp.screenWidth);
+            if (commandNum == i) {
+                g2.drawString(">", x, y + i * gp.tileSize);
+            }
         }
     }
 
