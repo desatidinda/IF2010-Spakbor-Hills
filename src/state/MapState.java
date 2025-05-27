@@ -7,11 +7,16 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import main.GamePanel;
 import main.GameStates;
 import map.Point;
 import map.Tile;
 import map.TileType;
+import entity.Player.Inventory;
 
 public class MapState implements StateHandler, MouseListener {
 
@@ -24,6 +29,11 @@ public class MapState implements StateHandler, MouseListener {
     private int selectedTileAction = 0;
     private final String[] tileActions = {"Tilling", "Recover Land", "Planting", "Watering", "Harvesting"};
     private int interactCol = -1, interactRow = -1;
+
+    private boolean showSeedPopup = false;
+    private List<String> availableSeeds = new ArrayList<>();
+    private int selectedSeedIndex = 0;
+    private int seedCol, seedRow;
 
     // ini button inventory yah
     private final int inventoryBtnW = 131;
@@ -76,6 +86,7 @@ public class MapState implements StateHandler, MouseListener {
                     gp.ui.drawCenteredText(g2, teleportOptions[i], boxX, textY, boxWidth);
                 }
             }
+            g2.setColor(Color.WHITE);
             gp.ui.drawCenteredText(g2, "Press ENTER to teleport, ESC to cancel", boxX, boxY + boxHeight - 30, boxWidth);
         }
 
@@ -100,12 +111,41 @@ public class MapState implements StateHandler, MouseListener {
                     gp.ui.drawCenteredText(g2, tileActions[i], boxX, textY, boxWidth);
                 }
             }
+            g2.setColor(Color.WHITE);
             gp.ui.drawCenteredText(g2, "ENTER: Select   ESC: Cancel", boxX, boxY + boxHeight - 20, boxWidth);
         }
         else {
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 16F));
             gp.ui.drawCenteredText(g2, "Press SPACE to interact with tiles",0, gp.screenHeight - 60, gp.screenWidth);
         }
+
+        if (showSeedPopup) {
+            int boxWidth = 320;
+            int boxHeight = 60 + availableSeeds.size() * 32 + 40;
+            int boxX = (gp.screenWidth - boxWidth) / 2;
+            int boxY = (gp.screenHeight - boxHeight) / 2;
+
+            gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+            gp.ui.drawCenteredText(g2, "Pilih Seeds:", boxX, boxY + 38, boxWidth);
+
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 18F));
+            for (int i = 0; i < availableSeeds.size(); i++) {
+                int textY = boxY + 70 + i * 32;
+                if (i == selectedSeedIndex) {
+                    g2.setColor(new Color(255, 215, 0));
+                    gp.ui.drawCenteredText(g2, "> " + availableSeeds.get(i), boxX, textY, boxWidth);
+                } else {
+                    g2.setColor(Color.WHITE);
+                    gp.ui.drawCenteredText(g2, availableSeeds.get(i), boxX, textY, boxWidth);
+                }
+            }
+            g2.setColor(Color.WHITE);
+            gp.ui.drawCenteredText(g2, "ENTER: Pilih   ESC: Batal", boxX, boxY + boxHeight - 20, boxWidth);
+            return;
+        }
+
+        gp.ui.drawPopupMessage(g2);
     }
 
     @Override
@@ -171,19 +211,53 @@ public class MapState implements StateHandler, MouseListener {
                         gp.tileManager.recoverTile(interactCol, interactRow);
                         break;
                     case "Planting":
-                        gp.tileManager.plantSeed(interactCol, interactRow);
+                        Set<String> seeds = gp.player.getInventory().getAvailableSeeds();
+                        if (!seeds.isEmpty()) {
+                            showSeedSelectionPopup(seeds, interactCol, interactRow);
+                        } else {
+                            gp.ui.showPopupMessage("You have no seeds to plant.");
+                        }
                         break;
                     case "Watering":
                         gp.tileManager.waterTile(interactCol, interactRow);
                         break;
                     case "Harvesting":
-                        gp.tileManager.harvestPlant(interactCol, interactRow);
+                        String plantedSeed = gp.tileManager.getPlantedSeedNameMap()[interactCol][interactRow];
+                        int tileNum = gp.tileManager.getMapTileNum()[interactCol][interactRow];
+                        if (gp.tileManager.getTile()[tileNum].getType() == TileType.PLANTED
+                            && !gp.tileManager.getWateredMap()[interactCol][interactRow]) {
+                            gp.ui.showPopupMessage("You must water the plant before harvesting!");
+                        } else {
+                            gp.tileManager.harvestPlant(interactCol, interactRow, gp.player.getInventory(), plantedSeed);
+                        }
                         break;
 
                 }
                 showTilePopup = false;
             } else if (key == KeyEvent.VK_ESCAPE) {
                 showTilePopup = false;
+            }
+            return;
+        }
+
+        if (showSeedPopup) {
+            if (key == KeyEvent.VK_UP) {
+                selectedSeedIndex = (selectedSeedIndex - 1 + availableSeeds.size()) % availableSeeds.size();
+            } else if (key == KeyEvent.VK_DOWN) {
+                selectedSeedIndex = (selectedSeedIndex + 1) % availableSeeds.size();
+            } else if (key == KeyEvent.VK_ENTER) {
+                String selectedSeed = availableSeeds.get(selectedSeedIndex);
+                int jumlah = gp.player.getInventory().getItemCount(selectedSeed);
+                if (jumlah > 0) {
+                    gp.tileManager.plantSeed(seedCol, seedRow, selectedSeed);
+                    gp.player.getInventory().removeItem(selectedSeed, 1);
+                } else {
+                    gp.ui.showPopupMessage("You ran out of " + selectedSeed + "!");
+                }
+                showSeedPopup = false;
+                showTilePopup = false;
+            } else if (key == KeyEvent.VK_ESCAPE) {
+                showSeedPopup = false;
             }
             return;
         }
@@ -250,6 +324,15 @@ public class MapState implements StateHandler, MouseListener {
             gp.gameState = GameStates.NPC_HOUSE;
             gp.player.teleportMode = false;
         }
+    }
+
+    private void showSeedSelectionPopup(Set<String> seeds, int col, int row) {
+        showSeedPopup = true;
+        availableSeeds.clear();
+        availableSeeds.addAll(seeds);
+        selectedSeedIndex = 0;
+        seedCol = col;
+        seedRow = row;
     }
 
     @Override

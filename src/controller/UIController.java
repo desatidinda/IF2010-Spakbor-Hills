@@ -19,6 +19,10 @@ public class UIController {
     int messageCounter = 0;
     public int commandNum = 0;
 
+    private String popupMessage = null;
+    private long popupMessageTime = 0;
+    private static final long POPUP_MESSAGE_DURATION = 1500;
+
     public int initialStep = 0;
     public String inputBuffer = "";
     public String playerName = "";
@@ -55,6 +59,11 @@ public class UIController {
         showMessage = true;
     }
 
+    public void showPopupMessage(String text) {
+        popupMessage = text;
+        popupMessageTime = System.currentTimeMillis();
+    }
+
     public void draw(Graphics2D g2) {
         this.g2 = g2;
 
@@ -87,6 +96,24 @@ public class UIController {
         int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
         int x = startX + width / 2 - length / 2;
         g2.drawString(text, x, y);
+    }
+
+    public void drawPopupMessage(Graphics2D g2) {
+        if (popupMessage != null) {
+            int w = 400, h = 50;
+            int x = (gp.screenWidth - w) / 2;
+            int y = gp.screenHeight - 150;
+
+            drawPopupWindow(g2, x, y, w, h);
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 16F));
+            g2.setColor(Color.WHITE);
+            drawCenteredText(g2, popupMessage, x, y + h/2 + 4, w);
+
+            if (System.currentTimeMillis() - popupMessageTime > POPUP_MESSAGE_DURATION) {
+                popupMessage = null;
+            }
+        }
     }
     
     public void drawInitial() {

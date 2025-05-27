@@ -11,6 +11,7 @@ import java.awt.*;
 import main.GamePanel;
 import map.Tile;
 import map.TileType;
+import entity.Player.Inventory;
 
 public class TileManager {
 
@@ -18,6 +19,7 @@ public class TileManager {
     Tile[] tile;
     int mapTileNum[][];
     private boolean[][] wateredMap;
+    private String[][] plantedSeedNameMap;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
@@ -25,6 +27,8 @@ public class TileManager {
 
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
         wateredMap = new boolean[gp.maxWorldCol][gp.maxWorldRow];
+        plantedSeedNameMap = new String[gp.maxWorldCol][gp.maxWorldRow];
+
         getImage();
         loadMap("/map/map.txt");
     }
@@ -117,10 +121,11 @@ public class TileManager {
         }
     }
 
-    public void plantSeed(int col, int row) {
+    public void plantSeed(int col, int row, String seedName) {
         int tileNum = mapTileNum[col][row];
         if (tile[tileNum].getType() == TileType.TILLED) {
             mapTileNum[col][row] = 2; // 2 = PLANTED
+            plantedSeedNameMap[col][row] = seedName;
         }
     }
 
@@ -131,9 +136,12 @@ public class TileManager {
         }
     }
 
-    public void harvestPlant(int col, int row) {
+    public void harvestPlant(int col, int row, Inventory inventory, String plantedSeedName) {
         int tileNum = mapTileNum[col][row];
         if (tile[tileNum].getType() == TileType.PLANTED && wateredMap[col][row]) {
+            String cropName = plantedSeedName.replace("Seeds", "").trim();
+            inventory.addItem(cropName, 1);
+
             mapTileNum[col][row] = 0;
             wateredMap[col][row] = false;
         }
@@ -146,30 +154,12 @@ public class TileManager {
     public Tile[] getTile() {
         return tile;
     }
-    // private void generateMap() {
-    //     for (int x = 0; x < size; x++) {
-    //         for (int y = 0; y < size; y++) {
-    //             map[x][y] = new Tile(Tile.TileType.TILLABLE);
-    //         }
-    //     }
 
-    //     // Contoh tile house dan lainnya
-    //     for (int x = 5; x < 11; x++) {
-    //         for (int y = 5; y < 11; y++) {
-    //             map[x][y] = new Tile(Tile.TileType.HOUSE);
-    //         }
-    //     }
-    // }
-
-    // public Tile[][] getMap() {
-    //     return map;
-    // }
-
-    // public int getSize() {
-    //     return size;
-    // }
-
-    // public Tile getTile(int x, int y) {
-    //     return map[x][y];
-    // }
+    public String[][] getPlantedSeedNameMap() {
+        return plantedSeedNameMap;
+    }
+    
+    public boolean[][] getWateredMap() {
+        return wateredMap;
+    }
 }

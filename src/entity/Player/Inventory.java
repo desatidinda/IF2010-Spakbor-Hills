@@ -82,4 +82,14 @@ public class Inventory {
     public Set<String> getUnlimitedTools() {
         return unlimitedTools;
     }
+
+    public Set<String> getAvailableSeeds() {
+        Set<String> seeds = new HashSet<>();
+        for (String item : items.keySet()) {
+            if (item.endsWith("Seeds")) {
+                seeds.add(item);
+            }
+        }
+        return seeds;
+    }
 }
