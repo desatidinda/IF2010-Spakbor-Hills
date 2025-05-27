@@ -24,6 +24,8 @@ public class FishingState implements StateHandler {
     private String currentLocation = "Pond";
     private boolean showFishInfo = false;
     private boolean showFishingGame = false;
+    private boolean showInteractPopup = true; 
+    private boolean showChoicePopup = false;
     private List<Fish> availableFish;
     private int targetNumber, playerGuess = 50;
     private int minRange = 1, maxRange = 100;
@@ -38,15 +40,19 @@ public class FishingState implements StateHandler {
     public FishingState(GamePanel gp) {
         this.gp = gp;
         loadBackground();
+        
     }
 
     private void loadBackground() {
+
+
         try {
             String backgroundPath = switch (currentLocation) {
-                case "Mountain Lake" -> "/res/seaside.jpg";
-                case "Forest River" -> "/res/seaside.jpg";
-                case "Ocean" -> "/res/seaside.jpg";
-                default -> "/res/seaside.jpg"; // Default background
+                case "Mountain Lake" -> "/res/mountainLake.png";
+                case "Forest River" -> "/res/forestRiver.png";
+                case "Ocean" -> "/res/ocean.png";
+                case "Pond" -> "/res/pond.png"; 
+                default -> "/res/pond.png"; 
             };
             image = ImageIO.read(getClass().getResourceAsStream(backgroundPath));
             // kalo misal gambarnya ga kedetect pake default
@@ -60,7 +66,9 @@ public class FishingState implements StateHandler {
                 ex.printStackTrace();
             }
         }
-    }    public void setFishingLocation(String location) {
+    }
+
+    public void setFishingLocation(String location) {
         this.currentLocation = location;
         loadBackground(); 
     }
@@ -69,6 +77,7 @@ public class FishingState implements StateHandler {
         showFishInfo = true;
         showFishingGame = false;
         availableFish = FishData.ALL_FISH.stream().filter(f -> f.getLocations().contains(currentLocation)).toList();
+        gp.player.performAction(5);
     }
     
     private void startFishingGame() {
@@ -86,7 +95,7 @@ public class FishingState implements StateHandler {
             fishCaught = false;
             gameOver = false;
             resultMessage = "";
-        } else { //ikan tidak tersedia
+        } else { 
             showFishingGame = false;
             showFishInfo = false;
             gp.ui.showMessage("No fish available here!");
@@ -102,6 +111,7 @@ public class FishingState implements StateHandler {
         } else if (attempts >= maxAttempts) {
             gameOver = true;
             resultMessage = "The fish got away!";
+            GameClock.skipMinutes(15); // to do
         } else {
             if (playerGuess < targetNumber) {
                 minRange = playerGuess + 1;
@@ -121,6 +131,7 @@ public class FishingState implements StateHandler {
         }
         gp.player.getInventory().addItem(targetFish.getName(), 1);
         resultMessage = "You caught a " + targetFish.getName() + "!";
+        GameClock.skipMinutes(15); // to do
     }
 
     @Override
@@ -130,11 +141,23 @@ public class FishingState implements StateHandler {
 
     @Override
     public void draw(Graphics2D g2) {
+        loadBackground();
         g2.drawImage(image, 0, 0, gp.screenWidth, gp.screenHeight, null);
         gp.player.draw(g2);
         gp.ui.draw(g2);
         if (showFishInfo) drawFishInfo(g2);
         if (showFishingGame) drawFishingGame(g2);
+
+        int popupWidth = 400;
+        int popupHeight = showChoicePopup ? 180 : 80;
+        int popupX = gp.screenWidth / 2 - popupWidth / 2;
+        int popupY = gp.screenHeight - popupHeight - 40;
+        if (showInteractPopup && !showChoicePopup) {
+            gp.ui.drawPopupWindow(g2, popupX, popupY, popupWidth, popupHeight);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
+            g2.setColor(java.awt.Color.WHITE);
+            gp.ui.drawCenteredText(g2, "Press SPACE to fishing", popupX, popupY + 45, popupWidth);
+        }
     }
     
     //######################### GUI SEBELUM TEBAK ANGKA DIMULAI #########################
@@ -346,14 +369,16 @@ public class FishingState implements StateHandler {
             gp.keyHandler.leftPressed = true;
         } else if (key == KeyEvent.VK_D) {
             gp.keyHandler.rightPressed = true;
+        } else if (key == KeyEvent.VK_SPACE) {
+            showInteractPopup = false;
+            startFishing();
         } else if (key == KeyEvent.VK_ESCAPE) {
             gp.player.teleportOut();
-        } else if (key == KeyEvent.VK_SPACE) {
             gp.keyHandler.spacePressed = true;
-            startFishing();
+            showInteractPopup = false;
+            
         }
     }
-
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
@@ -362,6 +387,19 @@ public class FishingState implements StateHandler {
         else if (key == KeyEvent.VK_S) gp.keyHandler.downPressed = false;
         else if (key == KeyEvent.VK_A) gp.keyHandler.leftPressed = false;
         else if (key == KeyEvent.VK_D) gp.keyHandler.rightPressed = false;
-        else if (key == KeyEvent.VK_SPACE) gp.keyHandler.spacePressed = false;
+        else if (key == KeyEvent.VK_SPACE) {
+            gp.keyHandler.spacePressed = false;
+            if (!showFishInfo && !showFishingGame) {
+                showInteractPopup = true;
+            }
+        }
+        else if (key == KeyEvent.VK_ESCAPE) {
+            if (showFishInfo || showFishingGame) {
+                showFishInfo = false;
+                showFishingGame = false;
+                showInteractPopup = true;
+            }
+        }
     }
+
 }
