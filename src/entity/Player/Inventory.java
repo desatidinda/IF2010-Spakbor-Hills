@@ -8,7 +8,6 @@ import java.util.Set;
 import entity.Item.*;
 
 
-
 public class Inventory {
     private final Map<Item, Integer> items = new HashMap<>();
     private final Set<Item> unlimitedTools = new HashSet<>();
@@ -88,10 +87,10 @@ public class Inventory {
         return unlimitedTools;
     }
 
-    public Set<Item> getAvailableSeeds() {
+    public Set<Item> getSeeds() {
         Set<Item> seeds = new HashSet<>();
         for (Item item : items.keySet()) {
-            if (item.getItemName().endsWith("Seeds")) {
+            if (item instanceof Seeds) {
                 seeds.add(item);
             }
         }

@@ -20,7 +20,9 @@ public class TileManager {
     Tile[] tile;
     int mapTileNum[][];
     private boolean[][] wateredMap;
+    private int[][] waterCountMap;
     private String[][] plantedSeedNameMap;
+    private int[][] plantAgeMap;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
@@ -28,7 +30,9 @@ public class TileManager {
 
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
         wateredMap = new boolean[gp.maxWorldCol][gp.maxWorldRow];
+        waterCountMap = new int[gp.maxWorldCol][gp.maxWorldRow];
         plantedSeedNameMap = new String[gp.maxWorldCol][gp.maxWorldRow];
+        plantAgeMap = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getImage();
         loadMap("/map/map.txt");
@@ -127,26 +131,37 @@ public class TileManager {
         if (tile[tileNum].getType() == TileType.TILLED) {
             mapTileNum[col][row] = 2; // 2 = PLANTED
             plantedSeedNameMap[col][row] = seed.getItemName();
+            plantAgeMap[col][row] = 0;
         }
     }
 
     public void waterTile(int col, int row) {
         int tileNum = mapTileNum[col][row];
-        if (tile[tileNum].getType() == TileType.PLANTED && !wateredMap[col][row]) {
+        if (tile[tileNum].getType() == TileType.PLANTED) {
             wateredMap[col][row] = true;
+            waterCountMap[col][row]++;
         }
     }
 
-    public void harvestPlant(int col, int row, Inventory inventory, String plantedSeedName) {
+    public boolean harvestPlant(int col, int row, Inventory inventory, String plantedSeedName) {
         int tileNum = mapTileNum[col][row];
-        if (tile[tileNum].getType() == TileType.PLANTED && wateredMap[col][row]) {
+        if (tile[tileNum].getType() == TileType.PLANTED) {
+            Seeds seed = (Seeds) ItemFactory.createItem(plantedSeedName);
+            int age = plantAgeMap[col][row];
+            if (age < seed.getDaysToHarvest()) {
+                gp.ui.showPopupMessage("Crops not yet ready for harvest! Age: " + age + " / " + seed.getDaysToHarvest());
+                return false;
+            }
             String cropName = plantedSeedName.replace("Seeds", "").trim();
             Item cropItem = ItemFactory.createItem(cropName); 
             inventory.addItem(cropItem, 1);
 
             mapTileNum[col][row] = 0;
             wateredMap[col][row] = false;
+            plantAgeMap[col][row] = 0;
+            return true;
         }
+        return false;
     }
 
     public int[][] getMapTileNum() {
@@ -163,5 +178,49 @@ public class TileManager {
     
     public boolean[][] getWateredMap() {
         return wateredMap;
+    }
+
+    public void resetWaterCountAndWateredMap(boolean isRainy) {
+        for (int col = 0; col < gp.maxWorldCol; col++) {
+            for (int row = 0; row < gp.maxWorldRow; row++) {
+                if (isRainy) {
+                    waterCountMap[col][row] = 2;
+                    wateredMap[col][row] = true;
+                } else {
+                    waterCountMap[col][row] = 0;
+                    wateredMap[col][row] = false;
+                }
+            }
+        }
+    }
+
+    public void checkPlantsAtEndOfDay() {
+        for (int col = 0; col < gp.maxWorldCol; col++) {
+            for (int row = 0; row < gp.maxWorldRow; row++) {
+                int tileNum = mapTileNum[col][row];
+                if (tile[tileNum].getType() == TileType.PLANTED) {
+                    if (waterCountMap[col][row] < 2) {
+                        System.out.println("Tanaman di (" + col + "," + row + ") mati karena kurang siram!");
+                        // Tanaman mati kl gadisiram duakali
+
+                        mapTileNum[col][row] = 0; // 0 = TILLED
+                        plantedSeedNameMap[col][row] = null;
+                        wateredMap[col][row] = false;
+                        waterCountMap[col][row] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    public void incrementPlantAges() {
+        for (int col = 0; col < gp.maxWorldCol; col++) {
+            for (int row = 0; row < gp.maxWorldRow; row++) {
+                int tileNum = mapTileNum[col][row];
+                if (tile[tileNum].getType() == TileType.PLANTED) {
+                    plantAgeMap[col][row]++;
+                }
+            }
+        }
     }
 }
