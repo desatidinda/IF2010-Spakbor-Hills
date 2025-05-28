@@ -2,9 +2,9 @@ package entity.Item;
 
 public abstract class Item {
     protected String itemName;
-    protected String itemType;
+    protected ItemType itemType;
 
-    public Item(String itemName, String itemType){
+    public Item(String itemName, ItemType itemType){
         this.itemName = itemName;
         this.itemType = itemType;
     }
@@ -13,8 +13,12 @@ public abstract class Item {
         return itemName;
     }
 
-    public String getItemType() {
+    public ItemType getItemType() {
         return itemType;
+    }
+
+    public static Item create(String itemName, ItemType itemType) {
+        return ItemFactory.createItem(itemName);
     }
 
 }

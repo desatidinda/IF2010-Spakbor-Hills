@@ -98,7 +98,7 @@ public abstract class NPC {
     }
 
     // method abstract di implementasinya di subclass ya
-    public abstract void reactToGift(String itemName);
+    public abstract void reactToGift(Item item);
 
     public abstract void chat();
 }

@@ -17,6 +17,8 @@ import map.Point;
 import map.Tile;
 import map.TileType;
 import entity.Player.Inventory;
+import entity.Farm.ShippingBin;
+import entity.Item.Item;
 
 public class MapState implements StateHandler, MouseListener {
 
@@ -24,6 +26,8 @@ public class MapState implements StateHandler, MouseListener {
     private int selectedTeleportIndex = 0;
     private final String[] teleportOptions = {"Mountain Lake", "Forest River", "Ocean", "Mayor Tadi House", "Caroline House", "Perry House", "Dasco House", "Emily House", "Abigail House"};
     private Font vt323;
+    private boolean showShippingBinPopup = false;
+    private int interactedObjectIndex = 999;
 
     private boolean showTilePopup = false;
     private int selectedTileAction = 0;
@@ -31,7 +35,7 @@ public class MapState implements StateHandler, MouseListener {
     private int interactCol = -1, interactRow = -1;
 
     private boolean showSeedPopup = false;
-    private List<String> availableSeeds = new ArrayList<>();
+    private List<Item> availableSeeds = new ArrayList<>();
     private int selectedSeedIndex = 0;
     private int seedCol, seedRow;
 
@@ -55,6 +59,33 @@ public class MapState implements StateHandler, MouseListener {
     @Override
     public void update() {
         gp.player.update();
+        showShippingBinPopup = false;
+        interactedObjectIndex = 999;
+        
+        for (int i = 0; i < gp.obj.length; i++) {
+            if (gp.obj[i] != null) {
+                String imagePath = gp.obj[i].getClass().getSimpleName(); // or however you identify shipping bin
+                int objLeftX = gp.obj[i].worldX;
+                int objRightX = gp.obj[i].worldX + gp.tileSize * gp.obj[i].widthInTiles;
+                int objTopY = gp.obj[i].worldY;
+                int objBottomY = gp.obj[i].worldY + gp.tileSize * gp.obj[i].heightInTiles;
+                int playerX = gp.player.worldX + gp.player.solid.x;
+                int playerY = gp.player.worldY + gp.player.solid.y;
+                int playerRightX = playerX + gp.player.solid.width;
+                int playerBottomY = playerY + gp.player.solid.height;
+                int interactionRange = 24; 
+                if (playerRightX >= objLeftX - interactionRange && 
+                    playerX <= objRightX + interactionRange &&
+                    playerBottomY >= objTopY - interactionRange && 
+                    playerY <= objBottomY + interactionRange) {
+                    if (gp.obj[i].getClass().getSimpleName().equals("ShippingBin")) {
+                        showShippingBinPopup = true;
+                        interactedObjectIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -70,6 +101,17 @@ public class MapState implements StateHandler, MouseListener {
         gp.player.draw(g2);
         gp.ui.draw(g2);
 
+        if (showShippingBinPopup && interactedObjectIndex != 999) {
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.fillRoundRect(gp.screenWidth / 2 - 150, 50, 300, 40, 15, 15);
+            g2.setColor(Color.WHITE);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
+            String message = "Press SHIFT to use shipping bin";
+            int textWidth = g2.getFontMetrics().stringWidth(message);
+            int textX = gp.screenWidth / 2 - textWidth / 2;
+            g2.drawString(message, textX, 75);
+        }
+
         if (gp.player.teleportMode) {
             int boxWidth = 400;
             int boxHeight = 60 + teleportOptions.length * 32 + 60;
@@ -77,10 +119,8 @@ public class MapState implements StateHandler, MouseListener {
             int boxY = (gp.screenHeight - boxHeight) / 2;
 
             gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
-
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
             gp.ui.drawCenteredText(g2, "Choose Destination:", boxX, boxY + 38, boxWidth);
-
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 18F));
             for (int i = 0; i < teleportOptions.length; i++) {
                 int textY = boxY + 70 + i * 32;
@@ -140,10 +180,10 @@ public class MapState implements StateHandler, MouseListener {
                 int textY = boxY + 70 + i * 32;
                 if (i == selectedSeedIndex) {
                     g2.setColor(new Color(255, 215, 0));
-                    gp.ui.drawCenteredText(g2, "> " + availableSeeds.get(i), boxX, textY, boxWidth);
+                    gp.ui.drawCenteredText(g2, "> " + availableSeeds.get(i).getItemName(), boxX, textY, boxWidth);
                 } else {
                     g2.setColor(Color.WHITE);
-                    gp.ui.drawCenteredText(g2, availableSeeds.get(i), boxX, textY, boxWidth);
+                    gp.ui.drawCenteredText(g2, availableSeeds.get(i).getItemName(), boxX, textY, boxWidth);
                 }
             }
             g2.setColor(Color.WHITE);
@@ -191,7 +231,16 @@ public class MapState implements StateHandler, MouseListener {
                 interactCol = col;
                 interactRow = row;
             }
-        } else {
+        } else if(showShippingBinPopup && interactedObjectIndex != 999 && key == KeyEvent.VK_SHIFT){
+            if (showShippingBinPopup && interactedObjectIndex != 999 && key == KeyEvent.VK_SHIFT) {
+                //System.out.println("Player is using the shipping bin!");
+                if (gp.obj[interactedObjectIndex] instanceof ShippingBin) {
+                    ShippingBin shippingBin = (ShippingBin) gp.obj[interactedObjectIndex];
+                    shippingBin.sellInventory(gp.player);
+                    //System.out.println("Shipping bin used successfully!");
+                }
+            }
+        }else {
             if (key == KeyEvent.VK_W) {
                 gp.keyHandler.upPressed = true;
             } else if (key == KeyEvent.VK_S) {
@@ -217,7 +266,7 @@ public class MapState implements StateHandler, MouseListener {
                         gp.tileManager.recoverTile(interactCol, interactRow);
                         break;
                     case "Planting":
-                        Set<String> seeds = gp.player.getInventory().getAvailableSeeds();
+                        Set<Item> seeds = gp.player.getInventory().getAvailableSeeds();
                         if (!seeds.isEmpty()) {
                             showSeedSelectionPopup(seeds, interactCol, interactRow);
                         } else {
@@ -252,16 +301,18 @@ public class MapState implements StateHandler, MouseListener {
             } else if (key == KeyEvent.VK_DOWN) {
                 selectedSeedIndex = (selectedSeedIndex + 1) % availableSeeds.size();
             } else if (key == KeyEvent.VK_ENTER) {
-                String selectedSeed = availableSeeds.get(selectedSeedIndex);
+                Item selectedSeed = availableSeeds.get(selectedSeedIndex);
                 int jumlah = gp.player.getInventory().getItemCount(selectedSeed);
                 if (jumlah > 0) {
+                    
                     gp.tileManager.plantSeed(seedCol, seedRow, selectedSeed);
                     gp.player.getInventory().removeItem(selectedSeed, 1);
                 } else {
-                    gp.ui.showPopupMessage("You ran out of " + selectedSeed + "!");
+                    gp.ui.showPopupMessage("You ran out of " + selectedSeed.getItemName() + "!");
                 }
                 showSeedPopup = false;
                 showTilePopup = false;
+
             } else if (key == KeyEvent.VK_ESCAPE) {
                 showSeedPopup = false;
             }
@@ -332,7 +383,7 @@ public class MapState implements StateHandler, MouseListener {
         }
     }
 
-    private void showSeedSelectionPopup(Set<String> seeds, int col, int row) {
+    private void showSeedSelectionPopup(Set<Item> seeds, int col, int row) {
         showSeedPopup = true;
         availableSeeds.clear();
         availableSeeds.addAll(seeds);
@@ -345,7 +396,7 @@ public class MapState implements StateHandler, MouseListener {
     public void mouseClicked(MouseEvent e) {
         int mx = e.getX();
         int my = e.getY();
-        if (gp.gameState == GameStates.MAP) {
+        if (gp.gameState == GameStates.MAP || gp.gameState == GameStates.NPC_HOUSE || gp.gameState == GameStates.INSIDE_HOUSE) {
             int btnX = inventoryBtnX();
             int btnY = inventoryBtnY();
             if (mx >= btnX && mx <= btnX + inventoryBtnW &&

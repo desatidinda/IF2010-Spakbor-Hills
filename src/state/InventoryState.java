@@ -3,6 +3,7 @@ package state;
 import entity.Player.Inventory;
 import entity.Player.Player;
 import main.GamePanel;
+import entity.Item.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -41,7 +42,8 @@ public class InventoryState extends JFrame implements StateHandler {
             
         }
         
-        setTitle(player.getName() + "'s Inventory");
+        String playerName = (player.getName() == null || player.getName().isEmpty()) ? "Labpro" : player.getName();
+        setTitle(playerName + "'s Inventory");
         setSize(500, 575);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -63,7 +65,8 @@ public class InventoryState extends JFrame implements StateHandler {
         } catch (Exception e) { 
         
         }
-        JLabel headerLabel = new JLabel(player.getName() + "'s Inventory", icon, JLabel.CENTER);
+        
+        JLabel headerLabel = new JLabel(playerName + "'s Inventory", icon, JLabel.CENTER);
         headerLabel.setFont(vt323.deriveFont(Font.BOLD, 24f));
         headerLabel.setForeground(TEXT_COLOR_COLUMN);
         headerLabel.setOpaque(false);
@@ -128,11 +131,11 @@ public class InventoryState extends JFrame implements StateHandler {
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
 
         updateInventoryDisplay();
-        setVisible(true);
+        //setVisible(true);
     }
 
     public void updateInventoryDisplay() {
-        Map<String, Integer> items = inventory.getItems();
+        Map<Item, Integer> items = inventory.getItems();
         String[] columnNames = {"Item Name", "Quantity"};
         Object[][] data;
         if (items.isEmpty()) {
@@ -140,9 +143,13 @@ public class InventoryState extends JFrame implements StateHandler {
         } else {
             data = new Object[items.size()][2];
             int i = 0;
-            for (Map.Entry<String, Integer> entry : items.entrySet()) {
-                data[i][0] = entry.getKey();
-                data[i][1] = entry.getValue();
+            for (Map.Entry<Item, Integer> entry : items.entrySet()) {
+                data[i][0] = entry.getKey().getItemName();
+                if (entry.getValue() == -1) {
+                    data[i][1] = "Unlimited";
+                } else {
+                    data[i][1] = entry.getValue();
+                }
                 i++;
             }
         }
@@ -180,13 +187,15 @@ public class InventoryState extends JFrame implements StateHandler {
 
     public static void showInventory(Player player) {
         SwingUtilities.invokeLater(() -> {
-            new InventoryState(null, player);
+            InventoryState inventoryState = new InventoryState(null, player);
+            inventoryState.setVisible(true); 
         });
     }
 
     public static void showInventory(Player player, String highlightItemName) {
         SwingUtilities.invokeLater(() -> {
-            new InventoryState(null, player, highlightItemName);
+            InventoryState inventoryState = new InventoryState(null, player, highlightItemName);
+            inventoryState.setVisible(true); 
         });
     }
 }

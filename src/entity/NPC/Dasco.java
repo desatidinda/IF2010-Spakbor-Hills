@@ -5,19 +5,32 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import entity.Item.*;
 
 public class Dasco extends NPC {
 
-    private final List<String> lovedItemNames = Arrays.asList(
-            "The Legends of Spakbor", "Cooked Pig's Head", "Wine", "Fugu", "Spakbor Salad"
+    private final List<Item> lovedItems = Arrays.asList(
+            ItemFactory.createItem("The Legends of Spakbor"),
+            ItemFactory.createItem("Cooked Pig's Head"),
+            ItemFactory.createItem("Wine"),
+            ItemFactory.createItem("Fugu"),
+            ItemFactory.createItem("Spakbor Salad")
     );
 
-    private final List<String> likedItemNames = Arrays.asList(
-            "Fish Sandwich", "Fish Stew", "Baguette", "Fish n’ Chips"
+    private final List<Item> likedItems = Arrays.asList(
+            ItemFactory.createItem("Fish Sandwich"),
+            ItemFactory.createItem("Fish Stew"),
+            ItemFactory.createItem("Baguette"),
+            ItemFactory.createItem("Fish n’ Chips")
     );
 
-    private final List<String> hatedItemNames = Arrays.asList(
-            "Legend", "Grape", "Cauliflower", "Wheat", "Pufferfish", "Salmon"
+    private final List<Item> hatedItems = Arrays.asList(
+            ItemFactory.createItem("Legend"),
+            ItemFactory.createItem("Grape"),
+            ItemFactory.createItem("Cauliflower"),
+            ItemFactory.createItem("Wheat"),
+            ItemFactory.createItem("Pufferfish"),
+            ItemFactory.createItem("Salmon")
     );
 
     public Dasco(GamePanel gp) {
@@ -40,12 +53,12 @@ public class Dasco extends NPC {
     }
 
     @Override
-    public void reactToGift(String itemName) {
-        if (lovedItemNames.contains(itemName)) {
+    public void reactToGift(Item item) {
+        if (lovedItems.contains(item)) {
             addHeartPoints(25);
-        } else if (likedItemNames.contains(itemName)) {
+        } else if (likedItems.contains(item)) {
             addHeartPoints(20);
-        } else if (hatedItemNames.contains(itemName)) {
+        } else if (hatedItems.contains(item)) {
             addHeartPoints(-25);
         }
     }

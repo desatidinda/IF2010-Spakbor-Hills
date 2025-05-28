@@ -4,20 +4,23 @@ import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
 
+import entity.Item.*;
 import main.GamePanel;
 
 public class Caroline extends NPC {
 
-    private final List<String> lovedItemNames = Arrays.asList(
-            "Firewood", "Coal"
+    private final List<Item> lovedItems = Arrays.asList(
+            ItemFactory.createItem("Firewood"),
+            ItemFactory.createItem("Coal")
     );
 
-    private final List<String> likedItemNames = Arrays.asList(
-            "Potato", "Wheat"
+    private final List<Item> likedItems = Arrays.asList(
+            ItemFactory.createItem("Potato"),
+            ItemFactory.createItem("Wheat")
     );
 
-    private final List<String> hatedItemNames = Arrays.asList(
-            "Hot Pepper"
+    private final List<Item> hatedItems = Arrays.asList(
+            ItemFactory.createItem("Hot Pepper")
     );
 
     public Caroline(GamePanel gp) {
@@ -40,12 +43,12 @@ public class Caroline extends NPC {
     }
 
     @Override
-    public void reactToGift(String itemName) {
-        if (lovedItemNames.contains(itemName)) {
+    public void reactToGift(Item item) {
+        if (lovedItems.contains(item)) {
             addHeartPoints(25);
-        } else if (likedItemNames.contains(itemName)) {
+        } else if (likedItems.contains(item)) {
             addHeartPoints(20);
-        } else if (hatedItemNames.contains(itemName)) {
+        } else if (hatedItems.contains(item)) {
             addHeartPoints(-25);
         }
     }

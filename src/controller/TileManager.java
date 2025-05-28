@@ -12,6 +12,7 @@ import main.GamePanel;
 import map.Tile;
 import map.TileType;
 import entity.Player.Inventory;
+import entity.Item.*;
 
 public class TileManager {
 
@@ -121,11 +122,11 @@ public class TileManager {
         }
     }
 
-    public void plantSeed(int col, int row, String seedName) {
+    public void plantSeed(int col, int row, Item seed) {
         int tileNum = mapTileNum[col][row];
         if (tile[tileNum].getType() == TileType.TILLED) {
             mapTileNum[col][row] = 2; // 2 = PLANTED
-            plantedSeedNameMap[col][row] = seedName;
+            plantedSeedNameMap[col][row] = seed.getItemName();
         }
     }
 
@@ -140,7 +141,8 @@ public class TileManager {
         int tileNum = mapTileNum[col][row];
         if (tile[tileNum].getType() == TileType.PLANTED && wateredMap[col][row]) {
             String cropName = plantedSeedName.replace("Seeds", "").trim();
-            inventory.addItem(cropName, 1);
+            Item cropItem = ItemFactory.createItem(cropName); 
+            inventory.addItem(cropItem, 1);
 
             mapTileNum[col][row] = 0;
             wateredMap[col][row] = false;

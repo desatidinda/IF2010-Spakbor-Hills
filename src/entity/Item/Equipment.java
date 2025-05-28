@@ -1,7 +1,7 @@
 package entity.Item;
 
-public abstract class Equipment extends Item {
+public class Equipment extends Item {
     public Equipment(String itemName){
-        super(itemName, "Equipment");
+        super(itemName, ItemType.EQUIPMENT);
     }
 }

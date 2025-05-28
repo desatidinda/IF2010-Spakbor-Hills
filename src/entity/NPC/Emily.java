@@ -5,15 +5,19 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import entity.Item.*;
 
 public class Emily extends NPC {
 
-    private final List<String> likedItemNames = Arrays.asList(
-            "Catfish", "Salmon", "Sardine"
+    private final List<Item> likedItems = Arrays.asList(
+            ItemFactory.createItem("Catfish"),
+            ItemFactory.createItem("Salmon"),
+            ItemFactory.createItem("Sardine")
     );
 
-    private final List<String> hatedItemNames = Arrays.asList(
-            "Coal", "Wood"
+    private final List<Item> hatedItems = Arrays.asList(
+            ItemFactory.createItem("Coal"),
+            ItemFactory.createItem("Wood")
     );
 
     public Emily(GamePanel gp) {
@@ -36,12 +40,12 @@ public class Emily extends NPC {
     }
 
     @Override
-    public void reactToGift(String itemName) {
-        if (itemName.toLowerCase().contains("seed")) {
+    public void reactToGift(Item item) {
+        if (item.getItemName().endsWith("Seeds")) {
             addHeartPoints(25);
-        } else if (likedItemNames.contains(itemName)) {
+        } else if (likedItems.contains(item)) {
             addHeartPoints(20);
-        } else if (hatedItemNames.contains(itemName)) {
+        } else if (hatedItems.contains(item)) {
             addHeartPoints(-25);
         }
     }

@@ -1,18 +1,19 @@
 package entity.Item;
+import entity.Farm.Season;
 
 public class Seeds extends Item{
-    private String season;
+    private Season season;
     private int daysToHarvest;
     private Double buyPrice;
 
-    public Seeds(String itemName, String season, int daysToHarvest, Double buyPrice){
-        super(itemName, "Seeds");
+    public Seeds(String itemName, Season season, int daysToHarvest, Double buyPrice){
+        super(itemName, ItemType.SEEDS);
         this.season = season;
         this.daysToHarvest = daysToHarvest;
         this.buyPrice = buyPrice;
     }
 
-    public String getSeason(){
+    public Season getSeason(){
         return season;
     }
 
@@ -20,7 +21,7 @@ public class Seeds extends Item{
         return daysToHarvest;
     }
 
-    public Double buyPrice(){
+    public Double getBuyPrice(){
         return buyPrice;
     }
 }
