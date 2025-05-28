@@ -143,14 +143,14 @@ public class TileManager {
         }
     }
 
-    public void harvestPlant(int col, int row, Inventory inventory, String plantedSeedName) {
+    public boolean harvestPlant(int col, int row, Inventory inventory, String plantedSeedName) {
         int tileNum = mapTileNum[col][row];
         if (tile[tileNum].getType() == TileType.PLANTED) {
             Seeds seed = (Seeds) ItemFactory.createItem(plantedSeedName);
             int age = plantAgeMap[col][row];
             if (age < seed.getDaysToHarvest()) {
                 gp.ui.showPopupMessage("Crops not yet ready for harvest! Age: " + age + " / " + seed.getDaysToHarvest());
-                return;
+                return false;
             }
             String cropName = plantedSeedName.replace("Seeds", "").trim();
             Item cropItem = ItemFactory.createItem(cropName); 
@@ -159,7 +159,9 @@ public class TileManager {
             mapTileNum[col][row] = 0;
             wateredMap[col][row] = false;
             plantAgeMap[col][row] = 0;
+            return true;
         }
+        return false;
     }
 
     public int[][] getMapTileNum() {
