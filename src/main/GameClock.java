@@ -41,11 +41,7 @@ public class GameClock {
             currentWeather = generateWeather();
         }
 
-        // Season change per 10 hari
-        if (day > 10) {
-            day = 1;
-            nextSeason();
-        }
+        checkSeasonChange();
     }
 
     public static String getFormattedTime() {
@@ -81,6 +77,13 @@ public class GameClock {
         }
     }
 
+    private static void checkSeasonChange() {
+    if (day > 10) {
+        day = 1;
+        nextSeason();
+    }
+}
+
     private static void nextSeason() {
         currentSeason = switch (currentSeason) {
             case SPRING -> Season.SUMMER;
@@ -94,20 +97,11 @@ public class GameClock {
         hour = 6;
         minute = 0;
         day++;
+        dayfix++;
 
         currentWeather = generateWeather();
 
-        if (day > 10) {
-            day = 1;
-            nextSeason();
-        }
-    }
-
-    private static void checkSeasonChange() {
-        if (day > 10) {
-            day = 1;
-            nextSeason();
-        }
+        checkSeasonChange();
     }
 
     public static void skipMinutes(int minutes) {
@@ -125,13 +119,6 @@ public class GameClock {
         }
     }
 
-    // public enum Season {
-    //     SPRING, SUMMER, FALL, WINTER
-    // }
-
-    // public enum Weather {
-    //     SUNNY, RAINY
-    // }
     public static void addMinutes(int minutesToAdd) {
         minute += minutesToAdd;
         while (minute >= 60) {

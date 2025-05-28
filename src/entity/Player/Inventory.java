@@ -1,24 +1,40 @@
 package entity.Player;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Random;
+import java.util.Set;
+
 
 public class Inventory {
     private final Map<String, Integer> items = new HashMap<>();
+    private final Set<String> unlimitedTools = new HashSet<>();
 
-     Inventory() {
-        initDebugInventory();
+    public Inventory() {
+        // ini yg default itu bakalan unlimited
+        unlimitedTools.add("Hoe");
+        unlimitedTools.add("Watering Can");
+        unlimitedTools.add("Pickaxe");
+        unlimitedTools.add("Fishing Rod");
     }
+
     public void addItem(String itemName, int quantity) {
-        items.put(itemName, items.getOrDefault(itemName, 0) + quantity);
+        if (!unlimitedTools.contains(itemName)) {
+            items.put(itemName, items.getOrDefault(itemName, 0) + quantity);
+        }    
     }
 
     public boolean hasItem(String itemName) {
-        return items.getOrDefault(itemName, 0) > 0;
+        if (unlimitedTools.contains(itemName)) {
+            return true;
+        }
+        return items.getOrDefault(itemName, 0) > 0;    
     }
 
     public boolean hasItem(String itemName, int quantity) {
+        if (unlimitedTools.contains(itemName)) {
+            return true;
+        }
         return items.getOrDefault(itemName, 0) >= quantity;
     }
 
@@ -27,13 +43,21 @@ public class Inventory {
     }
 
     public void removeItem(String itemName, int quantity) {
-        if (hasItem(itemName, quantity)) {
+        if (!unlimitedTools.contains(itemName) && hasItem(itemName, quantity)) {
             items.put(itemName, items.get(itemName) - quantity);
         }
+
     }
 
     public int getItemCount(String itemName) {
+        if (unlimitedTools.contains(itemName)) {
+            return -1; 
+        }
         return items.getOrDefault(itemName, 0);
+    }
+
+    public boolean isUnlimitedTool(String itemName) {
+        return unlimitedTools.contains(itemName);
     }
 
     public void printContents() {
@@ -46,24 +70,26 @@ public class Inventory {
         }
     }
 
-    private void initDebugInventory() {
-        String[] seedItems = {
-                "Wheat", "Tomato", "Pumpkin", "Potato", "Parsnip",
-                "Hot Pepper", "Egg", "Melon", "Blueberry", "Cranberry",
-                "Grape", "Cauliflower", "Salmon", "Pufferfish", "Legend",
-                "Any Fish", "Coal", "Firewood"
-        };
-
-        Random rand = new Random();
-        for (String item : seedItems) {
-            int qty = 2 + rand.nextInt(4); // 2-5 item acak
-            addItem(item, qty);
+    public Map<String, Integer> getItems() {
+        Map<String, Integer> displayItems = new HashMap<>(items);
+        for (String tool : unlimitedTools) {
+            displayItems.put(tool, -1);
         }
-
-        printContents();
+        
+        return displayItems;
+    }
+    
+    public Set<String> getUnlimitedTools() {
+        return unlimitedTools;
     }
 
-    public Map<String, Integer> getItems() {
-        return items;
+    public Set<String> getAvailableSeeds() {
+        Set<String> seeds = new HashSet<>();
+        for (String item : items.keySet()) {
+            if (item.endsWith("Seeds")) {
+                seeds.add(item);
+            }
+        }
+        return seeds;
     }
 }

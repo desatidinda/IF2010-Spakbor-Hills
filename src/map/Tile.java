@@ -8,6 +8,7 @@ public class Tile {
     public boolean collision = false;
 
     private TileType type;
+    private boolean watered = false;
 
     public Tile(TileType type) {
         this.type = type;
@@ -19,6 +20,14 @@ public class Tile {
 
     public void setType(TileType type) {
         this.type = type;
+    }
+
+    public boolean isWatered() {
+        return watered;
+    }
+
+    public void setWatered(boolean watered) {
+        this.watered = watered;
     }
 
     // public void draw(Graphics2D g2, int x, int y, int size) {

@@ -19,6 +19,10 @@ public class UIController {
     int messageCounter = 0;
     public int commandNum = 0;
 
+    private String popupMessage = null;
+    private long popupMessageTime = 0;
+    private static final long POPUP_MESSAGE_DURATION = 1500;
+
     public int initialStep = 0;
     public String inputBuffer = "";
     public String playerName = "";
@@ -55,6 +59,11 @@ public class UIController {
         showMessage = true;
     }
 
+    public void showPopupMessage(String text) {
+        popupMessage = text;
+        popupMessageTime = System.currentTimeMillis();
+    }
+
     public void draw(Graphics2D g2) {
         this.g2 = g2;
 
@@ -88,6 +97,24 @@ public class UIController {
         int x = startX + width / 2 - length / 2;
         g2.drawString(text, x, y);
     }
+
+    public void drawPopupMessage(Graphics2D g2) {
+        if (popupMessage != null) {
+            int w = 400, h = 50;
+            int x = (gp.screenWidth - w) / 2;
+            int y = gp.screenHeight - 150;
+
+            drawPopupWindow(g2, x, y, w, h);
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 16F));
+            g2.setColor(Color.WHITE);
+            drawCenteredText(g2, popupMessage, x, y + h/2 + 4, w);
+
+            if (System.currentTimeMillis() - popupMessageTime > POPUP_MESSAGE_DURATION) {
+                popupMessage = null;
+            }
+        }
+    }
     
     public void drawInitial() {
         g2.setFont(vt323);
@@ -117,20 +144,16 @@ public class UIController {
         }
         g2.drawImage(gambar, 0, 0, gp.screenWidth, gp.screenHeight, null);
         
-        int x = gp.tileSize * 5;
+        String[] menuOptions = {"Start New Game", "Information", "Quit Game"};
+        int x = gp.tileSize * 4;
         int y = gp.tileSize * 8 - 6;
-        
+
         g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 50F));
-        if (commandNum == 0) {
-            g2.drawString(">", x, y);
-        }
-
-        if (commandNum == 1) {
-            g2.drawString(">", x, y += gp.tileSize);
-        }
-
-        if (commandNum == 2) {
-            g2.drawString(">", x, y += gp.tileSize * 2);
+        for (int i = 0; i < menuOptions.length; i++) {
+            gp.ui.drawCenteredText(g2, menuOptions[i], 0, y + i * gp.tileSize, gp.screenWidth);
+            if (commandNum == i) {
+                g2.drawString(">", x, y + i * gp.tileSize);
+            }
         }
     }
 
@@ -236,6 +259,18 @@ public class UIController {
             g2.drawImage(btnImg, btnX, btnY, btnW, btnH, null);
         } catch (IOException e) {
             
+        }
+
+        // ini button menu yyyy
+        int btnMenuW = 131;
+        int btnMenuH = 69;
+        int btnMenuX = gp.screenWidth - btnMenuW - 20;
+        int btnMenuY = gp.screenHeight - btnMenuH - 80;
+        try {
+            BufferedImage btnMenuImg = ImageIO.read(getClass().getResourceAsStream("/res/buttonmenu.png"));
+            g2.drawImage(btnMenuImg, btnMenuX, btnMenuY, btnMenuW, btnMenuH, null);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -2,16 +2,31 @@ package state;
 
 import entity.Farm.Weather;
 import main.GamePanel;
+<<<<<<< HEAD
+=======
+import main.GameClock;
+
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
 import entity.House.*;
 import entity.Item.*;
 import entity.House.TV;
 import main.GameClock;
+=======
+
+import entity.House.KingBed;
+import entity.House.Stove;
+import entity.House.TV;
+import entity.Farm.Weather;
+import entity.House.*;
+import entity.Item.*;
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
 
 public class InsideHouseState implements StateHandler {
 
@@ -28,8 +43,25 @@ public class InsideHouseState implements StateHandler {
     private String pendingFuel = null;
     private boolean watchTV = false;
     private Weather currentWeather;
+<<<<<<< HEAD
     private String cookMessage = null;
     private int cookMessageTimer = 0;
+=======
+    private boolean showRecipeList = false;
+    private int selectedRecipeIndex = 0;
+    private boolean isCookingWait = false;
+    private int cookingStartHour;
+    private int cookingStartMinute;
+    private Recipe pendingRecipe = null;
+    private String pendingFuel = null;
+    private String cookMessage = null;
+    private int cookMessageTimer = 0;
+    private String cookReadyMessage = null;
+    private int cookReadyMessageTimer = 0;
+    private boolean cookedItemReady = false;
+    private String cookedItemName = null;
+
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
 
     public InsideHouseState(GamePanel gp) {
         this.gp = gp;
@@ -62,6 +94,7 @@ public class InsideHouseState implements StateHandler {
         }
 
         if (isCookingWait && pendingRecipe != null && pendingFuel != null) {
+<<<<<<< HEAD
             int nowHour = GameClock.getHour();
             int nowMinute = GameClock.getMinute();
             int startTotal = cookingStartHour * 60 + cookingStartMinute;
@@ -71,6 +104,20 @@ public class InsideHouseState implements StateHandler {
                 gp.player.cook(pendingRecipe.getName(), pendingFuel, 1);
                 cookMessage = "Masakan siap: " + pendingRecipe.getName();
                 cookMessageTimer = 180;
+=======
+            int startTotal = cookingStartHour * 60 + cookingStartMinute;
+            int nowTotal = GameClock.getHour() * 60 + GameClock.getMinute();
+
+            int elapsed = nowTotal >= startTotal
+                    ? nowTotal - startTotal
+                    : (24 * 60 - startTotal + nowTotal);
+
+            if (elapsed >= 60) {
+                gp.player.cook(pendingRecipe.getName(), pendingFuel, 1);
+                cookedItemReady = true;
+                cookedItemName = pendingRecipe.getName();
+                cookReadyMessageTimer = 180;
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
 
                 isCookingWait = false;
                 pendingRecipe = null;
@@ -78,7 +125,12 @@ public class InsideHouseState implements StateHandler {
                 showRecipeList = false;
             }
         }
-    }
+        if (cookReadyMessageTimer > 0) {
+            cookReadyMessageTimer--;
+            if (cookReadyMessageTimer == 0) {
+                cookReadyMessage = null;
+            }
+        }
 
     @Override
     public void draw(Graphics2D g2) {
@@ -94,7 +146,11 @@ public class InsideHouseState implements StateHandler {
         gp.player.draw(g2);
         gp.ui.draw(g2);
 
+<<<<<<< HEAD
         if (showPopup && interactedFurnitureIndex >= 0 && interactedFurnitureIndex < gp.furniture.length) {
+=======
+        if (showPopup && interactedFurnitureIndex >= 0 && interactedFurnitureIndex < gp.furniture.length && gp.furniture[interactedFurnitureIndex] != null) {
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
             gp.ui.drawPopupWindow(g2, gp.screenWidth / 2 - 400 / 2, 445, 400, 60);
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
             g2.setColor(Color.WHITE);
@@ -104,9 +160,9 @@ public class InsideHouseState implements StateHandler {
         if (watchTV) {
             BufferedImage weatherImg = null;
             if (currentWeather == Weather.SUNNY) {
-                weatherImg = ((TV)gp.furniture[2]).getTvsunny();
+                weatherImg = ((TV) gp.furniture[2]).getTvsunny();
             } else if (currentWeather == Weather.RAINY) {
-                weatherImg = ((TV)gp.furniture[2]).getTvrainy();
+                weatherImg = ((TV) gp.furniture[2]).getTvrainy();
             }
             g2.drawImage(weatherImg, 0, 0, gp.screenWidth, gp.screenHeight, null);
         }
@@ -114,6 +170,21 @@ public class InsideHouseState implements StateHandler {
         if (showRecipeList) {
             drawRecipeList(g2);
         }
+<<<<<<< HEAD
+=======
+
+        if (cookedItemReady && cookedItemName != null && gp.furniture[1] != null) {
+            int x = gp.furniture[1].worldX + gp.tileSize / 4;
+            int y = gp.furniture[1].worldY - 20;
+
+            g2.setColor(new Color(255, 215, 0));
+            g2.fillRoundRect(x, y, gp.tileSize, 20, 10, 10);
+
+            g2.setColor(Color.BLACK);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 12F));
+            g2.drawString("🍲 " + cookedItemName, x + 5, y + 15);
+        }
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
     }
 
     private void drawRecipeList(Graphics2D g2) {
@@ -177,6 +248,17 @@ public class InsideHouseState implements StateHandler {
             cookMessageTimer--;
         }
 
+<<<<<<< HEAD
+=======
+        if (cookReadyMessage != null) {
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 18f));
+            g2.setColor(new Color(0, 0, 0, 160));
+            g2.fillRoundRect(20, 20, 400, 40, 10, 10);
+            g2.setColor(Color.WHITE);
+            g2.drawString(cookReadyMessage, 30, 45);
+        }
+
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
         g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 14F));
         gp.ui.drawCenteredText(g2, "↑↓ untuk navigasi, ENTER untuk masak, R untuk keluar", windowX, windowY + height - 20, width);
     }
@@ -187,6 +269,10 @@ public class InsideHouseState implements StateHandler {
         kingbed.worldY = 8;
         gp.furniture[0] = kingbed;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
         Stove stove = new Stove(gp);
         stove.worldX = 0;
         stove.worldY = gp.tileSize * 10 - 16;
@@ -214,8 +300,17 @@ public class InsideHouseState implements StateHandler {
             gp.player.teleportOut();
         } else if (key == KeyEvent.VK_SPACE) {
             gp.keyHandler.spacePressed = true;
+<<<<<<< HEAD
         } else if (key == KeyEvent.VK_R) showRecipeList = !showRecipeList;
 
+=======
+            if (interactedFurnitureIndex == 1 && cookedItemReady) {
+                cookedItemReady = false;
+                cookedItemName = null;
+                gp.ui.showMessage("Kamu mengambil masakan dari kompor.");
+            }
+        }
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
 
         if (showPopup && interactedFurnitureIndex != 999 && key == KeyEvent.VK_SPACE) {
             if (gp.furniture[interactedFurnitureIndex] instanceof TV) {
@@ -230,17 +325,33 @@ public class InsideHouseState implements StateHandler {
             watchTV = false;
             currentWeather = null;
         }
+
+        else if (key == KeyEvent.VK_R) {
+            showRecipeList = !showRecipeList;
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
 
+<<<<<<< HEAD
         if (key == KeyEvent.VK_W) gp.keyHandler.upPressed = false;
         else if (key == KeyEvent.VK_S) gp.keyHandler.downPressed = false;
         else if (key == KeyEvent.VK_A) gp.keyHandler.leftPressed = false;
         else if (key == KeyEvent.VK_D) gp.keyHandler.rightPressed = false;
         else if (key == KeyEvent.VK_SPACE) gp.keyHandler.spacePressed = false;
+=======
+        if (key == KeyEvent.VK_W) {
+            gp.keyHandler.upPressed = false;
+        } else if (key == KeyEvent.VK_S) {
+            gp.keyHandler.downPressed = false;
+        } else if (key == KeyEvent.VK_A) {
+            gp.keyHandler.leftPressed = false;
+        } else if (key == KeyEvent.VK_D) {
+            gp.keyHandler.rightPressed = false;
+        } else if (key == KeyEvent.VK_SPACE) gp.keyHandler.spacePressed = false;
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
 
         if (showRecipeList) {
             if (key == KeyEvent.VK_UP) {
@@ -248,6 +359,13 @@ public class InsideHouseState implements StateHandler {
             } else if (key == KeyEvent.VK_DOWN) {
                 selectedRecipeIndex = Math.min(RecipeRegistry.getAll().size() - 1, selectedRecipeIndex + 1);
             } else if (key == KeyEvent.VK_ENTER) {
+<<<<<<< HEAD
+=======
+                if (isCookingWait) {
+                    gp.ui.showMessage("Tunggu masakan sebelumnya selesai!");
+                    return;
+                }
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
                 Recipe selected = RecipeRegistry.getAll().get(selectedRecipeIndex);
                 if (!selected.isUnlocked()) {
                     cookMessage = "Resep belum dipelajari!";
@@ -280,11 +398,24 @@ public class InsideHouseState implements StateHandler {
                 cookingStartMinute = GameClock.getMinute();
                 pendingRecipe = selected;
                 pendingFuel = fuel;
+<<<<<<< HEAD
                 cookMessage = "Memasak " + selected.getName() + "... tunggu 1 jam in-game.";
+=======
+                cookMessage = "Memasak " + selected.getName() + "... tunggu 1 jam.";
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c
                 cookMessageTimer = 180;
             } else if (key == KeyEvent.VK_R || key == KeyEvent.VK_ESCAPE) {
                 showRecipeList = false;
             }
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+
+    // public GameObject[] getFurniture() {
+    //     return furniture;
+    // }
+
+>>>>>>> 9652e6987ac23aab301315679424d80606e12c0c

@@ -11,9 +11,9 @@ import main.GameStates;
 
 public class Stove extends GameObject {
     private GamePanel gp;
-
     public Stove(GamePanel gp) {
         this.gp = gp;
+
         name = "Stove";
         collision = true;
         widthInTiles = 2;
