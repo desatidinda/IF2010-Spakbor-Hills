@@ -8,17 +8,21 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import main.GamePanel;
 import main.GameStates;
+import main.GameClock;
 import map.Point;
 import map.Tile;
 import map.TileType;
 import entity.Player.Inventory;
 import entity.Farm.ShippingBin;
 import entity.Item.Item;
+import entity.Item.Seeds;
+import entity.Farm.Season;
 
 public class MapState implements StateHandler, MouseListener {
 
@@ -33,6 +37,7 @@ public class MapState implements StateHandler, MouseListener {
     private int selectedTileAction = 0;
     private final String[] tileActions = {"Tilling", "Recover Land", "Planting", "Watering", "Harvesting"};
     private int interactCol = -1, interactRow = -1;
+    private int lastDayChecked = -1;
 
     private boolean showSeedPopup = false;
     private List<Item> availableSeeds = new ArrayList<>();
@@ -85,6 +90,15 @@ public class MapState implements StateHandler, MouseListener {
                     }
                 }
             }
+
+        }
+        int currentDay = GameClock.getDay();
+        if (currentDay != lastDayChecked) {
+            boolean isRainy = (GameClock.getCurrentWeather() == entity.Farm.Weather.RAINY);
+            gp.tileManager.incrementPlantAges();
+            gp.tileManager.checkPlantsAtEndOfDay();
+            gp.tileManager.resetWaterCountAndWateredMap(isRainy);
+            lastDayChecked = currentDay;
         }
     }
 
@@ -266,11 +280,18 @@ public class MapState implements StateHandler, MouseListener {
                         gp.tileManager.recoverTile(interactCol, interactRow);
                         break;
                     case "Planting":
-                        Set<Item> seeds = gp.player.getInventory().getAvailableSeeds();
-                        if (!seeds.isEmpty()) {
-                            showSeedSelectionPopup(seeds, interactCol, interactRow);
+                        Set<Item> seeds = gp.player.getInventory().getSeeds();
+                        Season currentSeason = GameClock.getCurrentSeason();
+                        Set<Item> plantableSeeds = new HashSet<>();
+                        for (Item item : seeds) {
+                            if (item instanceof Seeds && ((Seeds) item).getSeason() == currentSeason) {
+                                plantableSeeds.add(item);
+                            }
+                        }
+                        if (!plantableSeeds.isEmpty()) {
+                            showSeedSelectionPopup(plantableSeeds, interactCol, interactRow);
                         } else {
-                            gp.ui.showPopupMessage("You have no seeds to plant.");
+                            gp.ui.showPopupMessage("You have no seeds to plant for this season.");
                         }
                         break;
                     case "Watering":
