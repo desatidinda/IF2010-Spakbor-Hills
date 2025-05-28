@@ -7,19 +7,28 @@ import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 
 import main.GamePanel;
-
+import entity.Item.*;
 public class Abigail extends NPC {
 
-    private final List<String> lovedItemNames = Arrays.asList(
-            "Blueberry", "Melon", "Pumpkin", "Grape", "Cranberry"
+    private final List<Item> lovedItems = Arrays.asList(
+            ItemFactory.createItem("Blueberry"),
+            ItemFactory.createItem("Melon"),
+            ItemFactory.createItem("Pumpkin"),
+            ItemFactory.createItem("Grape"),
+            ItemFactory.createItem("Cranberry")
     );
 
-    private final List<String> likedItemNames = Arrays.asList(
-            "Baguette", "Pumpkin Pie", "Wine"
+    private final List<Item> likedItems = Arrays.asList(
+            ItemFactory.createItem("Baguette"),
+            ItemFactory.createItem("Pumpkin Pie"),
+            ItemFactory.createItem("Wine")
     );
 
-    private final List<String> hatedItemNames = Arrays.asList(
-            "Hot Pepper", "Cauliflower", "Parsnip", "Wheat"
+    private final List<Item> hatedItems = Arrays.asList(
+            ItemFactory.createItem("Hot Pepper"),
+            ItemFactory.createItem("Cauliflower"),
+            ItemFactory.createItem("Parsnip"),
+            ItemFactory.createItem("Wheat")
     );
 
     public Abigail(GamePanel gp) {
@@ -46,12 +55,12 @@ public class Abigail extends NPC {
     }
 
     @Override
-    public void reactToGift(String itemName) {
-        if (lovedItemNames.contains(itemName)) {
+    public void reactToGift(Item item) {
+        if (lovedItems.contains(item)) {
             addHeartPoints(25);
-        } else if (likedItemNames.contains(itemName)) {
+        } else if (likedItems.contains(item)) {
             addHeartPoints(20);
-        } else if (hatedItemNames.contains(itemName)) {
+        } else if (hatedItems.contains(item)) {
             addHeartPoints(-25);
         }
     }

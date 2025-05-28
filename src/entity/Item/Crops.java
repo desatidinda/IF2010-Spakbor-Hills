@@ -5,11 +5,11 @@ import entity.Farm.Season;
 public class Crops extends Item{
     private Season season;
     private int dayToHarvest;
-    private int buyPrice;
-    private int sellPrice;
-    
-    public Crops(String seedName, Season season, int dayToHarvest, int buyPrice, int sellPrice){
-        super(seedName, "Crops");
+    private double buyPrice;
+    private double sellPrice;
+
+    public Crops(String seedName, Season season, int dayToHarvest, double buyPrice, double sellPrice){
+        super(seedName, ItemType.CROPS);
         this.dayToHarvest = dayToHarvest;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;

@@ -5,15 +5,17 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import entity.Item.*;
 
 public class Perry extends NPC {
 
-    private final List<String> lovedItemNames = Arrays.asList(
-            "Cranberry", "Blueberry"
+    private final List<Item> lovedItems = Arrays.asList(
+            ItemFactory.createItem("Cranberry"),
+            ItemFactory.createItem("Blueberry")
     );
 
-    private final List<String> likedItemNames = Arrays.asList(
-            "Wine"
+    private final List<Item> likedItems = Arrays.asList(
+            ItemFactory.createItem("Wine")
     );
 
     public Perry(GamePanel gp) {
@@ -36,12 +38,12 @@ public class Perry extends NPC {
     }
 
     @Override
-    public void reactToGift(String itemName) {
-        String lowerName = itemName.toLowerCase();
+    public void reactToGift(Item item) {
+        String lowerName = item.getItemName().toLowerCase();
 
-        if (lovedItemNames.contains(itemName)) {
+        if (lovedItems.contains(item)) {
             addHeartPoints(25);
-        } else if (likedItemNames.contains(itemName)) {
+        } else if (likedItems.contains(item)) {
             addHeartPoints(20);
         } else if (lowerName.contains("fish") || lowerName.contains("salmon") || lowerName.contains("catfish") || lowerName.contains("sardine")) {
             addHeartPoints(-25);

@@ -31,10 +31,10 @@ public class RecipeUnlocker {
 
     private static int getTotalFishCount(Inventory inventory) {
         int totalFish = 0;
-        Map<String, Integer> items = inventory.getItems();
-        
-        for (Map.Entry<String, Integer> entry : items.entrySet()) {
-            if (fishItems.contains(entry.getKey())) {
+        Map<Item, Integer> items = inventory.getItems();
+
+        for (Map.Entry<Item, Integer> entry : items.entrySet()) {
+            if (fishItems.contains(entry.getKey().getItemName())) {
                 totalFish += entry.getValue();
             }
         }

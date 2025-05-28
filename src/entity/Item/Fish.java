@@ -18,7 +18,7 @@ public class Fish extends Item{
     private double sellPrice;
 
     public Fish(String name, FishType type, List<Season> seasons, String timeRange, List<Weather> weathers, List<String> locations) {
-        super(name, name);
+        super(name, ItemType.FISH);
         this.name = name;
         this.type = type;
         this.seasons = seasons;
@@ -50,6 +50,18 @@ public class Fish extends Item{
 
     public FishType getType() {
         return type;
+    }
+
+    public List<Season> getSeasons() {
+        return seasons;
+    }
+
+    public String getTimeRange() {
+        return timeRange;
+    }
+
+    public List<Weather> getWeathers() {
+        return weathers;
     }
 
     public List<String> getLocations() {

@@ -4,6 +4,8 @@ import entity.Item.Fish;
 import entity.Item.FishData;
 import entity.Item.FishType;
 import entity.Item.RecipeUnlocker;
+import entity.Item.*;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -145,7 +147,8 @@ public class FishingState implements StateHandler {
 
         gp.player.performAction(5);
 
-        gp.player.getInventory().addItem(targetFish.getName(), 1);
+        Item fishItem = ItemFactory.createItem(targetFish.getName());
+        gp.player.getInventory().addItem(fishItem, 1);
         resultMessage = "You caught a " + targetFish.getName() + "!";
         GameClock.skipMinutes(15); // to do
 

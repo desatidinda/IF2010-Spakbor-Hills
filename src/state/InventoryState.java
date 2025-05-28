@@ -3,6 +3,7 @@ package state;
 import entity.Player.Inventory;
 import entity.Player.Player;
 import main.GamePanel;
+import entity.Item.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -134,7 +135,7 @@ public class InventoryState extends JFrame implements StateHandler {
     }
 
     public void updateInventoryDisplay() {
-        Map<String, Integer> items = inventory.getItems();
+        Map<Item, Integer> items = inventory.getItems();
         String[] columnNames = {"Item Name", "Quantity"};
         Object[][] data;
         if (items.isEmpty()) {
@@ -142,8 +143,8 @@ public class InventoryState extends JFrame implements StateHandler {
         } else {
             data = new Object[items.size()][2];
             int i = 0;
-            for (Map.Entry<String, Integer> entry : items.entrySet()) {
-                data[i][0] = entry.getKey();
+            for (Map.Entry<Item, Integer> entry : items.entrySet()) {
+                data[i][0] = entry.getKey().getItemName();
                 if (entry.getValue() == -1) {
                     data[i][1] = "Unlimited";
                 } else {

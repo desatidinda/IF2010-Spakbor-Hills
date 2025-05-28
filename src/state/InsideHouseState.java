@@ -268,8 +268,10 @@ public class InsideHouseState implements StateHandler {
                 }
 
                 String fuel = null;
-                if (gp.player.getInventory().hasItem("Firewood")) fuel = "Firewood";
-                else if (gp.player.getInventory().hasItem("Coal")) fuel = "Coal";
+                Item Firewood = ItemFactory.createItem("Firewood");
+                Item Coal = ItemFactory.createItem("Coal");
+                if (gp.player.getInventory().hasItem(Firewood)) fuel = "Firewood";
+                else if (gp.player.getInventory().hasItem(Coal)) fuel = "Coal";
 
                 if (fuel == null) {
                     cookMessage = "Tidak ada fuel di inventory!";
@@ -278,7 +280,7 @@ public class InsideHouseState implements StateHandler {
                 }
 
                 for (Map.Entry<String, Integer> entry : selected.getIngredients().entrySet()) {
-                    String item = entry.getKey();
+                    Item item = ItemFactory.createItem(entry.getKey());
                     int qty = entry.getValue();
                     if (!gp.player.getInventory().hasItem(item, qty)) {
                         cookMessage = "Bahan tidak cukup: " + item;

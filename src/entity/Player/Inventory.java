@@ -1,95 +1,97 @@
 package entity.Player;
 
-import entity.Item.RecipeUnlocker;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import entity.Item.*;
+
+
 
 public class Inventory {
-    private final Map<String, Integer> items = new HashMap<>();
-    private final Set<String> unlimitedTools = new HashSet<>();
+    private final Map<Item, Integer> items = new HashMap<>();
+    private final Set<Item> unlimitedTools = new HashSet<>();
 
     public Inventory() {
         // ini yg default itu bakalan unlimited
-        unlimitedTools.add("Hoe");
-        unlimitedTools.add("Watering Can");
-        unlimitedTools.add("Pickaxe");
-        unlimitedTools.add("Fishing Rod");
+        unlimitedTools.add(new Equipment("Hoe"));
+        unlimitedTools.add(new Equipment("Watering Can"));
+        unlimitedTools.add(new Equipment("Pickaxe"));
+        unlimitedTools.add(new Equipment("Fishing Rod"));
     }
 
-    public void addItem(String itemName, int quantity) {
-        if (!unlimitedTools.contains(itemName)) {
-            items.put(itemName, items.getOrDefault(itemName, 0) + quantity);
-        }    
-        RecipeUnlocker.checkItemUnlock(itemName);
+    public void addItem(Item item, int quantity) {
+        if (!unlimitedTools.contains(item)) {
+            items.put(item, items.getOrDefault(item, 0) + quantity);
+        }
+        RecipeUnlocker.checkItemUnlock(item.getItemName());
         RecipeUnlocker.checkFishUnlock(this);
     }
 
-    public boolean hasItem(String itemName) {
-        if (unlimitedTools.contains(itemName)) {
+    public boolean hasItem(Item item) {
+        if (unlimitedTools.contains(item)) {
             return true;
         }
-        return items.getOrDefault(itemName, 0) > 0;    
+        return items.getOrDefault(item, 0) > 0;
     }
 
-    public boolean hasItem(String itemName, int quantity) {
-        if (unlimitedTools.contains(itemName)) {
+    public boolean hasItem(Item item, int quantity) {
+        if (unlimitedTools.contains(item)) {
             return true;
         }
-        return items.getOrDefault(itemName, 0) >= quantity;
+        return items.getOrDefault(item, 0) >= quantity;
     }
 
-    public void removeItem(String itemName) {
-        removeItem(itemName, 1);
+    public void removeItem(Item item) {
+        removeItem(item, 1);
     }
 
-    public void removeItem(String itemName, int quantity) {
-        if (!unlimitedTools.contains(itemName) && hasItem(itemName, quantity)) {
-            items.put(itemName, items.get(itemName) - quantity);
+    public void removeItem(Item item, int quantity) {
+        if (!unlimitedTools.contains(item) && hasItem(item, quantity)) {
+            items.put(item, items.get(item) - quantity);
         }
 
     }
 
-    public int getItemCount(String itemName) {
-        if (unlimitedTools.contains(itemName)) {
-            return -1; 
+    public int getItemCount(Item item) {
+        if (unlimitedTools.contains(item)) {
+            return -1;
         }
-        return items.getOrDefault(itemName, 0);
+        return items.getOrDefault(item, 0);
     }
 
-    public boolean isUnlimitedTool(String itemName) {
-        return unlimitedTools.contains(itemName);
+    public boolean isUnlimitedTool(Item item) {
+        return unlimitedTools.contains(item);
     }
 
     public void printContents() {
         if (items.isEmpty()) {
             System.out.println("Inventory kosong.");
         } else {
-            for (Map.Entry<String, Integer> entry : items.entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue());
+            for (Map.Entry<Item, Integer> entry : items.entrySet()) {
+                System.out.println(entry.getKey().getItemName() + ": " + entry.getValue());
             }
         }
     }
 
-    public Map<String, Integer> getItems() {
-        Map<String, Integer> displayItems = new HashMap<>(items);
-        for (String tool : unlimitedTools) {
+    public Map<Item, Integer> getItems() {
+        Map<Item, Integer> displayItems = new HashMap<>(items);
+        for (Item tool : unlimitedTools) {
             displayItems.put(tool, -1);
         }
         
         return displayItems;
     }
     
-    public Set<String> getUnlimitedTools() {
+    public Set<Item> getUnlimitedTools() {
         return unlimitedTools;
     }
 
-    public Set<String> getAvailableSeeds() {
-        Set<String> seeds = new HashSet<>();
-        for (String item : items.keySet()) {
-            if (item.endsWith("Seeds")) {
+    public Set<Item> getAvailableSeeds() {
+        Set<Item> seeds = new HashSet<>();
+        for (Item item : items.keySet()) {
+            if (item.getItemName().endsWith("Seeds")) {
                 seeds.add(item);
             }
         }

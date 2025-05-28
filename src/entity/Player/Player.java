@@ -1,6 +1,8 @@
 package entity.Player;
 
 import entity.Item.FuelItem;
+import entity.Item.Item;
+import entity.Item.ItemFactory;
 import entity.Item.Recipe;
 import entity.Item.RecipeRegistry;
 import entity.NPC.NPC;
@@ -75,7 +77,8 @@ public class Player {
         solid.height = gp.tileSize;
 
         getImage();
-        inventory.addItem("Parsnip Seeds", 15);
+        Item parsnipSeeds = ItemFactory.createItem("Parsnip Seeds");
+        inventory.addItem(parsnipSeeds, 15);
     }
 
     public void update() {
@@ -407,13 +410,14 @@ public class Player {
     }
 
     public void giveGift(NPC npc, String itemName) {
-        if (inventory.hasItem(itemName)) {
-            inventory.removeItem(itemName);
-            npc.reactToGift(itemName);
+        Item item = ItemFactory.createItem(itemName);
+        if (inventory.hasItem(item)) {
+            inventory.removeItem(item);
+            npc.reactToGift(item);
             energy -= 5;
-            System.out.println("Kamu memberikan " + itemName + " ke " + npc.getName());
+            System.out.println("Kamu memberikan " + item.getItemName() + " ke " + npc.getName());
         } else {
-            System.out.println("Kamu tidak memiliki item: " + itemName);
+            System.out.println("Kamu tidak memiliki item: " + item.getItemName());
         }
     }
 
@@ -444,7 +448,7 @@ public class Player {
 
         int requiredFuelCount = recipe.getRequiredFuel() * quantity;
         int neededFuelUnits = fuel.calculateUnitsNeeded(requiredFuelCount);
-        int availableFuel = inventory.getItemCount(fuel.getItemName());
+        int availableFuel = inventory.getItemCount(fuel);
 
         if (availableFuel < neededFuelUnits) {
             System.out.println("Fuel tidak cukup. Butuh " + neededFuelUnits + ", punya " + availableFuel);
@@ -452,22 +456,24 @@ public class Player {
         }
 
         for (Map.Entry<String, Integer> entry : recipe.getIngredients().entrySet()) {
-            String itemName = entry.getKey();
+            Item item = ItemFactory.createItem(entry.getKey());
             int totalNeeded = entry.getValue() * quantity;
 
-            if (!inventory.hasItem(itemName, totalNeeded)) {
-                System.out.println("Bahan tidak cukup: " + itemName + " (butuh " + totalNeeded + ")");
+            if (!inventory.hasItem(item, totalNeeded)) {
+                System.out.println("Bahan tidak cukup: " + item.getItemName() + " (butuh " + totalNeeded + ")");
                 return;
             }
         }
 
         for (Map.Entry<String, Integer> entry : recipe.getIngredients().entrySet()) {
-            inventory.removeItem(entry.getKey(), entry.getValue() * quantity);
+            Item item = ItemFactory.createItem(entry.getKey());
+            inventory.removeItem(item, entry.getValue() * quantity);
         }
 
-        inventory.removeItem(fuel.getItemName(), neededFuelUnits);
+        inventory.removeItem(fuel, neededFuelUnits);
 
-        inventory.addItem(recipe.getName(), quantity);
+        Item cookedItem = ItemFactory.createItem(recipe.getName());
+        inventory.addItem(cookedItem, quantity);
 
         energy -= 10 * quantity;
 

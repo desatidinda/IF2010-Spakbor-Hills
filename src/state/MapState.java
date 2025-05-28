@@ -18,6 +18,7 @@ import map.Tile;
 import map.TileType;
 import entity.Player.Inventory;
 import entity.Farm.ShippingBin;
+import entity.Item.Item;
 
 public class MapState implements StateHandler, MouseListener {
 
@@ -34,7 +35,7 @@ public class MapState implements StateHandler, MouseListener {
     private int interactCol = -1, interactRow = -1;
 
     private boolean showSeedPopup = false;
-    private List<String> availableSeeds = new ArrayList<>();
+    private List<Item> availableSeeds = new ArrayList<>();
     private int selectedSeedIndex = 0;
     private int seedCol, seedRow;
 
@@ -179,10 +180,10 @@ public class MapState implements StateHandler, MouseListener {
                 int textY = boxY + 70 + i * 32;
                 if (i == selectedSeedIndex) {
                     g2.setColor(new Color(255, 215, 0));
-                    gp.ui.drawCenteredText(g2, "> " + availableSeeds.get(i), boxX, textY, boxWidth);
+                    gp.ui.drawCenteredText(g2, "> " + availableSeeds.get(i).getItemName(), boxX, textY, boxWidth);
                 } else {
                     g2.setColor(Color.WHITE);
-                    gp.ui.drawCenteredText(g2, availableSeeds.get(i), boxX, textY, boxWidth);
+                    gp.ui.drawCenteredText(g2, availableSeeds.get(i).getItemName(), boxX, textY, boxWidth);
                 }
             }
             g2.setColor(Color.WHITE);
@@ -265,7 +266,7 @@ public class MapState implements StateHandler, MouseListener {
                         gp.tileManager.recoverTile(interactCol, interactRow);
                         break;
                     case "Planting":
-                        Set<String> seeds = gp.player.getInventory().getAvailableSeeds();
+                        Set<Item> seeds = gp.player.getInventory().getAvailableSeeds();
                         if (!seeds.isEmpty()) {
                             showSeedSelectionPopup(seeds, interactCol, interactRow);
                         } else {
@@ -300,16 +301,18 @@ public class MapState implements StateHandler, MouseListener {
             } else if (key == KeyEvent.VK_DOWN) {
                 selectedSeedIndex = (selectedSeedIndex + 1) % availableSeeds.size();
             } else if (key == KeyEvent.VK_ENTER) {
-                String selectedSeed = availableSeeds.get(selectedSeedIndex);
+                Item selectedSeed = availableSeeds.get(selectedSeedIndex);
                 int jumlah = gp.player.getInventory().getItemCount(selectedSeed);
                 if (jumlah > 0) {
+                    
                     gp.tileManager.plantSeed(seedCol, seedRow, selectedSeed);
                     gp.player.getInventory().removeItem(selectedSeed, 1);
                 } else {
-                    gp.ui.showPopupMessage("You ran out of " + selectedSeed + "!");
+                    gp.ui.showPopupMessage("You ran out of " + selectedSeed.getItemName() + "!");
                 }
                 showSeedPopup = false;
                 showTilePopup = false;
+
             } else if (key == KeyEvent.VK_ESCAPE) {
                 showSeedPopup = false;
             }
@@ -380,7 +383,7 @@ public class MapState implements StateHandler, MouseListener {
         }
     }
 
-    private void showSeedSelectionPopup(Set<String> seeds, int col, int row) {
+    private void showSeedSelectionPopup(Set<Item> seeds, int col, int row) {
         showSeedPopup = true;
         availableSeeds.clear();
         availableSeeds.addAll(seeds);
