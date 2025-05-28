@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Random;
 
 
 public class Inventory {
@@ -16,19 +17,21 @@ public class Inventory {
         unlimitedTools.add("Watering Can");
         unlimitedTools.add("Pickaxe");
         unlimitedTools.add("Fishing Rod");
+
+        initDebugInventory();
     }
 
     public void addItem(String itemName, int quantity) {
         if (!unlimitedTools.contains(itemName)) {
             items.put(itemName, items.getOrDefault(itemName, 0) + quantity);
-        }    
+        }
     }
 
     public boolean hasItem(String itemName) {
         if (unlimitedTools.contains(itemName)) {
             return true;
         }
-        return items.getOrDefault(itemName, 0) > 0;    
+        return items.getOrDefault(itemName, 0) > 0;
     }
 
     public boolean hasItem(String itemName, int quantity) {
@@ -51,7 +54,7 @@ public class Inventory {
 
     public int getItemCount(String itemName) {
         if (unlimitedTools.contains(itemName)) {
-            return -1; 
+            return -1;
         }
         return items.getOrDefault(itemName, 0);
     }
@@ -59,6 +62,7 @@ public class Inventory {
     public boolean isUnlimitedTool(String itemName) {
         return unlimitedTools.contains(itemName);
     }
+
 
     public void printContents() {
         if (items.isEmpty()) {
@@ -70,15 +74,31 @@ public class Inventory {
         }
     }
 
+    private void initDebugInventory() {
+        String[] seedItems = {
+                "Wheat", "Tomato", "Pumpkin", "Potato", "Parsnip",
+                "Hot Pepper", "Egg", "Melon", "Blueberry", "Cranberry",
+                "Grape", "Cauliflower", "Salmon", "Pufferfish", "Legend",
+                "Any Fish", "Coal", "Firewood"
+        };
+
+        Random rand = new Random();
+        for (String item : seedItems) {
+            int qty = 2 + rand.nextInt(4); // 2-5 item acak
+            addItem(item, qty);
+        }
+        printContents();
+    }
+
     public Map<String, Integer> getItems() {
         Map<String, Integer> displayItems = new HashMap<>(items);
         for (String tool : unlimitedTools) {
             displayItems.put(tool, -1);
         }
-        
+
         return displayItems;
     }
-    
+
     public Set<String> getUnlimitedTools() {
         return unlimitedTools;
     }

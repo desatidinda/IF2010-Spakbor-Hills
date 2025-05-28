@@ -84,6 +84,12 @@ public class GameClock {
     }
 }
 
+    public static boolean hasPassed(int startHour, int startMinute, int durationHours) {
+        int startTotalMinutes = startHour * 60 + startMinute;
+        int currentTotalMinutes = getHour() * 60 + getMinute();
+        return currentTotalMinutes >= startTotalMinutes + (durationHours * 60);
+    }
+
     private static void nextSeason() {
         currentSeason = switch (currentSeason) {
             case SPRING -> Season.SUMMER;
