@@ -41,6 +41,12 @@ public class MapState implements StateHandler, MouseListener {
     private int inventoryBtnX() { return gp.screenWidth - inventoryBtnW - 20; }
     private int inventoryBtnY() { return gp.screenHeight - inventoryBtnH - 20; }
 
+    //ini button menu
+    private final int menuBtnW = 131;
+    private final int menuBtnH = 69;
+    private int menuBtnX() { return gp.screenWidth - menuBtnW - 20; }
+    private int menuBtnY() { return gp.screenHeight - menuBtnH - 80; }
+
     public MapState(GamePanel gp) {
         this.gp = gp;
         gp.addMouseListener(this);
@@ -345,6 +351,9 @@ public class MapState implements StateHandler, MouseListener {
             if (mx >= btnX && mx <= btnX + inventoryBtnW &&
                 my >= btnY && my <= btnY + inventoryBtnH) {
                 InventoryState.showInventory(gp.player);
+            } else if (mx >= menuBtnX() && mx <= menuBtnX() + menuBtnW &&
+                my >= menuBtnY() && my <= menuBtnY() + menuBtnH) {
+                gp.gameState = GameStates.MENU;
             }
         }
     }

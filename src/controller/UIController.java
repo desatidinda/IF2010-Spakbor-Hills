@@ -260,6 +260,18 @@ public class UIController {
         } catch (IOException e) {
             
         }
+
+        // ini button menu yyyy
+        int btnMenuW = 131;
+        int btnMenuH = 69;
+        int btnMenuX = gp.screenWidth - btnMenuW - 20;
+        int btnMenuY = gp.screenHeight - btnMenuH - 80;
+        try {
+            BufferedImage btnMenuImg = ImageIO.read(getClass().getResourceAsStream("/res/buttonmenu.png"));
+            g2.drawImage(btnMenuImg, btnMenuX, btnMenuY, btnMenuW, btnMenuH, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void drawMenu() {
