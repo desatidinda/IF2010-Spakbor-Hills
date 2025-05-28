@@ -1,5 +1,6 @@
 package entity.Player;
 
+import entity.Item.RecipeUnlocker;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,6 +23,8 @@ public class Inventory {
         if (!unlimitedTools.contains(itemName)) {
             items.put(itemName, items.getOrDefault(itemName, 0) + quantity);
         }    
+        RecipeUnlocker.checkItemUnlock(itemName);
+        RecipeUnlocker.checkFishUnlock(this);
     }
 
     public boolean hasItem(String itemName) {

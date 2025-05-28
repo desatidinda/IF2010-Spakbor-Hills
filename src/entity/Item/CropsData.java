@@ -1,10 +1,10 @@
 package entity.Item;
 
-import java.util.List;
 import entity.Farm.Season;
+import java.util.List;
 
 public class CropsData {
-    public static final List<Crops> ALL_CORPS = List.of(
+    public static final List<Crops> ALL_CROPS = List.of(
         //####################################### SPRING #######################################
         new Crops("Parsnip Seeds",  Season.SPRING, 1,  20, 10),
         new Crops("Cauliflower Seeds", Season.SPRING, 5,  80, 40),

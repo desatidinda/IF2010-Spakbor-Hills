@@ -22,7 +22,7 @@ public class Player {
     private String farmName;
     private String partner;
     private String relationshipStatus = "Single"; //status: Single, Engaged, Married
-    private int gold;
+    private double gold;
     private Inventory inventory;
     private Point location;
     private Point indoorLocation;
@@ -303,7 +303,7 @@ public class Player {
         return relationshipStatus;
     } 
 
-    public int getGold() { 
+    public double getGold() { 
         return gold; 
     }
 
@@ -348,7 +348,7 @@ public class Player {
     }
 
     // METHOD
-    public void addGold(int amount) { 
+    public void addGold(double amount) { 
         this.gold += amount; 
     }
 

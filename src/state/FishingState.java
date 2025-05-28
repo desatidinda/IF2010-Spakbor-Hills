@@ -1,8 +1,9 @@
 package state;
 
-import controller.FishingManager;
 import entity.Item.Fish;
 import entity.Item.FishData;
+import entity.Item.FishType;
+import entity.Item.RecipeUnlocker;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -75,6 +76,10 @@ public class FishingState implements StateHandler {
     }
 
     private void startFishing() {
+        if (gp.player.getEnergy() < 5) {
+            gp.ui.showMessage("Not enough energy to fish! You need at least 5 energy.");
+            return;
+        }
         showFishInfo = true;
         showFishingGame = false;
         availableFish = FishData.ALL_FISH.stream().filter(f -> f.getLocations().contains(currentLocation)).toList();
@@ -82,13 +87,19 @@ public class FishingState implements StateHandler {
     }
     
     private void startFishingGame() {
+        if (gp.player.getEnergy() < 5) {
+            gp.ui.showMessage("Not enough energy to fish!");
+            showFishInfo = false;
+            showFishingGame = false;
+            return;
+        }
         showFishInfo = false;
         showFishingGame = true;
         
-        targetFish = FishingManager.getRandomFishByLocation(currentLocation);
+        targetFish = getRandomFishByLocation(currentLocation);
         if (targetFish != null) {
-            maxRange = FishingManager.getMaxRange(targetFish.getType());
-            maxAttempts = FishingManager.getMaxAttempts(targetFish.getType());
+            maxRange = getMaxRange(targetFish.getType());
+            maxAttempts = getMaxAttempts(targetFish.getType());
             targetNumber = random.nextInt(maxRange) + 1;
             playerGuess = maxRange / 2;
             minRange = 1;
@@ -112,6 +123,7 @@ public class FishingState implements StateHandler {
         } else if (attempts >= maxAttempts) {
             gameOver = true;
             resultMessage = "The fish got away!";
+            gp.player.performAction(5);
             GameClock.skipMinutes(15); // to do
         } else {
             if (playerGuess < targetNumber) {
@@ -130,9 +142,14 @@ public class FishingState implements StateHandler {
             resultMessage = "No fish available here!";
             return;
         }
+
+        gp.player.performAction(5);
+
         gp.player.getInventory().addItem(targetFish.getName(), 1);
         resultMessage = "You caught a " + targetFish.getName() + "!";
         GameClock.skipMinutes(15); // to do
+
+        entity.Item.RecipeUnlocker.checkFishUnlock(gp.player.getInventory()); //ini buat unlock resep yg sashimi itu
     }
 
     @Override
@@ -158,9 +175,39 @@ public class FishingState implements StateHandler {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
             g2.setColor(java.awt.Color.WHITE);
             gp.ui.drawCenteredText(g2, "Press SPACE to fishing", popupX, popupY + 45, popupWidth);
+
+            if (gp.player.getEnergy() < 5) {
+                g2.setColor(Color.RED);
+                gp.ui.drawCenteredText(g2, "Not enough energy to fish! (Need 5 energy)", popupX, popupY + 45, popupWidth);
+            } else {
+                g2.setColor(Color.WHITE);
+                gp.ui.drawCenteredText(g2, "Press SPACE to fishing", popupX, popupY + 45, popupWidth);
+            }
         }
     }
     
+    public static int getMaxAttempts(FishType fishType) {
+        return fishType == FishType.LEGENDARY ? 7 : 10;
+    }
+
+    public static int getMaxRange(FishType fishType) {
+        return switch (fishType) {
+            case COMMON -> 10;
+            case REGULAR -> 100;
+            case LEGENDARY -> 500;
+        };
+    }
+
+    public static Fish getRandomFishByLocation(String location) {
+        List<Fish> availableFish = FishData.ALL_FISH.stream().filter(f -> f.getLocations().contains(location)).toList();
+        
+        if (availableFish.isEmpty()) {
+            return null;
+        }
+        
+        return availableFish.get(new Random().nextInt(availableFish.size()));
+    }
+
     //######################### GUI SEBELUM TEBAK ANGKA DIMULAI #########################
     private void drawFishInfo(Graphics2D g2) {
         int windowX = gp.screenWidth/2 - WINDOW_WIDTH/2;
@@ -379,7 +426,10 @@ public class FishingState implements StateHandler {
             gp.player.teleportOut();
             gp.keyHandler.spacePressed = true;
             showInteractPopup = false;
-            
+            if (gp.player.getEnergy() < 5) {
+                gp.ui.showMessage("Not enough energy to fish! You need at least 5 energy.");
+                return;
+            }
         }
     }
     @Override
