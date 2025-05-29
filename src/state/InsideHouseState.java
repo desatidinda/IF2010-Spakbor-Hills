@@ -1,17 +1,21 @@
 package state;
 
 import main.GamePanel;
+import main.GameClock;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Font;
+import java.util.List;
+import java.util.Map;
 
 import entity.House.KingBed;
 import entity.House.Stove;
 import entity.House.TV;
+import entity.Farm.Weather;
+import entity.House.*;
+import entity.Item.*;
 
 public class InsideHouseState implements StateHandler {
 
@@ -19,11 +23,26 @@ public class InsideHouseState implements StateHandler {
     private BufferedImage image;
     private int interactedFurnitureIndex = -1;
     private boolean showPopup = false;
+    private boolean watchTV = false;
+    private Weather currentWeather;
+    private boolean showRecipeList = false;
+    private int selectedRecipeIndex = 0;
+    private boolean isCookingWait = false;
+    private int cookingStartHour;
+    private int cookingStartMinute;
+    private Recipe pendingRecipe = null;
+    private String pendingFuel = null;
+    private String cookMessage = null;
+    private int cookMessageTimer = 0;
 
     public InsideHouseState(GamePanel gp) {
         this.gp = gp;
         loadBackground();
         deployFurniture();
+    }
+
+    public void setShowRecipeList(boolean value) {
+        this.showRecipeList = value;
     }
 
     protected void loadBackground() {
@@ -45,6 +64,24 @@ public class InsideHouseState implements StateHandler {
             showPopup = false;
             interactedFurnitureIndex = -1;
         }
+
+        if (isCookingWait && pendingRecipe != null && pendingFuel != null) {
+            int nowHour = GameClock.getHour();
+            int nowMinute = GameClock.getMinute();
+            int startTotal = cookingStartHour * 60 + cookingStartMinute;
+            int nowTotal = nowHour * 60 + nowMinute;
+
+            if (nowTotal - startTotal >= 60 || nowTotal < startTotal) {
+                gp.player.cook(pendingRecipe.getName(), pendingFuel, 1);
+                cookMessage = "Masakan siap: " + pendingRecipe.getName();
+                cookMessageTimer = 180;
+
+                isCookingWait = false;
+                pendingRecipe = null;
+                pendingFuel = null;
+                showRecipeList = false;
+            }
+        }
     }
 
     @Override
@@ -62,26 +99,106 @@ public class InsideHouseState implements StateHandler {
         gp.ui.draw(g2);
 
         if (showPopup && interactedFurnitureIndex >= 0 && interactedFurnitureIndex < gp.furniture.length && gp.furniture[interactedFurnitureIndex] != null) {
-            gp.ui.drawPopupWindow(g2, gp.screenWidth/2 - 400/2, 445, 400, 60);
+            gp.ui.drawPopupWindow(g2, gp.screenWidth / 2 - 400 / 2, 445, 400, 60);
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
             g2.setColor(java.awt.Color.WHITE);
             gp.ui.drawCenteredText(g2, "Press SPACE to interact with " + gp.furniture[interactedFurnitureIndex].getName(), 0, 480, gp.screenWidth);
         }
+
+        if (watchTV) {
+            BufferedImage weatherImg = null;
+            if (currentWeather == Weather.SUNNY) {
+                weatherImg = ((TV) gp.furniture[2]).getTvsunny();
+            } else if (currentWeather == Weather.RAINY) {
+                weatherImg = ((TV) gp.furniture[2]).getTvrainy();
+            }
+            g2.drawImage(weatherImg, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
+
+        if (showRecipeList) {
+            drawRecipeList(g2);
+        }
+    }
+
+    private void drawRecipeList(Graphics2D g2) {
+        int width = 500;
+        int height = 400;
+        int windowX = gp.screenWidth / 2 - width / 2;
+        int windowY = gp.screenHeight / 2 - height / 2;
+
+        g2.setColor(new Color(0, 0, 0, 210));
+        g2.fillRoundRect(windowX, windowY, width, height, 35, 35);
+        g2.setColor(Color.WHITE);
+        g2.setStroke(new BasicStroke(5));
+        g2.drawRoundRect(windowX + 5, windowY + 5, width - 10, height - 10, 25, 25);
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 24F));
+        gp.ui.drawCenteredText(g2, "All Recipes", windowX, windowY + 40, width);
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 16F));
+        List<Recipe> allRecipes = RecipeRegistry.getAll();
+        int y = windowY + 80;
+        int lineHeight = 20;
+
+        for (int i = 0; i < allRecipes.size(); i++) {
+            Recipe recipe = allRecipes.get(i);
+
+            if (y + lineHeight > windowY + height - 60) break;
+
+            if (i == selectedRecipeIndex) {
+                g2.setColor(new Color(255, 255, 100, 180));
+                g2.fillRoundRect(windowX + 10, y - 16, width - 20, lineHeight + 4, 10, 10);
+            }
+
+            g2.setColor(recipe.isUnlocked() ? Color.WHITE : Color.GRAY);
+            g2.drawString("\u2022 " + recipe.getName(), windowX + 20, y);
+            y += lineHeight;
+        }
+
+        if (isCookingWait && pendingRecipe != null) {
+            g2.setColor(Color.ORANGE);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 14F));
+            gp.ui.drawCenteredText(g2, "Sedang memasak " + pendingRecipe.getName(), windowX, windowY + height - 70, width);
+        }
+
+        if (!allRecipes.isEmpty()) {
+            Recipe selected = allRecipes.get(selectedRecipeIndex);
+            g2.setColor(Color.WHITE);
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 14F));
+            y += 10;
+            g2.drawString("Bahan:", windowX + 20, y);
+            y += 18;
+            for (Map.Entry<String, Integer> entry : selected.getIngredients().entrySet()) {
+                g2.drawString("- " + entry.getValue() + "x " + entry.getKey(), windowX + 40, y);
+                y += 16;
+            }
+        }
+
+        if (cookMessage != null && cookMessageTimer > 0) {
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 16F));
+            g2.setColor(Color.GREEN);
+            gp.ui.drawCenteredText(g2, cookMessage, windowX, windowY + height - 45, width);
+            cookMessageTimer--;
+        }
+
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 14F));
+        gp.ui.drawCenteredText(g2, "↑↓ untuk navigasi, ENTER untuk masak, R untuk keluar", windowX, windowY + height - 20, width);
     }
 
     protected void deployFurniture() {
         KingBed kingbed = new KingBed();
-        kingbed.worldX = 16;
+        kingbed.worldX = gp.tileSize * 13 - 16;
         kingbed.worldY = 8;
         gp.furniture[0] = kingbed;
 
-        Stove stove = new Stove();
-        stove.worldX = gp.tileSize * 14 - 16;
+
+        Stove stove = new Stove(gp);
+        stove.worldX = 0;
         stove.worldY = gp.tileSize * 10 - 16;
         gp.furniture[1] = stove;
 
         TV tv = new TV();
-        tv.worldX = gp.tileSize * 5 - 20;
+        tv.worldX = gp.tileSize * 9 - 20;
         tv.worldY = 0;
         gp.furniture[2] = tv;
     }
@@ -105,8 +222,21 @@ public class InsideHouseState implements StateHandler {
         }
 
         if (showPopup && interactedFurnitureIndex != 999 && key == KeyEvent.VK_SPACE) {
+            if (gp.furniture[interactedFurnitureIndex] instanceof TV) {
+                watchTV = true;
+                currentWeather = GameClock.getCurrentWeather();
+            }
             gp.furniture[interactedFurnitureIndex].playerInteract(gp.player);
             showPopup = false;
+        }
+
+        if (watchTV && key == KeyEvent.VK_ENTER) {
+            watchTV = false;
+            currentWeather = null;
+        }
+
+        else if (key == KeyEvent.VK_R) {
+            showRecipeList = !showRecipeList;
         }
     }
 
@@ -122,14 +252,56 @@ public class InsideHouseState implements StateHandler {
             gp.keyHandler.leftPressed = false;
         } else if (key == KeyEvent.VK_D) {
             gp.keyHandler.rightPressed = false;
-        } else if (key == KeyEvent.VK_SPACE) {
-            gp.keyHandler.spacePressed = false;
+        } else if (key == KeyEvent.VK_SPACE) gp.keyHandler.spacePressed = false;
+
+        if (showRecipeList) {
+            if (key == KeyEvent.VK_UP) {
+                selectedRecipeIndex = Math.max(0, selectedRecipeIndex - 1);
+            } else if (key == KeyEvent.VK_DOWN) {
+                selectedRecipeIndex = Math.min(RecipeRegistry.getAll().size() - 1, selectedRecipeIndex + 1);
+            } else if (key == KeyEvent.VK_ENTER) {
+                Recipe selected = RecipeRegistry.getAll().get(selectedRecipeIndex);
+                if (!selected.isUnlocked()) {
+                    cookMessage = "Resep belum dipelajari!";
+                    cookMessageTimer = 180;
+                    return;
+                }
+
+                String fuel = null;
+                if (gp.player.getInventory().hasItem("Firewood")) fuel = "Firewood";
+                else if (gp.player.getInventory().hasItem("Coal")) fuel = "Coal";
+
+                if (fuel == null) {
+                    cookMessage = "Tidak ada fuel di inventory!";
+                    cookMessageTimer = 180;
+                    return;
+                }
+
+                for (Map.Entry<String, Integer> entry : selected.getIngredients().entrySet()) {
+                    String item = entry.getKey();
+                    int qty = entry.getValue();
+                    if (!gp.player.getInventory().hasItem(item, qty)) {
+                        cookMessage = "Bahan tidak cukup: " + item;
+                        cookMessageTimer = 180;
+                        return;
+                    }
+                }
+
+                isCookingWait = true;
+                cookingStartHour = GameClock.getHour();
+                cookingStartMinute = GameClock.getMinute();
+                pendingRecipe = selected;
+                pendingFuel = fuel;
+                cookMessage = "Memasak " + selected.getName() + "... tunggu 1 jam in-game.";
+                cookMessageTimer = 180;
+            } else if (key == KeyEvent.VK_R || key == KeyEvent.VK_ESCAPE) {
+                showRecipeList = false;
+            }
         }
     }
+}
 
     // public GameObject[] getFurniture() {
     //     return furniture;
     // }
-
-}
 

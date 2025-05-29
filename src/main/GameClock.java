@@ -25,7 +25,7 @@ public class GameClock {
     }
 
     public static void updateTime(int realSeconds) {
-        int gameMinutesToAdd = realSeconds * 30; 
+        int gameMinutesToAdd = realSeconds * 5; 
         //TODO: nanti 30 nya ganti jd 5 skrg buat tes biar ga kelamaan aowkawoakwoawkaowk
 
         minute += gameMinutesToAdd;
@@ -93,4 +93,53 @@ public class GameClock {
         };
     }
     
+    public static void skipToMorning() {
+        hour = 6;
+        minute = 0;
+        day++;
+        dayfix++;
+
+        currentWeather = generateWeather();
+
+        checkSeasonChange();
+    }
+
+    public static void skipMinutes(int minutes) {
+        minute += minutes;
+        while (minute >= 60) {
+            minute -= 60;
+            hour++;
+        }
+        while (hour >= 24) {
+            hour -= 24;
+            day++;
+            dayfix++;
+            currentWeather = generateWeather();
+            checkSeasonChange();
+        }
+    }
+
+    public static void addMinutes(int minutesToAdd) {
+        minute += minutesToAdd;
+        while (minute >= 60) {
+            minute -= 60;
+            hour++;
+        }
+
+        if (hour >= 24) {
+            hour = 0;
+            day++;
+            dayfix++;
+            currentWeather = generateWeather();
+        }
+
+        if (day > 10) {
+            day = 1;
+            nextSeason();
+        }
+    }
+    public static void skipTo22() {
+        hour = 22;
+        minute = 0;
+    }
 }
