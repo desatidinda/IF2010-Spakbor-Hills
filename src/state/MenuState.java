@@ -48,7 +48,7 @@ public class MenuState implements StateHandler {
         int textY = boxY + 70;
 
         for (String line : lines) {
-            gp.ui.drawCenteredText(g2, line, boxX, textY, boxWidth);
+            g2.drawString(line, boxX + 20, textY);
             textY += lineHeight;
         }
     }

@@ -406,7 +406,7 @@ public class Player {
     public void chatWith(NPC npc) {
         npc.incrementChatting();
         npc.chat();
-        energy -= 10;
+        performAction(10);
     }
 
     public void giveGift(NPC npc, String itemName) {
@@ -414,7 +414,7 @@ public class Player {
         if (inventory.hasItem(item)) {
             inventory.removeItem(item);
             npc.reactToGift(item);
-            energy -= 5;
+            performAction(5);
             System.out.println("Kamu memberikan " + item.getItemName() + " ke " + npc.getName());
         } else {
             System.out.println("Kamu tidak memiliki item: " + item.getItemName());

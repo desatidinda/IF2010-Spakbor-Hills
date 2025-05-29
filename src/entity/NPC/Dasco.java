@@ -48,8 +48,8 @@ public class Dasco extends NPC {
     }
 
     @Override
-    public void chat() {
-        System.out.println("Dasco: Aku tidak menerima bahan mentah. Beri aku makanan mahal!");
+    public String chat() {
+        return "Aku tidak menerima bahan mentah. Beri aku makanan mahal!";
     }
 
     @Override

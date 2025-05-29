@@ -33,8 +33,8 @@ public class Perry extends NPC {
     }
 
     @Override
-    public void chat() {
-        System.out.println("Perry: Aku sedang menyelesaikan bab terakhir novelku.");
+    public String chat() {
+        return "Aku sedang menyelesaikan bab terakhir novelku.";
     }
 
     @Override

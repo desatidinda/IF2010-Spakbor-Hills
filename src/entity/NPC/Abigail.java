@@ -50,8 +50,8 @@ public class Abigail extends NPC {
     }
 
     @Override
-    public void chat() {
-        System.out.println("Abigail: Ayo eksplorasi alam, energiku harus penuh!");
+    public String chat() {
+        return "Ayo eksplorasi alam, energiku harus penuh!";
     }
 
     @Override

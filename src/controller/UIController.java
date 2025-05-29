@@ -61,6 +61,7 @@ public class UIController {
 
     public void showPopupMessage(String text) {
         popupMessage = text;
+        //TODO: ini nnt ganti kalo gamethreadnya dh bnr
         popupMessageTime = System.currentTimeMillis();
     }
 
