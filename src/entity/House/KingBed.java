@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import objects.GameObject;
 import entity.Player.Player;
 import main.GameClock;
+import entity.Farm.ShippingBin;
 
 public class KingBed extends GameObject {
     public KingBed() {
@@ -27,6 +28,8 @@ public class KingBed extends GameObject {
     @Override
     public void playerInteract(Player player) {
         player.sleep();
-        GameClock.skipToMorning();  
+        GameClock.skipToMorning(); 
+        ShippingBin.hasUsedTodayBin = false;
+        ShippingBin.processPendingSales();  
     }
 }

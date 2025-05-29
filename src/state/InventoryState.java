@@ -1,19 +1,20 @@
 package state;
 
+import entity.Item.*;
 import entity.Player.Inventory;
 import entity.Player.Player;
-import main.GamePanel;
-import entity.Item.*;
-
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import main.GamePanel;
 
 public class InventoryState extends JFrame implements StateHandler {
     private GamePanel gp;
@@ -91,8 +92,23 @@ public class InventoryState extends JFrame implements StateHandler {
         table.setRowHeight(34);
         table.setFillsViewportHeight(true);
         table.setFocusable(false);
-        table.setRowSelectionAllowed(false);
+        table.setRowSelectionAllowed(true);
         table.setColumnSelectionAllowed(false);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        table.addMouseListener(new MouseAdapter() { //pake klik kanan ygy
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int row = table.rowAtPoint(e.getPoint());
+                    if (row >= 0) {
+                        table.setRowSelectionInterval(row, row);
+                        showContextMenu(e, row);
+                    }
+                }
+            }
+        });
+        
         JTableHeader th = table.getTableHeader();
         th.setOpaque(false);
         th.setFont(vt323.deriveFont(Font.BOLD, 20f));
@@ -131,8 +147,83 @@ public class InventoryState extends JFrame implements StateHandler {
         footerPanel.add(buttonPanel, BorderLayout.CENTER);
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
 
+        JLabel instructionLabel = new JLabel("Right-click on food items to eat :D", JLabel.CENTER);
+        instructionLabel.setFont(vt323.deriveFont(Font.PLAIN, 14f));
+        instructionLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        instructionLabel.setForeground(TEXT_COLOR_COLUMN);
+        instructionLabel.setOpaque(false);
+        footerPanel.add(instructionLabel, BorderLayout.NORTH);
+
         updateInventoryDisplay();
-        //setVisible(true);
+    }
+
+    private void showContextMenu(MouseEvent e, int row) {
+        String itemName = (String) table.getValueAt(row, 0);
+        
+        if ("Inventory is empty".equals(itemName)) {
+            return;
+        }
+        
+        Item selectedItem = null;
+        for (Item item : inventory.getItems().keySet()) {
+            if (item.getItemName().equals(itemName)) {
+                selectedItem = item;
+                break;
+            }
+        }
+        
+        if (selectedItem != null && isEdible(selectedItem)) {
+            final Item finalSelectedItem = selectedItem; 
+            
+            JPopupMenu contextMenu = new JPopupMenu();
+            
+            JMenuItem eatItem = new JMenuItem("Eat " + itemName);
+            eatItem.setFont(vt323.deriveFont(Font.PLAIN, 14f));
+            eatItem.addActionListener(ae -> eatFood(finalSelectedItem));
+            
+            contextMenu.add(eatItem);
+            contextMenu.show(table, e.getX(), e.getY());
+        }
+    }
+    
+    private boolean isEdible(Item item) {
+        return item instanceof Fish || item instanceof Seeds || item instanceof Food;
+    }
+    
+    private void eatFood(Item item) {
+        int totalQuantity = 0;
+        Item itemToRemove = null;
+        
+        for (Map.Entry<Item, Integer> entry : inventory.getItems().entrySet()) {
+            if (entry.getKey().getItemName().equals(item.getItemName()) && entry.getValue() > 0) {
+                totalQuantity += entry.getValue();
+                if (itemToRemove == null) {
+                    itemToRemove = entry.getKey(); 
+                }
+            }
+        }
+        
+        if (totalQuantity <= 0) {
+            JOptionPane.showMessageDialog(this, "You don't have any " + item.getItemName() + " to eat!");
+            return;
+        }
+        
+        int energyGain = 0;
+        if (item instanceof Fish) {
+            energyGain = 1;
+        } else if (item instanceof Seeds) {
+            energyGain = 3;
+        }
+        else if (item instanceof Food) {
+            Food foodItem = (Food) item;
+            energyGain = foodItem.getEnergyRestored();        
+        }
+        
+        player.setEnergy(player.getEnergy() + energyGain);
+        inventory.removeItem(itemToRemove, 1);
+        updateInventoryDisplay();
+        
+        JOptionPane.showMessageDialog(this, "You ate " + item.getItemName() + " and gained " + energyGain + " energy!\n" + "Current energy: " + player.getEnergy() ,"Food Consumed", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void updateInventoryDisplay() {
@@ -140,22 +231,26 @@ public class InventoryState extends JFrame implements StateHandler {
         String[] columnNames = {"Item Name", "Quantity"};
         Object[][] data;
         
-        // Filter items with quantity > 0 (excluding unlimited tools which have -1)
-        Map<Item, Integer> filteredItems = new HashMap<>();
+        Map<String, Integer> groupedItems = new HashMap<>();
         for (Map.Entry<Item, Integer> entry : items.entrySet()) {
             Integer quantity = entry.getValue();
             if (quantity != null && (quantity > 0 || quantity == -1)) {
-                filteredItems.put(entry.getKey(), quantity);
+                String itemName = entry.getKey().getItemName();
+                if (quantity == -1) {
+                    groupedItems.put(itemName, -1);
+                } else {
+                    groupedItems.put(itemName, groupedItems.getOrDefault(itemName, 0) + quantity);
+                }
             }
         }
         
-        if (filteredItems.isEmpty()) {
+        if (groupedItems.isEmpty()) {
             data = new Object[][] { {"Inventory is empty", "-"} };
         } else {
-            data = new Object[filteredItems.size()][2];
+            data = new Object[groupedItems.size()][2];
             int i = 0;
-            for (Map.Entry<Item, Integer> entry : filteredItems.entrySet()) {
-                data[i][0] = entry.getKey().getItemName();
+            for (Map.Entry<String, Integer> entry : groupedItems.entrySet()) {
+                data[i][0] = entry.getKey();
                 if (entry.getValue() == -1) {
                     data[i][1] = "Unlimited";
                 } else {
@@ -164,6 +259,7 @@ public class InventoryState extends JFrame implements StateHandler {
                 i++;
             }
         }
+        
         table.setModel(new javax.swing.table.DefaultTableModel(
                 data,
                 columnNames
