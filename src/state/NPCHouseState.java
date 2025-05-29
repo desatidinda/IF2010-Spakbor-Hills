@@ -202,10 +202,10 @@ public class NPCHouseState extends InsideHouseState {
             int boX = gp.screenWidth / 2 - boxWidth / 2;
             int boY = popupY + popupHeight + 70;
 
-            g2.setColor(new Color(255, 235, 180)); // krem terang
+            g2.setColor(new Color(255, 235, 180));
             g2.fillRoundRect(boX, boY, boxWidth, boxHeight, 10, 10);
 
-            g2.setColor(new Color(120, 80, 40)); // coklat tua
+            g2.setColor(new Color(120, 80, 40));
             g2.setStroke(new BasicStroke(2));
             g2.drawRoundRect(boX, boY, boxWidth, boxHeight, 10, 10);
 
