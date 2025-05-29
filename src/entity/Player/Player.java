@@ -349,7 +349,11 @@ public class Player {
     public void setLocation(Point location) { 
         this.location = location; 
     }
-
+    
+    public void setEnergy(int energy) { 
+        this.energy = Math.max(MIN_ENERGY, Math.min(MAX_ENERGY, energy)); 
+    }
+    
     // METHOD
     public void addGold(double amount) { 
         this.gold += amount; 
