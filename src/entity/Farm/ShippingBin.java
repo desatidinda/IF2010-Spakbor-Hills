@@ -1,17 +1,18 @@
 package entity.Farm;
 
+import entity.Item.Fish;
+import entity.Item.FishData;
+import entity.Item.Item;
+import entity.Player.Player;
+import java.awt.*;
 import java.io.IOException;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import main.GameClock;
 import objects.GameObject;
-import entity.Player.Player;
-import entity.Player.Inventory;
 
 public class ShippingBin extends GameObject {
     public ShippingBin() {
@@ -34,10 +35,19 @@ public class ShippingBin extends GameObject {
     }
     
     private double getItemPrice(String itemName) {
-        // switch (itemName.toLowerCase()) {
-        //     return 10;
-        // }
-        return 10;
+        Fish fish = FishData.ALL_FISH.stream()
+                .filter(f -> f.getName().equalsIgnoreCase(itemName))
+                .findFirst()
+                .orElse(null);
+        
+        if (fish != null) {
+            return fish.calculateSellPrice(); 
+        }
+        
+        switch (itemName.toLowerCase()) {
+            default:
+                return 10;
+        }
     }
     
     private class ShippingBinGUI extends JDialog {
@@ -47,7 +57,7 @@ public class ShippingBin extends GameObject {
         private JLabel goldLabel;
         private JLabel totalValueLabel;
         private List<String> sellableItems;
-        private Map<String, Integer> playerItems;
+        private Map<Item, Integer> playerItems; 
         private Font vt323;
 
         public ShippingBinGUI(Player player) {
@@ -153,8 +163,9 @@ public class ShippingBin extends GameObject {
         private List<String> getSellableItems() {
             List<String> items = new ArrayList<>();
             
-            for (Map.Entry<String, Integer> entry : playerItems.entrySet()) {
-                String itemName = entry.getKey();
+            for (Map.Entry<Item, Integer> entry : playerItems.entrySet()) {
+                Item item = entry.getKey();
+                String itemName = item.getItemName(); // Get name from Item object
                 Integer quantity = entry.getValue();
                 
                 if (quantity == null || quantity <= 0 || quantity == -1) {
@@ -178,7 +189,7 @@ public class ShippingBin extends GameObject {
             }
             
             for (String itemName : sellableItems) {
-                int quantity = playerItems.get(itemName);
+                int quantity = getQuantityByName(itemName);
                 double price = getItemPrice(itemName);
                 double totalValue = price * quantity;
                 String displayText = String.format("%s x%d (Price: %d each | Total: %d gold)", itemName, quantity, (int)price, (int)totalValue);
@@ -186,16 +197,34 @@ public class ShippingBin extends GameObject {
             }
         }
         
-        private void updateLabels() {
+        public void updateLabels() {
             goldLabel.setText("Current Gold: " + player.getGold());
             
             double totalValue = 0; 
             for (String itemName : sellableItems) {
-                int quantity = playerItems.get(itemName);
+                int quantity = getQuantityByName(itemName);
                 double price = getItemPrice(itemName);
                 totalValue += price * quantity;
             }
             totalValueLabel.setText("Total Value: " + (int)totalValue + " gold"); 
+        }
+        
+        private int getQuantityByName(String itemName) {
+            for (Map.Entry<Item, Integer> entry : playerItems.entrySet()) {
+                if (entry.getKey().getItemName().equals(itemName)) {
+                    return entry.getValue();
+                }
+            }
+            return 0;
+        }
+        
+        private Item getItemByName(String itemName) {
+            for (Item item : playerItems.keySet()) {
+                if (item.getItemName().equals(itemName)) {
+                    return item;
+                }
+            }
+            return null;
         }
         
         private void sellSelectedItem() {
@@ -206,12 +235,13 @@ public class ShippingBin extends GameObject {
                 return;
             }
             
-            String selectedItem = sellableItems.get(selectedIndex);
-            int maxQuantity = playerItems.get(selectedItem);
-            double itemPrice = getItemPrice(selectedItem);
+            String selectedItemName = sellableItems.get(selectedIndex);
+            Item selectedItem = getItemByName(selectedItemName); // Get Item object
+            int maxQuantity = getQuantityByName(selectedItemName);
+            double itemPrice = getItemPrice(selectedItemName);
             
             String input = JOptionPane.showInputDialog(this, 
-                String.format("How many %s to sell?\nAvailable: %d\nPrice: %d gold each", selectedItem, maxQuantity, (int)itemPrice), "Sell Item", JOptionPane.QUESTION_MESSAGE);
+                String.format("How many %s to sell?\nAvailable: %d\nPrice: %d gold each", selectedItemName, maxQuantity, (int)itemPrice), "Sell Item", JOptionPane.QUESTION_MESSAGE);
     
             if (input == null) return; 
             
@@ -229,16 +259,17 @@ public class ShippingBin extends GameObject {
                 }
                 
                 double totalValue = itemPrice * quantityToSell;
-                player.getInventory().removeItem(selectedItem, quantityToSell);
+                player.getInventory().removeItem(selectedItem, quantityToSell); // Use Item object
                 player.addGold((int)totalValue); 
                 playerItems = player.getInventory().getItems();
                 sellableItems = getSellableItems();
                 
                 updateItemList();
+                GameClock.skipToMorning();
                 updateLabels();
-                
+
                 JOptionPane.showMessageDialog(this, 
-                    String.format("Sold %dx %s for %d gold!", quantityToSell, selectedItem, (int)totalValue), "Sale Complete", JOptionPane.INFORMATION_MESSAGE);
+                    String.format("Sold %dx %s for %d gold!", quantityToSell, selectedItemName, (int)totalValue), "Sale Complete", JOptionPane.INFORMATION_MESSAGE);
                 
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Please enter a valid number!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
@@ -258,12 +289,13 @@ public class ShippingBin extends GameObject {
                 int itemsSold = 0;
                 
                 for (String itemName : new ArrayList<>(sellableItems)) {
-                    int quantity = playerItems.get(itemName);
+                    Item item = getItemByName(itemName); // Get Item object
+                    int quantity = getQuantityByName(itemName);
                     double itemPrice = getItemPrice(itemName);
                     double itemTotal = itemPrice * quantity;
                     totalEarnings += itemTotal;
                     itemsSold += quantity;
-                    player.getInventory().removeItem(itemName, quantity);
+                    player.getInventory().removeItem(item, quantity); // Use Item object
                 }
                 
                 player.addGold((int)totalEarnings); 
@@ -271,6 +303,7 @@ public class ShippingBin extends GameObject {
                 sellableItems = getSellableItems();
                 
                 updateItemList();
+                GameClock.skipToMorning();
                 updateLabels();
                 
                 JOptionPane.showMessageDialog(this, 

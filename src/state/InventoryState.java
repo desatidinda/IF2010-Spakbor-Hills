@@ -12,6 +12,7 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 public class InventoryState extends JFrame implements StateHandler {
@@ -138,12 +139,22 @@ public class InventoryState extends JFrame implements StateHandler {
         Map<Item, Integer> items = inventory.getItems();
         String[] columnNames = {"Item Name", "Quantity"};
         Object[][] data;
-        if (items.isEmpty()) {
+        
+        // Filter items with quantity > 0 (excluding unlimited tools which have -1)
+        Map<Item, Integer> filteredItems = new HashMap<>();
+        for (Map.Entry<Item, Integer> entry : items.entrySet()) {
+            Integer quantity = entry.getValue();
+            if (quantity != null && (quantity > 0 || quantity == -1)) {
+                filteredItems.put(entry.getKey(), quantity);
+            }
+        }
+        
+        if (filteredItems.isEmpty()) {
             data = new Object[][] { {"Inventory is empty", "-"} };
         } else {
-            data = new Object[items.size()][2];
+            data = new Object[filteredItems.size()][2];
             int i = 0;
-            for (Map.Entry<Item, Integer> entry : items.entrySet()) {
+            for (Map.Entry<Item, Integer> entry : filteredItems.entrySet()) {
                 data[i][0] = entry.getKey().getItemName();
                 if (entry.getValue() == -1) {
                     data[i][1] = "Unlimited";
