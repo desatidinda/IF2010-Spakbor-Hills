@@ -6,8 +6,11 @@ public class MiscData {
     public static final List<Misc> ALL_MISC = List.of(
         new Firewood(20, 10),
         new Coal(100, 75),
-        new Misc("Wood", 100.0, 50.0)
-
-        //nanti tambahin lg aja
+        new Misc("Wood", 100.0, 50.0),
+        new Misc("Eggplant", 100.0, 50.0),
+        new Misc("Fish n’ Chips Recipe", 250.0, 0.0),
+        new Misc("Fish Sandwich Recipe", 250.0,0.0),
+        new Misc("Egg",20.0,10.0),
+        new Misc("Proposal Ring", 250.0,0.0)
     );
 }
