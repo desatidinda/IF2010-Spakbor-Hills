@@ -98,8 +98,11 @@ public class Fish extends Item{
         return h * 60 + m;
     }   
     
-    
-    private double calculateSellPrice() {
+    public double getSellPrice() {
+        return sellPrice;
+    }
+        
+    public double calculateSellPrice() {
         int seasonCount = seasons.size();
 
         int totalMinutes = 0;
