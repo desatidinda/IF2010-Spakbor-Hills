@@ -36,8 +36,8 @@ public class MayorTadi extends NPC {
     }
 
     @Override
-    public void chat() {
-        System.out.println("Mayor Tadi: Rakyatku, berikan aku barang-barang langka!");
+    public String chat() {
+        return "Rakyatku, berikan aku barang-barang langka!";
     }
 
     @Override

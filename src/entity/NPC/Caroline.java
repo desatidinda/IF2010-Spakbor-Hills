@@ -38,8 +38,8 @@ public class Caroline extends NPC {
     }
 
     @Override
-    public void chat() {
-        System.out.println("Caroline: Seni itu adalah daur ulang yang indah!");
+    public String chat() {
+        return "Seni itu adalah daur ulang yang indah!";
     }
 
     @Override

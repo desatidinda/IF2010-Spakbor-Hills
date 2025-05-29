@@ -35,8 +35,8 @@ public class Emily extends NPC {
     }
 
     @Override
-    public void chat() {
-        System.out.println("Emily: Aku senang memasak dengan bahan segar dari kebun!");
+    public String chat() {
+        return "Aku senang memasak dengan bahan segar dari kebun!";
     }
 
     @Override
