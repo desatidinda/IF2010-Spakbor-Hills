@@ -368,14 +368,28 @@ public class MapState implements StateHandler, MouseListener {
     }
 
     public void teleportPlayerTo(String location) {
-        if (location.equals("Mountain Lake") || location.equals("Forest River") || location.equals("Ocean")) {
+        if (location.equals("Pond")) {
+            GameClock.setPaused(true);
+            
             FishingState fishingState = (FishingState) gp.stateHandlers.get(GameStates.FISHING);
             fishingState.setFishingLocation(location);
-            
+            gp.gameState = GameStates.FISHING;
+            gp.player.update();
+            gp.player.teleportMode = false;
+        } else if (location.equals("Mountain Lake") || location.equals("Forest River") || location.equals("Ocean")) {
+            gp.player.performAction(10);
+            GameClock.skipMinutes(15);
+            GameClock.setPaused(true);
+
+            FishingState fishingState = (FishingState) gp.stateHandlers.get(GameStates.FISHING);
+            fishingState.setFishingLocation(location);
             gp.gameState = GameStates.FISHING;
             gp.player.update();
             gp.player.teleportMode = false;
         } else if (location.endsWith("House")) {
+            gp.player.performAction(10); 
+            GameClock.skipMinutes(15);
+
             gp.player.houseX = gp.screenWidth / 2 - (gp.tileSize / 2);
             gp.player.houseY = gp.screenHeight / 2 - (gp.tileSize / 2);
             // ini posisi kl indoor ya

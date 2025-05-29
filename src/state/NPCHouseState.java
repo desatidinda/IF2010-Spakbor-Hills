@@ -53,8 +53,8 @@ public class NPCHouseState extends InsideHouseState {
         this.gp = gp;
         this.npcInHouse = npc;
         this.choices = npc.getName().equals("Emily")
-                ? new String[]{"Chat", "Give Gift", "Store", "Cancel"}
-                : new String[]{"Chat", "Give Gift", "Cancel"};
+                ? new String[]{"Chat", "Give Gift", "Propose", "Marry", "Store", "Cancel"}
+                : new String[]{"Chat", "Give Gift", "Propose", "Marry", "Cancel"};
         npcInHouse.worldX = gp.player.houseX + gp.tileSize * 2 - 16;
         npcInHouse.worldY = gp.player.houseY - gp.tileSize * 3;
         super.loadBackground();

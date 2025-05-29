@@ -1,9 +1,5 @@
 package state;
 
-import entity.Item.Fish;
-import entity.Item.FishData;
-import entity.Item.FishType;
-import entity.Item.RecipeUnlocker;
 import entity.Item.*;
 
 import java.awt.BasicStroke;
@@ -46,6 +42,10 @@ public class FishingState implements StateHandler {
         
     }
 
+    public String getCurrentLocation() {
+        return currentLocation;
+    }
+
     private void loadBackground() {
 
 
@@ -82,10 +82,10 @@ public class FishingState implements StateHandler {
             gp.ui.showMessage("Not enough energy to fish! You need at least 5 energy.");
             return;
         }
+
         showFishInfo = true;
         showFishingGame = false;
         availableFish = FishData.ALL_FISH.stream().filter(f -> f.getLocations().contains(currentLocation)).toList();
-        gp.player.performAction(5);
     }
     
     private void startFishingGame() {
@@ -125,8 +125,6 @@ public class FishingState implements StateHandler {
         } else if (attempts >= maxAttempts) {
             gameOver = true;
             resultMessage = "The fish got away!";
-            gp.player.performAction(5);
-            GameClock.skipMinutes(15); // to do
         } else {
             if (playerGuess < targetNumber) {
                 minRange = playerGuess + 1;
@@ -150,7 +148,6 @@ public class FishingState implements StateHandler {
         Item fishItem = ItemFactory.createItem(targetFish.getName());
         gp.player.getInventory().addItem(fishItem, 1);
         resultMessage = "You caught a " + targetFish.getName() + "!";
-        GameClock.skipMinutes(15); // to do
 
         entity.Item.RecipeUnlocker.checkFishUnlock(gp.player.getInventory()); //ini buat unlock resep yg sashimi itu
     }
@@ -429,6 +426,8 @@ public class FishingState implements StateHandler {
             gp.player.teleportOut();
             gp.keyHandler.spacePressed = true;
             showInteractPopup = false;
+            GameClock.setPaused(false);
+
             if (gp.player.getEnergy() < 5) {
                 gp.ui.showMessage("Not enough energy to fish! You need at least 5 energy.");
                 return;

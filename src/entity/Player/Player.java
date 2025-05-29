@@ -131,24 +131,19 @@ public class Player {
                     }
                 }
                 int furnitureIndex = gp.cm.checkIndoorObject(this, true);
-                //TODO: lakuin aktivitas sesuai apa yg ditabrak
                 if (collision == false) {
                     switch (direction) {
                         case "up":
                             houseY -= gp.tileSize;
-                            //getLocation().setY(getLocation().getY() - speed);
                             break;
                         case "down":
                             houseY += gp.tileSize;
-                            //getLocation().setY(getLocation().getY() + speed);
                             break;
                         case "left":
                             houseX -= gp.tileSize;
-                            //getLocation().setX(getLocation().getX() - speed);
                             break;
                         case "right":
                             houseX += gp.tileSize;
-                            //getLocation().setX(getLocation().getX() + speed);
                             break;
                     }
                     //System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");

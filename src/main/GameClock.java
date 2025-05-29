@@ -5,6 +5,11 @@ import entity.Farm.Season;
 import entity.Farm.Weather;
 
 public class GameClock {
+    private static Thread clockThread;
+    private static boolean running = false;
+    private static boolean paused = false;
+    private static final Object lock = new Object();
+
     private static int minute = 0;
     private static int hour = 6;
     private static int day = 1;
@@ -15,18 +20,39 @@ public class GameClock {
     private static int rainyDayCounter = 0;
     private static Random rand = new Random();
 
+    public static void startClock() {
+        if (clockThread == null || !clockThread.isAlive()) {
+            running = true;
+            clockThread = new Thread(() -> {
+                while (running) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                    synchronized (lock) {
+                        if (!paused) updateTime(1);
+                    }
+                }
+            });
+            clockThread.setDaemon(true);
+            clockThread.start();
+        }
+    }
+
     public static void init() {
-        hour = 6;
-        minute = 0;
-        day = dayfix = 1;
-        currentSeason = Season.SPRING;
-        currentWeather = generateWeather();
-        rainyDayCounter = currentWeather == Weather.RAINY ? 1 : 0;
+        synchronized (lock) {
+            hour = 6;
+            minute = 0;
+            day = dayfix = 1;
+            currentSeason = Season.SPRING;
+            currentWeather = generateWeather();
+            rainyDayCounter = currentWeather == Weather.RAINY ? 1 : 0;
+        }
     }
 
     public static void updateTime(int realSeconds) {
-        int gameMinutesToAdd = realSeconds * 5; 
-        //TODO: nanti 30 nya ganti jd 5 skrg buat tes biar ga kelamaan aowkawoakwoawkaowk
+        int gameMinutesToAdd = realSeconds * 5;
 
         minute += gameMinutesToAdd;
         while (minute >= 60) {
@@ -44,28 +70,51 @@ public class GameClock {
         checkSeasonChange();
     }
 
+    public static void stopClock() {
+        running = false;
+        if (clockThread != null) clockThread.interrupt();
+    }
+
+    public static void setPaused(boolean value) {
+        paused = value;
+    }
+
+    public static boolean isPaused() {
+        return paused;
+    }
+
     public static String getFormattedTime() {
         return String.format("%02d:%02d", hour, minute);
     }
 
     public static int getHour() {
-        return hour;
+        synchronized (lock) {
+            return hour;
+        }
     }
 
     public static int getMinute() {
-        return minute;
+        synchronized (lock) {
+            return minute;
+        }
     }
 
     public static int getDay() {
-        return dayfix;
+        synchronized (lock) {
+            return dayfix;
+        }
     }
 
     public static Season getCurrentSeason() {
-        return currentSeason;
+        synchronized (lock) {
+            return currentSeason;
+        }
     }
 
     public static Weather getCurrentWeather() {
-        return currentWeather;
+        synchronized (lock) {
+            return currentWeather;
+        }
     }
 
     private static Weather generateWeather() {
@@ -94,52 +143,61 @@ public class GameClock {
     }
     
     public static void skipToMorning() {
-        hour = 6;
-        minute = 0;
-        day++;
-        dayfix++;
-
-        currentWeather = generateWeather();
-
-        checkSeasonChange();
-    }
-
-    public static void skipMinutes(int minutes) {
-        minute += minutes;
-        while (minute >= 60) {
-            minute -= 60;
-            hour++;
-        }
-        while (hour >= 24) {
-            hour -= 24;
+        synchronized (lock) {
+            hour = 6;
+            minute = 0;
             day++;
             dayfix++;
+            
             currentWeather = generateWeather();
             checkSeasonChange();
         }
     }
 
-    public static void addMinutes(int minutesToAdd) {
-        minute += minutesToAdd;
-        while (minute >= 60) {
-            minute -= 60;
-            hour++;
+    public static void skipMinutes(int minutes) {
+        synchronized (lock) {
+            if (paused) return; 
+            minute += minutes;
+            while (minute >= 60) {
+                minute -= 60;
+                hour++;
+            }
+            while (hour >= 24) {
+                hour -= 24;
+                day++;
+                dayfix++;
+                currentWeather = generateWeather();
+                checkSeasonChange();
+            }
         }
+    }
 
-        if (hour >= 24) {
+    public static void addMinutes(int minutesToAdd) {
+        synchronized (lock) {
+            if (paused) return;
+            minute += minutesToAdd;
+            while (minute >= 60) {
+                minute -= 60;
+                hour++;
+            }
+
+            if (hour >= 24) {
             hour = 0;
             day++;
             dayfix++;
             currentWeather = generateWeather();
-        }
-
-        if (day > 10) {
-            day = 1;
-            nextSeason();
+            }
+            
+            if (day > 10) {
+                day = 1;
+                nextSeason();
+            }
         }
     }
     public static void skipTo22() {
-        hour = 22;
-        minute = 0;
+        synchronized (lock) {
+            hour = 22;
+            minute = 0;
+        }
     }
 }

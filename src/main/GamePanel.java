@@ -87,8 +87,6 @@ public class GamePanel extends JPanel implements Runnable {
         double delta = 0;
 
         long lastTime = System.nanoTime();
-        long timer = System.currentTimeMillis(); // Buat update game time
-        int clockInterval = 1000; // 1 detik
 
         while (gameThread != null) {
             long currentTime = System.nanoTime();
@@ -100,12 +98,6 @@ public class GamePanel extends JPanel implements Runnable {
                 update();
                 repaint();
                 delta--;
-            }
-
-            // Update game time tiap 1 detik real
-            if (System.currentTimeMillis() - timer >= clockInterval) {
-                GameClock.updateTime(1);
-                timer += clockInterval;
             }
         }
     }
