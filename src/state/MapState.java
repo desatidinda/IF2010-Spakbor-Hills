@@ -290,26 +290,41 @@ public class MapState implements StateHandler, MouseListener {
             } else if (key == KeyEvent.VK_ENTER) {
                 switch (tileActions[selectedTileAction]) {
                     case "Tilling":
-                        gp.tileManager.tillTile(interactCol, interactRow);
-                        gp.player.performAction(5);
+                        int tileTillNum = gp.tileManager.getMapTileNum()[interactCol][interactRow];
+                        if (gp.tileManager.getTile()[tileTillNum].getType() == TileType.TILLABLE) {
+                            gp.tileManager.tillTile(interactCol, interactRow);
+                            gp.player.performAction(5); 
+                        } else {
+                            gp.ui.showPopupMessage("You can only till a tillable land!");
+                        }
                         break;
                     case "Recover Land":
-                        gp.tileManager.recoverTile(interactCol, interactRow);
-                        gp.player.performAction(5);
+                        int tileRecoverNum = gp.tileManager.getMapTileNum()[interactCol][interactRow];
+                        if (gp.tileManager.getTile()[tileRecoverNum].getType() == TileType.TILLED) {
+                            gp.tileManager.recoverTile(interactCol, interactRow);
+                            gp.player.performAction(5);    
+                        } else {
+                            gp.ui.showPopupMessage("You can only recover a tilled land!");
+                        }
                         break;
                     case "Planting":
-                        Set<Item> seeds = gp.player.getInventory().getSeeds();
-                        Season currentSeason = GameClock.getCurrentSeason();
-                        Set<Item> plantableSeeds = new HashSet<>();
-                        for (Item item : seeds) {
-                            if (item instanceof Seeds && ((Seeds) item).getSeason() == currentSeason) {
-                                plantableSeeds.add(item);
-                            }
-                        }
-                        if (!plantableSeeds.isEmpty()) {
-                            showSeedSelectionPopup(plantableSeeds, interactCol, interactRow);
+                        int tilePlantNum = gp.tileManager.getMapTileNum()[interactCol][interactRow];
+                        if (gp.tileManager.getTile()[tilePlantNum].getType() != TileType.TILLED) {
+                            gp.ui.showPopupMessage("You can only plant on tilled land!");
                         } else {
-                            gp.ui.showPopupMessage("You have no seeds to plant for this season.");
+                            Set<Item> seeds = gp.player.getInventory().getSeeds();
+                            Season currentSeason = GameClock.getCurrentSeason();
+                            Set<Item> plantableSeeds = new HashSet<>();
+                            for (Item item : seeds) {
+                                if (item instanceof Seeds && ((Seeds) item).getSeason() == currentSeason) {
+                                    plantableSeeds.add(item);
+                                }
+                            }                    
+                            if (!plantableSeeds.isEmpty()) {
+                                showSeedSelectionPopup(plantableSeeds, interactCol, interactRow);
+                            } else {
+                                gp.ui.showPopupMessage("You have no seeds to plant for this season.");
+                            }
                         }
                         break;
                     case "Watering":
@@ -317,22 +332,25 @@ public class MapState implements StateHandler, MouseListener {
                         gp.player.performAction(5);
                         break;
                     case "Harvesting":
-                        String plantedSeed = gp.tileManager.getPlantedSeedNameMap()[interactCol][interactRow];
-                        int tileNum = gp.tileManager.getMapTileNum()[interactCol][interactRow];
-                        if (gp.tileManager.getTile()[tileNum].getType() == TileType.PLANTED
-                            && !gp.tileManager.getWateredMap()[interactCol][interactRow]) {
-                            gp.ui.showPopupMessage("You must water the plant before harvesting!");
+                        int tileHarvestNum = gp.tileManager.getMapTileNum()[interactCol][interactRow];
+                        if (gp.tileManager.getTile()[tileHarvestNum].getType() != TileType.PLANTED) {
+                            gp.ui.showPopupMessage("There is nothing to harvest here!");
                         } else {
-                            boolean success = gp.tileManager.harvestPlant(interactCol, interactRow, gp.player.getInventory(), plantedSeed);
-                            if (success) {
-                                gp.player.performAction(5);
-                                gp.ui.showPopupMessage("Harvest successful!");
-                                ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementCropsHarvested();
+                            String plantedSeed = gp.tileManager.getPlantedSeedNameMap()[interactCol][interactRow];
+                            if (gp.tileManager.getTile()[tileHarvestNum].getType() == TileType.PLANTED
+                                && !gp.tileManager.getWateredMap()[interactCol][interactRow]) {
+                                gp.ui.showPopupMessage("You must water the plant before harvesting!");
+                            } else {
+                                boolean success = gp.tileManager.harvestPlant(interactCol, interactRow, gp.player.getInventory(), plantedSeed);
+                                if (success) {
+                                    gp.player.performAction(5);
+                                    gp.ui.showPopupMessage("Harvest successful!");
+                                    ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementCropsHarvested();
+                                }
                             }
                         }
                         break;
-
-                }
+                    }
                 showTilePopup = false;
             } else if (key == KeyEvent.VK_ESCAPE) {
                 showTilePopup = false;
