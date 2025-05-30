@@ -1,6 +1,7 @@
 package state;
 
 import main.GamePanel;
+import main.GameStates;
 import main.GameClock;
 
 import java.awt.*;
@@ -13,6 +14,7 @@ import java.util.Map;
 import entity.House.KingBed;
 import entity.House.Stove;
 import entity.House.TV;
+import entity.Farm.Season;
 import entity.Farm.Weather;
 import entity.House.*;
 import entity.Item.*;
@@ -21,6 +23,7 @@ public class InsideHouseState implements StateHandler {
 
     private final GamePanel gp;
     private BufferedImage image;
+    private Season lastSeason = GameClock.getCurrentSeason();
     private int interactedFurnitureIndex = -1;
     private boolean showPopup = false;
     private boolean watchTV = false;
@@ -87,6 +90,12 @@ public class InsideHouseState implements StateHandler {
                 pendingFuel = null;
                 showRecipeList = false;
             }
+        }
+
+        Season currentSeason = GameClock.getCurrentSeason();
+        if (currentSeason != lastSeason) {
+            ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementSeasonsPassed();
+            lastSeason = currentSeason;
         }
     }
 

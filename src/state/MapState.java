@@ -30,9 +30,9 @@ public class MapState implements StateHandler, MouseListener {
     private final GamePanel gp;
     private int selectedTeleportIndex = 0;
     private final String[] teleportOptions = {"Mountain Lake", "Forest River", "Ocean", "Mayor Tadi House", "Caroline House", "Perry House", "Dasco House", "Emily House", "Abigail House"};
-    private Font vt323;
     private boolean showShippingBinPopup = false;
     private int interactedObjectIndex = 999;
+    private Season lastSeason = GameClock.getCurrentSeason();
 
     private boolean showTilePopup = false;
     private int selectedTileAction = 0;
@@ -70,7 +70,7 @@ public class MapState implements StateHandler, MouseListener {
         
         for (int i = 0; i < gp.obj.length; i++) {
             if (gp.obj[i] != null) {
-                String imagePath = gp.obj[i].getClass().getSimpleName(); // or however you identify shipping bin
+                String imagePath = gp.obj[i].getClass().getSimpleName();
                 int objLeftX = gp.obj[i].worldX;
                 int objRightX = gp.obj[i].worldX + gp.tileSize * gp.obj[i].widthInTiles;
                 int objTopY = gp.obj[i].worldY;
@@ -100,6 +100,12 @@ public class MapState implements StateHandler, MouseListener {
             gp.tileManager.checkPlantsAtEndOfDay();
             gp.tileManager.resetWaterCountAndWateredMap(isRainy);
             lastDayChecked = currentDay;
+        }
+
+        Season currentSeason = GameClock.getCurrentSeason();
+        if (currentSeason != lastSeason) {
+            ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementSeasonsPassed();
+            lastSeason = currentSeason;
         }
     }
 

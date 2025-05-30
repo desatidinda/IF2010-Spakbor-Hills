@@ -1,5 +1,6 @@
 package state;
 
+import main.GameClock;
 import main.GamePanel;
 import state.StateHandler;
 import main.GameStates;
@@ -23,12 +24,10 @@ public class EndGameStatistics implements StateHandler {
 
     private int totalIncome = 0;
     private int totalExpenditure = 0;
-    private int totalDaysPlayed = 0;
     private int totalSeasonsPassed = 0;
     private int totalCropsHarvested = 0;
     private int totalFishCaught = 0;
-
-    private final Map<NPC, Integer> npcVisitingFrequency = new HashMap<>();
+    
     private final Map<FishType, Integer> fishStatistics = new HashMap<>();
 
     public EndGameStatistics(GamePanel gp) {
@@ -45,8 +44,8 @@ public class EndGameStatistics implements StateHandler {
         totalExpenditure += amount;
     }
 
-    public void incrementDaysPlayed() {
-        totalDaysPlayed++;
+    public void incrementSeasonsPassed() {
+        totalSeasonsPassed++;
     }
 
     public void incrementCropsHarvested() {
@@ -79,7 +78,7 @@ public class EndGameStatistics implements StateHandler {
     }
 
     public int getTotalDaysPlayed() {
-        return totalDaysPlayed;
+        return GameClock.getDay();
     }
 
     public int getTotalCropsHarvested() {
@@ -88,10 +87,6 @@ public class EndGameStatistics implements StateHandler {
 
     public int getTotalFishCaught() {
         return totalFishCaught;
-    }
-
-    public Map<NPC, Integer> getNpcVisitingFrequency() {
-        return npcVisitingFrequency;
     }
 
     public Map<FishType, Integer> getFishStatistics() {
@@ -103,11 +98,12 @@ public class EndGameStatistics implements StateHandler {
         lines.add("== END GAME STATISTICS ==");
         lines.add("Total Income     : " + totalIncome);
         lines.add("Total Expenditure: " + totalExpenditure);
+        lines.add("Total Seasons    : " + totalSeasonsPassed);
         lines.add(String.format("Avg Income/Season: %.2f", getAverageSeasonIncome()));
         lines.add(String.format("Avg Expense/Season: %.2f", getAverageSeasonExpenditure()));
-        lines.add("Total Days Played: " + totalDaysPlayed);
-        lines.add("Crops Harvested  : " + totalCropsHarvested);
-        lines.add("Fish Caught      : " + totalFishCaught);
+        lines.add("Total Days Played: " + getTotalDaysPlayed());
+        lines.add("Crops Harvested  : " + getTotalCropsHarvested());
+        lines.add("Fish Caught      : " + getTotalFishCaught());
         lines.add("");
         lines.add("-- NPC Status --");
         for (NPC npc : gp.npc) {

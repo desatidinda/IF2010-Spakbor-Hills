@@ -9,6 +9,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import main.GameStates;
 import main.GameClock;
 import entity.Item.*;
 import entity.NPC.*;
@@ -430,6 +431,7 @@ public class NPCHouseState extends InsideHouseState {
                 } else if (amount == 0) {
                     showLocalPopup("Pilih jumlah dulu!");
                 } else if (gp.player.useGold(total)) {
+                    ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).addExpenditure(total);
                     Item newItem = ItemFactory.createItem(name);
                     gp.player.getInventory().addItem(newItem, amount);
                     if (isOneTime) purchasedOneTimeItems.add(name);
