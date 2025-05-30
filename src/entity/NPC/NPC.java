@@ -14,7 +14,8 @@ public abstract class NPC {
     protected ArrayList<Item> lovedItems = new ArrayList<>();
     protected ArrayList<Item> likedItems = new ArrayList<>();
     protected ArrayList<Item> hatedItems = new ArrayList<>();
-    protected String relationshipStatus = "single"; //Semua nya default single dulu
+    protected String relationshipStatus = "Single"; //Semua nya default single dulu, ada "Single", "Fiance" dan "Spouse"
+    private int lastProposalDay = -1;
     protected int countChatting = 0;
     protected int countGifting = 0;
     protected int countVisiting = 0;
@@ -53,6 +54,10 @@ public abstract class NPC {
         return relationshipStatus;
     }
 
+    public int getLastProposalDay() {
+        return lastProposalDay;
+    }
+
     public ArrayList<Item> getLovedItems() {
         return lovedItems;
     }
@@ -79,6 +84,10 @@ public abstract class NPC {
 
     public void setRelationshipStatus(String status) {
         this.relationshipStatus = status;
+    }
+
+    public void setLastProposalDay(int day) {
+        this.lastProposalDay = day;
     }
 
     public void incrementChatting() {

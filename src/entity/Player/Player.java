@@ -8,6 +8,7 @@ import entity.Item.RecipeRegistry;
 import entity.NPC.NPC;
 import map.Point;
 import input.KeyHandler;
+import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
 
@@ -28,21 +29,23 @@ public class Player {
     private Inventory inventory;
     private Point location;
     private Point indoorLocation;
+    private static final int MAX_ENERGY = 100;
+    private static final int MIN_ENERGY = -20;
+    private boolean hasReachedEndgame = false;
+
     public final int speed = 1;
     public int worldX, worldY;
     public int savedWorldX, savedWorldY;
     public final int screenX, screenY;
     public int houseX, houseY;
 
-    public static final int MAX_ENERGY = 100;
-    public static final int MIN_ENERGY = -20;
 
     GamePanel gp;
     KeyHandler keyHandler;
-    public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+    private BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public String direction = "down";
-    public int spriteCounter = 0;
-    public int spriteNum = 1;
+    private int spriteCounter = 0;
+    private int spriteNum = 1;
     public Rectangle solid;
     public int solidDefaultX, solidDefaultY;
     public boolean collision = false;
@@ -318,6 +321,10 @@ public class Player {
         return null;
     }
 
+    public boolean hasReachedEndgame() {
+        return hasReachedEndgame;
+    }
+
 
     // SETTER
     public void setName(String name) { 
@@ -347,6 +354,10 @@ public class Player {
     
     public void setEnergy(int energy) { 
         this.energy = Math.max(MIN_ENERGY, Math.min(MAX_ENERGY, energy)); 
+    }
+
+    public void setReachedEndgame(boolean value) {
+        hasReachedEndgame = value;
     }
     
     // METHOD
@@ -417,6 +428,38 @@ public class Player {
         return false;
     }
 
+     public boolean propose(NPC npc) {
+        if (!npc.getRelationshipStatus().equals("Single")) {
+            performAction(20);
+            GameClock.skipMinutes(60);
+            return false;
+        }
+
+        if (npc.getHeartPoints() < 150) {
+            performAction(20);
+            GameClock.skipMinutes(60);
+            return false;
+        }
+
+        npc.setRelationshipStatus("Fiance");
+        setPartner(npc.getName());
+        npc.setLastProposalDay(GameClock.getDay());
+        performAction(10);
+        GameClock.skipMinutes(60);
+        return true;
+    }
+
+    public boolean marry(NPC npc) {
+        if (!npc.getRelationshipStatus().equals("Fiance")) return false;
+        if (!npc.getName().equals(partner)) return false;
+        if (GameClock.getDay() - npc.getLastProposalDay() < 1) return false;
+
+        npc.setRelationshipStatus("Spouse");
+        setPartner(npc.getName());
+        performAction(80);
+        GameClock.skipTo22();
+        return true;
+    }
 
     public void cook(String recipeName, String fuelName, int quantity) {
         Recipe recipe = RecipeRegistry.get(recipeName);
