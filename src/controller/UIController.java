@@ -192,7 +192,7 @@ public class UIController {
 
     public void drawInformation() {
         try {
-            gambar = ImageIO.read(getClass().getResourceAsStream("/res/gambar1.jpg"));
+            gambar = ImageIO.read(getClass().getResourceAsStream("/res/information.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
