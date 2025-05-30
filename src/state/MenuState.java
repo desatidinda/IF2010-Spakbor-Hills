@@ -7,6 +7,8 @@ import main.GameStates;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuState implements StateHandler {
     private final GamePanel gp;
@@ -21,19 +23,33 @@ public class MenuState implements StateHandler {
 
     public void draw(Graphics2D g2) {
 
-        String[] lines = {
-            "Name     : " + player.getName(),
-            "Gender   : " + player.getGender(),
-            "Farm     : " + player.getFarmName(),
-            "Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"),
-            "Status   : " + player.getRelationshipStatus(),
-            "Energy   : " + player.getEnergy(),
-            "Gold     : " + player.getGold()
-        };
+        // String[] lines = {
+        //     "Name     : " + player.getName(),
+        //     "Gender   : " + player.getGender(),
+        //     "Farm     : " + player.getFarmName(),
+        //     "Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"),
+        //     "Status   : " + player.getRelationshipStatus(),
+        //     "Energy   : " + player.getEnergy(),
+        //     "Gold     : " + player.getGold()
+        // };
+
+        List<String> lines = new ArrayList<>();
+        lines.add("Name     : " + player.getName());
+        lines.add("Gender   : " + player.getGender());
+        lines.add("Farm     : " + player.getFarmName());
+        lines.add("Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"));
+        lines.add("Status   : " + player.getRelationshipStatus());
+        lines.add("Energy   : " + player.getEnergy());
+        lines.add("Gold     : " + player.getGold());
+
+        if (player.hasReachedEndgame()) {
+            lines.add("");
+            lines.add("Press S to view End Game Statistics");
+        }
 
         int boxWidth = 400;
         int lineHeight = 32;
-        int boxHeight = 60 + lines.length * lineHeight;
+        int boxHeight = 60 + lines.size() * lineHeight;
 
         int boxX = (gp.screenWidth - boxWidth) / 2;
         int boxY = (gp.screenHeight - boxHeight) / 2;
@@ -62,8 +78,7 @@ public class MenuState implements StateHandler {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             gp.gameState = GameStates.MAP; 
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            //TODO: nanti set ini masuk ke statisticnya kl udah endgame aja
+        } else if (e.getKeyCode() == KeyEvent.VK_S && player.hasReachedEndgame()) {
             gp.gameState = GameStates.STATISTICS;
         }
     }

@@ -34,6 +34,11 @@ public class NPCHouseState extends InsideHouseState {
     private int popupStartMinute = 0;
     private final int popupDuration = 10;
 
+    private BufferedImage proposalSuccess;
+    private BufferedImage proposalFailed;
+    private boolean showProposalPopup = false;
+    private boolean proposal = false;
+
     private int selectedChoice = 0;
     private final String[] choices;
     private boolean showStorePopup = false;
@@ -94,6 +99,8 @@ public class NPCHouseState extends InsideHouseState {
     {
         try {
             storeFrameImage = ImageIO.read(getClass().getResourceAsStream("/res/store.png"));
+            proposalSuccess = ImageIO.read(getClass().getResourceAsStream("/res/diterima.png"));
+            proposalFailed = ImageIO.read(getClass().getResourceAsStream("/res/ditolak.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -227,15 +234,16 @@ public class NPCHouseState extends InsideHouseState {
 
         gp.player.collision = false;
         gp.cm.checkNPCCollision(gp.player, npcInHouse);
-        showInteractPopup = gp.player.collision;
 
-        if (showDialogPopup || showGiftPopup) {
+        showInteractPopup = !showChoicePopup &&  !showGiftPopup && !showProposalPopup && !showStorePopup && !showDialogPopup && ! showGiftSelectPopup && gp.player.collision;
+
+        if (showDialogPopup || showGiftPopup || showProposalPopup) {
             int elapsed = (GameClock.getHour() - popupStartHour) * 60 + (GameClock.getMinute() - popupStartMinute);
             if (elapsed < 0) elapsed += 24 * 60;
             if (elapsed >= popupDuration) {
                 if (showDialogPopup)showDialogPopup = false;
                 if (showGiftPopup)showGiftPopup = false;
-
+                if (showProposalPopup)showProposalPopup = false;
             }
         }
     }
@@ -246,12 +254,15 @@ public class NPCHouseState extends InsideHouseState {
         if (npcInHouse != null) {
             npcInHouse.draw(g2);
         }
+
+        
         if (showStorePopup && npcInHouse.getName().equals("Emily")) {
             drawStorePopup(g2);
             return;
         }
         int popupWidth = 400;
-        int popupHeight = showChoicePopup ? 210 : 80;
+        int baseHeight = 80;
+        int popupHeight = showChoicePopup ? (baseHeight + choices.length * 28) : baseHeight;
         int popupX = gp.screenWidth / 2 - popupWidth / 2;
         int popupY = gp.screenHeight - popupHeight - 40;
 
@@ -265,12 +276,14 @@ public class NPCHouseState extends InsideHouseState {
             g2.setColor(Color.WHITE);
             gp.ui.drawCenteredText(g2, npcInHouse.getName() + " says:", dialogX, dialogY + 30, dialogWidth);
             gp.ui.drawCenteredText(g2, dialogText, dialogX, dialogY + 50, dialogWidth);
-        } else if (showGiftPopup) {
+        } 
+        if (showGiftPopup) {
             gp.ui.drawPopupWindow(g2, popupX, popupY, popupWidth, popupHeight - 30);
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 18F));
             g2.setColor(Color.WHITE);
             gp.ui.drawCenteredText(g2, giftText, popupX, popupY + 30, popupWidth);
-        } else if (showGiftSelectPopup) {
+        } 
+        if (showGiftSelectPopup) {
             popupY = gp.screenHeight - (30 + giftableItems.size() * 28) - 50;
             gp.ui.drawPopupWindow(g2, popupX, popupY, popupWidth, (popupHeight - 30) + giftableItems.size() * 28);
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
@@ -288,12 +301,13 @@ public class NPCHouseState extends InsideHouseState {
                     gp.ui.drawCenteredText(g2, giftableItems.get(i).getItemName(), popupX, yy, popupWidth);
                 }
             }
-        } else if (showChoicePopup) {
+        } 
+        if (showChoicePopup) {
             gp.ui.drawPopupWindow(g2, popupX, popupY, popupWidth, popupHeight);
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
             g2.setColor(java.awt.Color.WHITE);
             gp.ui.drawCenteredText(g2, "Choose interaction:", popupX, popupY + 35, popupWidth);
-
+            
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 18F));
             for (int i = 0; i < choices.length; i++) {
                 int y = popupY + 70 + i * 28;
@@ -305,16 +319,30 @@ public class NPCHouseState extends InsideHouseState {
                     gp.ui.drawCenteredText(g2, choices[i], popupX, y, popupWidth);
                 }
             }
-        } else if (showInteractPopup) {
+        } 
+        if (showInteractPopup) {
             gp.ui.drawPopupWindow(g2, popupX, popupY, popupWidth, popupHeight);
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
             g2.setColor(Color.WHITE);
             gp.ui.drawCenteredText(g2, "Press SPACE to interact with " + npcInHouse.getName(), popupX, popupY + 45, popupWidth);
-        } else if (choices[selectedChoice].equals("Store") && npcInHouse.getName().equals("Emily")) {
-            showChoicePopup = false;
-            showStorePopup = true;
-            storeSelectedIndex = 0;
+        } 
+        
+        if (showProposalPopup) {
+            BufferedImage img = proposal ? proposalSuccess : proposalFailed;
+            int w = 440, h = 273;
+            int x = gp.screenWidth / 2 - w / 2;
+            int y = gp.screenHeight / 2 - h / 2;
+
+            if (img != null) {
+                g2.drawImage(img, x, y, w, h, null);
+                System.out.println("ni gw gambar");
+            }
+            else {
+                System.out.println("mana gambarnya kocak");
+            }
+            return;
         }
+        
     }
 
     @Override
@@ -323,8 +351,10 @@ public class NPCHouseState extends InsideHouseState {
 
         if (showInteractPopup && !showChoicePopup && key == KeyEvent.VK_SPACE) {
             showChoicePopup = true;
+            showInteractPopup = false;
             selectedChoice = 0;
         } else if (showChoicePopup) {
+            showInteractPopup = false;
             if (key == KeyEvent.VK_UP) {
                 selectedChoice = (selectedChoice + choices.length - 1) % choices.length;
             } else if (key == KeyEvent.VK_DOWN) {
@@ -355,6 +385,48 @@ public class NPCHouseState extends InsideHouseState {
                         showGiftSelectPopup = true;
                         selectedGiftIndex = 0;
                         showChoicePopup = false;
+                    }
+                } else if (choices[selectedChoice].equals("Propose")) {
+                    Item proposalRing = ItemFactory.createItem("Proposal Ring");
+                    showChoicePopup = false;
+                    showDialogPopup = false;
+                    showProposalPopup = true;
+                    popupStartHour = GameClock.getHour();
+                    popupStartMinute = GameClock.getMinute();
+                    showGiftPopup = false;
+                    showGiftSelectPopup = false;
+                    if (!gp.player.getInventory().hasItem(proposalRing)) {
+                        // giftText = "You need Proposal Ring to Propose!";
+                        // showGiftPopup = true;
+                        proposal = false;
+                    } else {
+                        boolean success = gp.player.propose(npcInHouse);
+                        if (success) {
+                            proposal = true;
+                        } else {
+                            proposal = false;
+                        }
+                    }
+                } else if (choices[selectedChoice].equals("Marry")) {
+                    Item proposalRing = ItemFactory.createItem("Proposal Ring");
+                    showChoicePopup = false;
+                    showDialogPopup = false;
+                    showProposalPopup = true;
+                    popupStartHour = GameClock.getHour();
+                    popupStartMinute = GameClock.getMinute();
+                    showGiftPopup = false;
+                    showGiftSelectPopup = false;
+                    if (!gp.player.getInventory().hasItem(proposalRing)) {
+                        // giftText = "You need Proposal Ring to Marry!";
+                        // showGiftPopup = true;
+                        proposal = false;
+                    } else {
+                        boolean success = gp.player.marry(npcInHouse);
+                        if (success) {
+                            proposal = true;
+                        } else {
+                            proposal = false;
+                        }
                     }
                 } else if (choices[selectedChoice].equals("Store") && npcInHouse.getName().equals("Emily")) {
                     showChoicePopup = false;

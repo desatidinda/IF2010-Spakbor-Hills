@@ -49,7 +49,7 @@ public class CollisionManager {
                         player.collision = true;
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Warning: Array bound check in UP direction: " + e.getMessage());
+                    System.out.println("Warning: " + e.getMessage());
                     player.collision = true;
                 }
                 break;
@@ -76,7 +76,7 @@ public class CollisionManager {
                         player.collision = true;
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Warning: Array bound check in DOWN direction: " + e.getMessage());
+                    System.out.println("Warning: " + e.getMessage());
                     player.collision = true;
                 }
                 break;
@@ -103,7 +103,7 @@ public class CollisionManager {
                         player.collision = true;
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Warning: Array bound check in LEFT direction: " + e.getMessage());
+                    System.out.println("Warning: " + e.getMessage());
                     player.collision = true;
                 }
                 break;
@@ -130,7 +130,7 @@ public class CollisionManager {
                         player.collision = true;
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Warning: Array bound check in RIGHT direction: " + e.getMessage());
+                    System.out.println("Warning: " + e.getMessage());
                     player.collision = true;
                 }
                 break;
