@@ -53,6 +53,10 @@ public class EndGameStatistics implements StateHandler {
         totalCropsHarvested++;
     }
 
+    public void incrementTotalFishCaught() {
+        totalFishCaught++;
+    }
+
     public void updateFishStatistics(FishType fishType) {
         fishStatistics.put(fishType, fishStatistics.getOrDefault(fishType, 0) + 1);
     }
