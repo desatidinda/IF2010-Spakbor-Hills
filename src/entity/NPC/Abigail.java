@@ -34,6 +34,7 @@ public class Abigail extends NPC {
     public Abigail(GamePanel gp) {
         super("Abigail", gp);
         this.gp = gp;
+        //this.heartPoints = 0; 
         getImage();
     }
 
@@ -51,6 +52,7 @@ public class Abigail extends NPC {
 
     @Override
     public String chat() {
+        addHeartPoints(5); // ini gatau knp nambahnya jd 2 kali lipat, jadi ditulis 5 biar kali 2 jd 10 sesuai spek
         return "Ayo eksplorasi alam, energiku harus penuh!";
     }
 

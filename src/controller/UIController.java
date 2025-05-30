@@ -9,6 +9,9 @@ import javax.imageio.ImageIO;
 import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
+import entity.NPC.NPC;
+import state.NPCHouseState;
+import state.StateHandler;
 
 public class UIController {
     GamePanel gp;
@@ -272,6 +275,44 @@ public class UIController {
             g2.drawImage(btnMenuImg, btnMenuX, btnMenuY, btnMenuW, btnMenuH, null);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        // ini ada di npc house doang
+        String npcName = null;
+        NPC currentNPC = null;
+        if (gp.gameState == GameStates.NPC_HOUSE) {
+            StateHandler handler = gp.stateHandlers.get(GameStates.NPC_HOUSE);
+            if (handler instanceof NPCHouseState) {
+                NPCHouseState npcState = (NPCHouseState) handler;
+                currentNPC = npcState.getNpcInHouse();
+                if (currentNPC != null) {
+                    npcName = currentNPC.getName();
+                }
+            }
+        }
+        if (npcName != null) {
+            int houseBoxWidth = barBoxWidth;
+            int houseBoxHeight = 40;
+            int houseBoxX = boxX;
+            int houseBoxY = boxY + boxHeight + barBoxHeight + 16;
+            gp.ui.drawPopupWindow(g2, houseBoxX, houseBoxY, houseBoxWidth, houseBoxHeight);
+            
+            if (currentNPC != null) {
+                try {
+                    BufferedImage heartImg = ImageIO.read(getClass().getResourceAsStream("/res/heartpoint.png"));
+                    int heartImgSize = 20;
+                    String houseText2 = "Heart Points: " + currentNPC.getHeartPoints();
+                    int startX = houseBoxX + 15;
+                    g2.setFont(g2.getFont().deriveFont(Font.BOLD, 12F));
+                    g2.setColor(Color.WHITE);
+                    
+                    int heartY = houseBoxY + 10;
+                    g2.drawImage(heartImg, startX, heartY, heartImgSize, heartImgSize, null);
+                    g2.drawString(houseText2, startX + heartImgSize + 10, houseBoxY + (houseBoxHeight / 2) + 3);
+                } catch (IOException e) {
+    
+                }
+            }
         }
     }
 
