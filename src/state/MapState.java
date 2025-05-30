@@ -23,6 +23,7 @@ import entity.Farm.ShippingBin;
 import entity.Item.Item;
 import entity.Item.Seeds;
 import entity.Farm.Season;
+import state.EndGameStatistics;
 
 public class MapState implements StateHandler, MouseListener {
 
@@ -311,6 +312,7 @@ public class MapState implements StateHandler, MouseListener {
                             if (success) {
                                 gp.player.performAction(5);
                                 gp.ui.showPopupMessage("Harvest successful!");
+                                ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementCropsHarvested();
                             }
                         }
                         break;
@@ -419,6 +421,9 @@ public class MapState implements StateHandler, MouseListener {
                 case "Abigail House":
                     npc = gp.npc[5];
                     break;
+            }
+            if (npc != null) {
+                npc.incrementVisiting();
             }
             gp.stateHandlers.put(GameStates.NPC_HOUSE, new NPCHouseState(gp, npc));
             gp.gameState = GameStates.NPC_HOUSE;

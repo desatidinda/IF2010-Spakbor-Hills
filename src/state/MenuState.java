@@ -62,6 +62,8 @@ public class MenuState implements StateHandler {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             gp.gameState = GameStates.MAP; 
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+            gp.gameState = GameStates.STATISTICS;
         }
     }
 

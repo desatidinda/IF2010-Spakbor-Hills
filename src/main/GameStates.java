@@ -9,5 +9,5 @@ public enum GameStates {
     MENU,
     ITEMLIST,
     INVENTORY,
-    STATISTCS;
+    STATISTICS;
 }

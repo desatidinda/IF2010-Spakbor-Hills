@@ -372,6 +372,9 @@ public class NPCHouseState extends InsideHouseState {
                 Item selectedGift = giftableItems.get(selectedGiftIndex);
                 boolean success = gp.player.giveGift(npcInHouse, selectedGift.getItemName());
                 if (success) {
+                    gp.player.getInventory().removeItem(selectedGift);
+                    npcInHouse.reactToGift(selectedGift);
+                    gp.player.performAction(5);
                     giftText = "You gave " + selectedGift.getItemName() + " to " + npcInHouse.getName() + "!";
                 } else {
                     giftText = "You don't have " + selectedGift.getItemName() + "!";

@@ -411,13 +411,8 @@ public class Player {
     public boolean giveGift(NPC npc, String itemName) {
         Item item = ItemFactory.createItem(itemName);
         if (inventory.hasItem(item)) {
-            inventory.removeItem(item);
-            npc.reactToGift(item);
-            performAction(5);
-            System.out.println("Kamu memberikan " + item.getItemName() + " ke " + npc.getName());
+            npc.incrementGifting(); 
             return true;
-        } else {
-            System.out.println("Kamu tidak memiliki item: " + item.getItemName());
         }
         return false;
     }

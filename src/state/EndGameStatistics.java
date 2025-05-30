@@ -3,27 +3,33 @@ package state;
 import main.GamePanel;
 import state.StateHandler;
 import main.GameStates;
+import entity.NPC.*;
+import entity.Item.Fish;
+import entity.Item.FishType;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 public class EndGameStatistics implements StateHandler {
     private final GamePanel gp;
     private final Font vt323;
+
+    private int scrollOffset = 0;
+    private final int visibleLines = 16;
 
     private int totalIncome = 0;
     private int totalExpenditure = 0;
     private int totalDaysPlayed = 0;
     private int totalSeasonsPassed = 0;
     private int totalCropsHarvested = 0;
+    private int totalFishCaught = 0;
 
-    private final Map<String, String> npcRelationshipStatus = new HashMap<>();
-    private final Map<String, Integer> npcChattingFrequency = new HashMap<>();
-    private final Map<String, Integer> npcGiftingFrequency = new HashMap<>();
-    private final Map<String, Integer> npcVisitingFrequency = new HashMap<>();
-    private final Map<String, Integer> fishCaught = new HashMap<>();
+    private final Map<NPC, Integer> npcVisitingFrequency = new HashMap<>();
+    private final Map<FishType, Integer> fishStatistics = new HashMap<>();
 
     public EndGameStatistics(GamePanel gp) {
         this.gp = gp;
@@ -43,32 +49,12 @@ public class EndGameStatistics implements StateHandler {
         totalDaysPlayed++;
     }
 
-    public void incrementSeason() {
-        totalSeasonsPassed++;
-    }
-
     public void incrementCropsHarvested() {
         totalCropsHarvested++;
     }
 
-    public void addFish(String rarity) {
-        fishCaught.put(rarity, fishCaught.getOrDefault(rarity, 0) + 1);
-    }
-
-    public void setRelationship(String npcName, String status) {
-        npcRelationshipStatus.put(npcName, status);
-    }
-
-    public void chatWithNPC(String npcName) {
-        npcChattingFrequency.put(npcName, npcChattingFrequency.getOrDefault(npcName, 0) + 1);
-    }
-
-    public void giftToNPC(String npcName) {
-        npcGiftingFrequency.put(npcName, npcGiftingFrequency.getOrDefault(npcName, 0) + 1);
-    }
-
-    public void visitNPC(String npcName) {
-        npcVisitingFrequency.put(npcName, npcVisitingFrequency.getOrDefault(npcName, 0) + 1);
+    public void updateFishStatistics(FishType fishType) {
+        fishStatistics.put(fishType, fishStatistics.getOrDefault(fishType, 0) + 1);
     }
 
     // === Getter ===
@@ -96,42 +82,55 @@ public class EndGameStatistics implements StateHandler {
         return totalCropsHarvested;
     }
 
-    public Map<String, String> getNpcRelationshipStatus() {
-        return npcRelationshipStatus;
+    public int getTotalFishCaught() {
+        return totalFishCaught;
     }
 
-    public Map<String, Integer> getNpcChattingFrequency() {
-        return npcChattingFrequency;
-    }
-
-    public Map<String, Integer> getNpcGiftingFrequency() {
-        return npcGiftingFrequency;
-    }
-
-    public Map<String, Integer> getNpcVisitingFrequency() {
+    public Map<NPC, Integer> getNpcVisitingFrequency() {
         return npcVisitingFrequency;
     }
 
-    public Map<String, Integer> getFishCaught() {
-        return fishCaught;
+    public Map<FishType, Integer> getFishStatistics() {
+        return fishStatistics;
+    }
+
+    private List<String> getStatisticsLines() {
+        List<String> lines = new ArrayList<>();
+        lines.add("== END GAME STATISTICS ==");
+        lines.add("Total Income     : " + totalIncome);
+        lines.add("Total Expenditure: " + totalExpenditure);
+        lines.add(String.format("Avg Income/Season: %.2f", getAverageSeasonIncome()));
+        lines.add(String.format("Avg Expense/Season: %.2f", getAverageSeasonExpenditure()));
+        lines.add("Total Days Played: " + totalDaysPlayed);
+        lines.add("Crops Harvested  : " + totalCropsHarvested);
+        lines.add("Fish Caught      : " + totalFishCaught);
+        lines.add("");
+        lines.add("-- NPC Status --");
+        for (NPC npc : gp.npc) {
+            lines.add(npc.getName() + " - Relationship: " + npc.getRelationshipStatus());
+            lines.add("Chat: " + npc.getCountChatting()
+                    + ", Gift: " + npc.getCountGifting()
+                    + ", Visit: " + npc.getCountVisiting());
+        }
+        lines.add("");
+        lines.add("-- Fish Statistics --");
+        for (FishType type : FishType.values()) {
+            lines.add(type + ": " + fishStatistics.getOrDefault(type, 0));
+        }
+        lines.add("");
+        lines.add("Press ESC/ENTER to return, ↑/↓ to scroll");
+        return lines;
     }
 
     // === UI ===
     @Override
     public void draw(Graphics2D g2) {
-        String[] lines = {
-            "== END GAME STATISTICS ==",
-            "Total Income     : " + totalIncome,
-            "Total Expenditure: " + totalExpenditure,
-            "Avg Income/Season: " + getAverageSeasonIncome(),
-            "Avg Expense/Season: " + getAverageSeasonExpenditure(),
-            "Total Days Played: " + totalDaysPlayed,
-            "Crops Harvested  : " + totalCropsHarvested
-        };
+        List<String> lines = getStatisticsLines();
+        int totalLines = lines.size();
 
         int boxWidth = 600;
         int lineHeight = 30;
-        int boxHeight = 60 + (lines.length + getTotalNpcLines()) * lineHeight;
+        int boxHeight = 60 + Math.min(visibleLines, totalLines) * lineHeight;
 
         int boxX = (gp.screenWidth - boxWidth) / 2;
         int boxY = (gp.screenHeight - boxHeight) / 2;
@@ -143,33 +142,12 @@ public class EndGameStatistics implements StateHandler {
 
         g2.setFont(vt323.deriveFont(Font.PLAIN, 18F));
         int y = boxY + 70;
-        for (String line : lines) {
-            gp.ui.drawCenteredText(g2, line, boxX, y, boxWidth);
+
+        int end = Math.min(scrollOffset + visibleLines, totalLines);
+        for (int i = scrollOffset; i < end; i++) {
+            gp.ui.drawCenteredText(g2, lines.get(i), boxX, y, boxWidth);
             y += lineHeight;
         }
-
-        gp.ui.drawCenteredText(g2, "-- NPC Status --", boxX, y, boxWidth); y += lineHeight;
-
-        for (String npc : npcRelationshipStatus.keySet()) {
-            gp.ui.drawCenteredText(g2, npc + " - Relationship: " + npcRelationshipStatus.get(npc), boxX, y, boxWidth);
-            y += lineHeight;
-            gp.ui.drawCenteredText(g2, "Chat: " + npcChattingFrequency.getOrDefault(npc, 0)
-                                            + ", Gift: " + npcGiftingFrequency.getOrDefault(npc, 0)
-                                            + ", Visit: " + npcVisitingFrequency.getOrDefault(npc, 0),
-                                   boxX, y, boxWidth);
-            y += lineHeight;
-        }
-
-        gp.ui.drawCenteredText(g2, "-- Fish Caught --", boxX, y, boxWidth); y += lineHeight;
-        for (Map.Entry<String, Integer> entry : fishCaught.entrySet()) {
-            gp.ui.drawCenteredText(g2, entry.getKey() + ": " + entry.getValue(), boxX, y, boxWidth);
-            y += lineHeight;
-        }
-    }
-
-    private int getTotalNpcLines() {
-        int npcCount = npcRelationshipStatus.size();
-        return npcCount * 2 + 2 + fishCaught.size();
     }
 
     @Override
@@ -179,8 +157,15 @@ public class EndGameStatistics implements StateHandler {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            gp.gameState = GameStates.MAP;
+        List<String> lines = getStatisticsLines();
+        int totalLines = lines.size();
+
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            if (scrollOffset > 0) scrollOffset--;
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            if (scrollOffset < totalLines - visibleLines) scrollOffset++;
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            gp.gameState = GameStates.MENU;
         }
     }
 
