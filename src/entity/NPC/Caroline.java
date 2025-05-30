@@ -39,6 +39,7 @@ public class Caroline extends NPC {
 
     @Override
     public String chat() {
+        addHeartPoints(5); // ini gatau knp nambahnya jd 2 kali lipat, jadi ditulis 5 biar kali 2 jd 10 sesuai spek
         return "Seni itu adalah daur ulang yang indah!";
     }
 

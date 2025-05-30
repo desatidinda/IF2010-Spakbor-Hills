@@ -23,15 +23,16 @@ import entity.Farm.ShippingBin;
 import entity.Item.Item;
 import entity.Item.Seeds;
 import entity.Farm.Season;
+import state.EndGameStatistics;
 
 public class MapState implements StateHandler, MouseListener {
 
     private final GamePanel gp;
     private int selectedTeleportIndex = 0;
     private final String[] teleportOptions = {"Mountain Lake", "Forest River", "Ocean", "Mayor Tadi House", "Caroline House", "Perry House", "Dasco House", "Emily House", "Abigail House"};
-    private Font vt323;
     private boolean showShippingBinPopup = false;
     private int interactedObjectIndex = 999;
+    private Season lastSeason = GameClock.getCurrentSeason();
 
     private boolean showTilePopup = false;
     private int selectedTileAction = 0;
@@ -69,7 +70,7 @@ public class MapState implements StateHandler, MouseListener {
         
         for (int i = 0; i < gp.obj.length; i++) {
             if (gp.obj[i] != null) {
-                String imagePath = gp.obj[i].getClass().getSimpleName(); // or however you identify shipping bin
+                String imagePath = gp.obj[i].getClass().getSimpleName();
                 int objLeftX = gp.obj[i].worldX;
                 int objRightX = gp.obj[i].worldX + gp.tileSize * gp.obj[i].widthInTiles;
                 int objTopY = gp.obj[i].worldY;
@@ -99,6 +100,12 @@ public class MapState implements StateHandler, MouseListener {
             gp.tileManager.checkPlantsAtEndOfDay();
             gp.tileManager.resetWaterCountAndWateredMap(isRainy);
             lastDayChecked = currentDay;
+        }
+
+        Season currentSeason = GameClock.getCurrentSeason();
+        if (currentSeason != lastSeason) {
+            ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementSeasonsPassed();
+            lastSeason = currentSeason;
         }
     }
 
@@ -311,6 +318,7 @@ public class MapState implements StateHandler, MouseListener {
                             if (success) {
                                 gp.player.performAction(5);
                                 gp.ui.showPopupMessage("Harvest successful!");
+                                ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementCropsHarvested();
                             }
                         }
                         break;
@@ -368,14 +376,28 @@ public class MapState implements StateHandler, MouseListener {
     }
 
     public void teleportPlayerTo(String location) {
-        if (location.equals("Mountain Lake") || location.equals("Forest River") || location.equals("Ocean")) {
+        if (location.equals("Pond")) {
+            GameClock.setPaused(true);
+            
             FishingState fishingState = (FishingState) gp.stateHandlers.get(GameStates.FISHING);
             fishingState.setFishingLocation(location);
-            
+            gp.gameState = GameStates.FISHING;
+            gp.player.update();
+            gp.player.teleportMode = false;
+        } else if (location.equals("Mountain Lake") || location.equals("Forest River") || location.equals("Ocean")) {
+            gp.player.performAction(10);
+            GameClock.skipMinutes(15);
+            GameClock.setPaused(true);
+
+            FishingState fishingState = (FishingState) gp.stateHandlers.get(GameStates.FISHING);
+            fishingState.setFishingLocation(location);
             gp.gameState = GameStates.FISHING;
             gp.player.update();
             gp.player.teleportMode = false;
         } else if (location.endsWith("House")) {
+            gp.player.performAction(10); 
+            GameClock.skipMinutes(15);
+
             gp.player.houseX = gp.screenWidth / 2 - (gp.tileSize / 2);
             gp.player.houseY = gp.screenHeight / 2 - (gp.tileSize / 2);
             // ini posisi kl indoor ya
@@ -405,6 +427,9 @@ public class MapState implements StateHandler, MouseListener {
                 case "Abigail House":
                     npc = gp.npc[5];
                     break;
+            }
+            if (npc != null) {
+                npc.incrementVisiting();
             }
             gp.stateHandlers.put(GameStates.NPC_HOUSE, new NPCHouseState(gp, npc));
             gp.gameState = GameStates.NPC_HOUSE;

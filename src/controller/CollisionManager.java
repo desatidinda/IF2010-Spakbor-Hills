@@ -257,7 +257,7 @@ public class CollisionManager {
                     if (gp.furniture[i].collision) {
                         player.collision = true;
                         index = i;
-                        System.out.println("COLLISION DETECTED with furniture[" + i + "]!");
+                        //System.out.println("COLLISION DETECTED with furniture[" + i + "]!");
                     }
                 }
                 
@@ -303,7 +303,7 @@ public class CollisionManager {
 
             if (player.solid.intersects(npcInHouse.solidArea)) {
                 player.collision = true;
-                System.out.println("COLLISION DETECTED with " + npcInHouse.getName() + "!");
+                //System.out.println("COLLISION DETECTED with " + npcInHouse.getName() + "!");
             }
 
             npcInHouse.solidArea.x = npcOriginalX;

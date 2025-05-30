@@ -1,5 +1,6 @@
 package state;
 
+import main.Game;
 import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
@@ -90,6 +91,7 @@ public class InitialState implements StateHandler {
 
                     gp.gameState = GameStates.MAP;
                     GameClock.init();
+                    GameClock.startClock();
                 } else if (key == KeyEvent.VK_BACK_SPACE) {
                     if (!gp.ui.inputBuffer.isEmpty()) {
                         gp.ui.inputBuffer = gp.ui.inputBuffer.substring(0, gp.ui.inputBuffer.length() - 1);

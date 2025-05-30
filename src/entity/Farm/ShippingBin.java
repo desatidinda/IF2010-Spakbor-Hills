@@ -4,6 +4,10 @@ import entity.Item.Fish;
 import entity.Item.FishData;
 import entity.Item.Item;
 import entity.Player.Player;
+import main.Game;
+import main.GamePanel;
+import main.GameStates;
+
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,13 +17,16 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import objects.GameObject;
+import state.EndGameStatistics;
 
 public class ShippingBin extends GameObject {
+    private GamePanel gp;
     private static ShippingBinGUI activeGUI = null;
     public static boolean hasUsedTodayBin = false;
     private static int currentDay = 1;
     
-    public ShippingBin() {
+    public ShippingBin(GamePanel gp) {
+        this.gp = gp;
         name = "Shipping Bin";
         collision = true;
         widthInTiles = 3;
@@ -372,6 +379,7 @@ public class ShippingBin extends GameObject {
         public void processPendingSales() {
             if (pendingGold > 0) {
                 player.addGold(pendingGold);
+                ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).addIncome(pendingGold);
                 pendingGold = 0;
                 updateLabels();
             }

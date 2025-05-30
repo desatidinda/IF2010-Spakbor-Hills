@@ -131,24 +131,19 @@ public class Player {
                     }
                 }
                 int furnitureIndex = gp.cm.checkIndoorObject(this, true);
-                //TODO: lakuin aktivitas sesuai apa yg ditabrak
                 if (collision == false) {
                     switch (direction) {
                         case "up":
                             houseY -= gp.tileSize;
-                            //getLocation().setY(getLocation().getY() - speed);
                             break;
                         case "down":
                             houseY += gp.tileSize;
-                            //getLocation().setY(getLocation().getY() + speed);
                             break;
                         case "left":
                             houseX -= gp.tileSize;
-                            //getLocation().setX(getLocation().getX() - speed);
                             break;
                         case "right":
                             houseX += gp.tileSize;
-                            //getLocation().setX(getLocation().getX() + speed);
                             break;
                     }
                     //System.out.println("Location: (" + getLocation().getX() + ", " + getLocation().getY() + ")");
@@ -416,13 +411,8 @@ public class Player {
     public boolean giveGift(NPC npc, String itemName) {
         Item item = ItemFactory.createItem(itemName);
         if (inventory.hasItem(item)) {
-            inventory.removeItem(item);
-            npc.reactToGift(item);
-            performAction(5);
-            System.out.println("Kamu memberikan " + item.getItemName() + " ke " + npc.getName());
+            npc.incrementGifting(); 
             return true;
-        } else {
-            System.out.println("Kamu tidak memiliki item: " + item.getItemName());
         }
         return false;
     }
