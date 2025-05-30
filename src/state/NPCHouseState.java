@@ -36,8 +36,11 @@ public class NPCHouseState extends InsideHouseState {
 
     private BufferedImage proposalSuccess;
     private BufferedImage proposalFailed;
+    private BufferedImage marrySuccess;
     private boolean showProposalPopup = false;
     private boolean proposal = false;
+    private boolean showMarryPopup = false;
+    private boolean marry = false;
 
     private int selectedChoice = 0;
     private final String[] choices;
@@ -101,6 +104,7 @@ public class NPCHouseState extends InsideHouseState {
             storeFrameImage = ImageIO.read(getClass().getResourceAsStream("/res/store.png"));
             proposalSuccess = ImageIO.read(getClass().getResourceAsStream("/res/diterima.png"));
             proposalFailed = ImageIO.read(getClass().getResourceAsStream("/res/ditolak.png"));
+            marrySuccess = ImageIO.read(getClass().getResourceAsStream("/res/marry.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -235,15 +239,16 @@ public class NPCHouseState extends InsideHouseState {
         gp.player.collision = false;
         gp.cm.checkNPCCollision(gp.player, npcInHouse);
 
-        showInteractPopup = !showChoicePopup &&  !showGiftPopup && !showProposalPopup && !showStorePopup && !showDialogPopup && ! showGiftSelectPopup && gp.player.collision;
+        showInteractPopup = !showChoicePopup &&  !showGiftPopup && !showProposalPopup && !showMarryPopup && !showStorePopup && !showDialogPopup && ! showGiftSelectPopup && gp.player.collision;
 
-        if (showDialogPopup || showGiftPopup || showProposalPopup) {
+        if (showDialogPopup || showGiftPopup || showProposalPopup || showMarryPopup) {
             int elapsed = (GameClock.getHour() - popupStartHour) * 60 + (GameClock.getMinute() - popupStartMinute);
             if (elapsed < 0) elapsed += 24 * 60;
             if (elapsed >= popupDuration) {
                 if (showDialogPopup)showDialogPopup = false;
                 if (showGiftPopup)showGiftPopup = false;
                 if (showProposalPopup)showProposalPopup = false;
+                if (showMarryPopup)showMarryPopup = false;
             }
         }
     }
@@ -335,11 +340,19 @@ public class NPCHouseState extends InsideHouseState {
 
             if (img != null) {
                 g2.drawImage(img, x, y, w, h, null);
-                System.out.println("ni gw gambar");
             }
-            else {
-                System.out.println("mana gambarnya kocak");
-            }
+            return;
+        }
+
+        if (showMarryPopup) {
+            BufferedImage img = marry ? marrySuccess : proposalFailed;
+            int w = 440, h = 273;
+            int x = gp.screenWidth / 2 - w / 2;
+            int y = gp.screenHeight / 2 - h / 2;
+
+            if (img != null) {
+                g2.drawImage(img, x, y, w, h, null);
+            } 
             return;
         }
         
@@ -411,7 +424,7 @@ public class NPCHouseState extends InsideHouseState {
                     Item proposalRing = ItemFactory.createItem("Proposal Ring");
                     showChoicePopup = false;
                     showDialogPopup = false;
-                    showProposalPopup = true;
+                    showMarryPopup = true;
                     popupStartHour = GameClock.getHour();
                     popupStartMinute = GameClock.getMinute();
                     showGiftPopup = false;
@@ -423,9 +436,9 @@ public class NPCHouseState extends InsideHouseState {
                     } else {
                         boolean success = gp.player.marry(npcInHouse);
                         if (success) {
-                            proposal = true;
+                            marry = true;
                         } else {
-                            proposal = false;
+                            marry = false;
                         }
                     }
                 } else if (choices[selectedChoice].equals("Store") && npcInHouse.getName().equals("Emily")) {
