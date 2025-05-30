@@ -30,6 +30,7 @@ public class InsideHouseState implements StateHandler {
     private boolean isCookingWait = false;
     private int cookingStartHour;
     private int cookingStartMinute;
+    private int fuelUsageLeft = 0;
     private Recipe pendingRecipe = null;
     private String pendingFuel = null;
     private String cookMessage = null;
@@ -58,8 +59,13 @@ public class InsideHouseState implements StateHandler {
         gp.player.update();
         int furnitureIndex = gp.cm.checkIndoorObject(gp.player, true);
         if (furnitureIndex != -1) {
+            if (!showRecipeList) {
             interactedFurnitureIndex = furnitureIndex;
             showPopup = true;
+            } else {
+                showPopup = false;
+                interactedFurnitureIndex = -1;
+            }
         } else {
             showPopup = false;
             interactedFurnitureIndex = -1;
@@ -71,7 +77,9 @@ public class InsideHouseState implements StateHandler {
 
             if (nowTotal - startTotal >= 60 || nowTotal < startTotal) {
                 gp.player.cook(pendingRecipe.getName(), pendingFuel, 1);
-                cookMessage = "Masakan siap: " + pendingRecipe.getName();
+                Item cookedFood = ItemFactory.createItem(pendingRecipe.getName());
+                gp.player.getInventory().addItem(cookedFood, 1);
+                cookMessage = "Your " + pendingRecipe.getName() + " is ready!";
                 cookMessageTimer = 180;
 
                 isCookingWait = false;
@@ -156,7 +164,7 @@ public class InsideHouseState implements StateHandler {
         if (isCookingWait && pendingRecipe != null) {
             g2.setColor(Color.ORANGE);
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 14F));
-            gp.ui.drawCenteredText(g2, "Sedang memasak " + pendingRecipe.getName(), windowX, windowY + height - 70, width);
+            gp.ui.drawCenteredText(g2, "Now cooking " + pendingRecipe.getName(), windowX, windowY + height - 70, width);
         }
 
         if (!allRecipes.isEmpty()) {
@@ -164,7 +172,7 @@ public class InsideHouseState implements StateHandler {
             g2.setColor(Color.WHITE);
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 14F));
             y += 10;
-            g2.drawString("Bahan:", windowX + 20, y);
+            g2.drawString("Ingredients:", windowX + 20, y);
             y += 18;
             for (Map.Entry<String, Integer> entry : selected.getIngredients().entrySet()) {
                 g2.drawString("- " + entry.getValue() + "x " + entry.getKey(), windowX + 40, y);
@@ -179,7 +187,7 @@ public class InsideHouseState implements StateHandler {
             cookMessageTimer--;
         }
         g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 14F));
-        gp.ui.drawCenteredText(g2, "↑↓ untuk navigasi, ENTER untuk masak, R untuk keluar", windowX, windowY + height - 20, width);
+        gp.ui.drawCenteredText(g2, "Press ENTER to cook, R to cancel", windowX, windowY + height - 20, width);
     }
 
     protected void deployFurniture() {
@@ -259,7 +267,7 @@ public class InsideHouseState implements StateHandler {
             } else if (key == KeyEvent.VK_ENTER) {
                 Recipe selected = RecipeRegistry.getAll().get(selectedRecipeIndex);
                 if (!selected.isUnlocked()) {
-                    cookMessage = "Resep belum dipelajari!";
+                    cookMessage = "Recipe not yet learned!";
                     cookMessageTimer = 180;
                     return;
                 }
@@ -271,7 +279,7 @@ public class InsideHouseState implements StateHandler {
                 else if (gp.player.getInventory().hasItem(Coal)) fuel = "Coal";
 
                 if (fuel == null) {
-                    cookMessage = "Tidak ada fuel di inventory!";
+                    cookMessage = "You don't have fuel in your inventory!";
                     cookMessageTimer = 180;
                     return;
                 }
@@ -280,19 +288,45 @@ public class InsideHouseState implements StateHandler {
                     Item item = ItemFactory.createItem(entry.getKey());
                     int qty = entry.getValue();
                     if (!gp.player.getInventory().hasItem(item, qty)) {
-                        cookMessage = "Bahan tidak cukup: " + item;
+                        cookMessage = "Not enough " + item + " to cook " + selected.getName() + "!";
                         cookMessageTimer = 180;
                         return;
+                    } 
+                }
+                
+                for (Map.Entry<String, Integer> entry : selected.getIngredients().entrySet()) {
+                    Item item = ItemFactory.createItem(entry.getKey());
+                    int qty = entry.getValue();
+                    gp.player.getInventory().removeItem(item, qty);
+                }
+                if (fuel.equals("Coal")) {
+                    if (fuelUsageLeft <= 0) {
+                        Item usedFuel = ItemFactory.createItem("Coal");
+                        gp.player.getInventory().removeItem(usedFuel, 1);
+                        fuelUsageLeft = 2;
                     }
+                    fuelUsageLeft--;
+                } else if (fuel.equals("Firewood")) {
+                    Item usedFuel = ItemFactory.createItem("Firewood");
+                    gp.player.getInventory().removeItem(usedFuel, 1);
+                    fuelUsageLeft = 0;
                 }
 
+                if (gp.player.getEnergy() < 10) {
+                    cookMessage = "You don't have enough energy!";
+                    cookMessageTimer = 180;
+                    return;
+                }
+                
+                gp.player.performAction(10);
                 isCookingWait = true;
                 cookingStartHour = GameClock.getHour();
                 cookingStartMinute = GameClock.getMinute();
                 pendingRecipe = selected;
                 pendingFuel = fuel;
-                cookMessage = "Memasak " + selected.getName() + "... tunggu 1 jam in-game..";
+                cookMessage = "Cooking " + selected.getName() + "... wait 1 hour for the dish to be ready..";
                 cookMessageTimer = 180;
+                showPopup = false;
             } else if (key == KeyEvent.VK_R || key == KeyEvent.VK_ESCAPE) {
                 showRecipeList = false;
             }
