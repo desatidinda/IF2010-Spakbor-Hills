@@ -107,6 +107,15 @@ public class MapState implements StateHandler, MouseListener {
             ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementSeasonsPassed();
             lastSeason = currentSeason;
         }
+
+        if (!gp.player.hasReachedEndgame()) {
+            boolean goldMilestone = gp.player.getGold() >= 17209;
+            boolean marriedMilestone = gp.player.getRelationshipStatus() == "Married";
+            if (goldMilestone || marriedMilestone) {
+                gp.player.setReachedEndgame(true);
+                gp.gameState = GameStates.STATISTICS;
+            }
+        }
     }
 
     @Override
