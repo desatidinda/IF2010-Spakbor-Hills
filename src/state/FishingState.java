@@ -2,20 +2,20 @@ package state;
 
 import entity.Item.*;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Random;
 import javax.imageio.ImageIO;
+import java.util.Queue;
+import java.util.LinkedList;
 
 import main.Game;
 import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
+import entity.Item.*;
 
 public class FishingState implements StateHandler {
 
@@ -24,7 +24,7 @@ public class FishingState implements StateHandler {
     private String currentLocation = "Pond";
     private boolean showFishInfo = false;
     private boolean showFishingGame = false;
-    private boolean showInteractPopup = true; 
+    private boolean showInteractPopup = true;
     private boolean showChoicePopup = false;
     private List<Fish> availableFish;
     private int targetNumber, playerGuess = 50;
@@ -36,11 +36,19 @@ public class FishingState implements StateHandler {
     private final int WINDOW_WIDTH = 500;
     private final int WINDOW_HEIGHT = 350;
     private Fish targetFish;
+    private boolean recipeSashimiShown = false;
+    private boolean recipeLegendaryShown = false;
+    private boolean recipeFuguShown = false;
+    private long recipePopupTime = 0;
+    private String recipePopupMessage = null;
+    private static final long RECIPE_POPUP_DURATION = 2000;
+    private final Queue<String> recipePopupQueue = new LinkedList<>();
+
 
     public FishingState(GamePanel gp) {
         this.gp = gp;
         loadBackground();
-        
+
     }
 
     public String getCurrentLocation() {
@@ -55,8 +63,8 @@ public class FishingState implements StateHandler {
                 case "Mountain Lake" -> "/res/mountainLake.png";
                 case "Forest River" -> "/res/forestRiver.png";
                 case "Ocean" -> "/res/ocean.png";
-                case "Pond" -> "/res/pond.png"; 
-                default -> "/res/pond.png"; 
+                case "Pond" -> "/res/pond.png";
+                default -> "/res/pond.png";
             };
             image = ImageIO.read(getClass().getResourceAsStream(backgroundPath));
             // kalo misal gambarnya ga kedetect pake default
@@ -74,7 +82,7 @@ public class FishingState implements StateHandler {
 
     public void setFishingLocation(String location) {
         this.currentLocation = location;
-        loadBackground(); 
+        loadBackground();
         showInteractPopup = true;
     }
 
@@ -88,7 +96,7 @@ public class FishingState implements StateHandler {
         showFishingGame = false;
         availableFish = FishData.ALL_FISH.stream().filter(f -> f.getLocations().contains(currentLocation)).toList();
     }
-    
+
     private void startFishingGame() {
         if (gp.player.getEnergy() < 5) {
             gp.ui.showMessage("Not enough energy to fish!");
@@ -98,7 +106,7 @@ public class FishingState implements StateHandler {
         }
         showFishInfo = false;
         showFishingGame = true;
-        
+
         targetFish = getRandomFishByLocation(currentLocation);
         if (targetFish != null) {
             maxRange = getMaxRange(targetFish.getType());
@@ -110,13 +118,13 @@ public class FishingState implements StateHandler {
             fishCaught = false;
             gameOver = false;
             resultMessage = "";
-        } else { 
+        } else {
             showFishingGame = false;
             showFishInfo = false;
             gp.ui.showMessage("No fish available here!");
         }
     }
-    
+
     private void processGuess() {
         attempts++;
         if (playerGuess == targetNumber) {
@@ -137,7 +145,39 @@ public class FishingState implements StateHandler {
             playerGuess = (minRange + maxRange) / 2;
         }
     }
-    
+
+    private void drawRecipePopup(Graphics2D g2) {
+        if (recipePopupMessage == null && !recipePopupQueue.isEmpty()) {
+            recipePopupMessage = recipePopupQueue.poll();
+            recipePopupTime = System.currentTimeMillis();
+        }
+
+        if (recipePopupMessage != null) {
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 16F));
+            FontMetrics fm = g2.getFontMetrics();
+            int textWidth = fm.stringWidth(recipePopupMessage);
+            int padding = 20;
+
+            int w = textWidth + padding * 2;
+            int h = 50;
+            int x = (gp.screenWidth - w) / 2;
+            int y = gp.screenHeight - 100;
+
+            g2.setColor(new Color(0, 0, 0, 200));
+            g2.fillRoundRect(x, y, w, h, 15, 15);
+
+            g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(2));
+            g2.drawRoundRect(x, y, w, h, 15, 15);
+
+            g2.drawString(recipePopupMessage, x + padding, y + 30);
+
+            if (System.currentTimeMillis() - recipePopupTime > RECIPE_POPUP_DURATION) {
+                recipePopupMessage = null;
+            }
+        }
+    }
+
     private void catchFish() {
         if (targetFish == null) {
             resultMessage = "No fish available here!";
@@ -150,7 +190,30 @@ public class FishingState implements StateHandler {
         gp.player.getInventory().addItem(fishItem, 1);
         resultMessage = "You caught a " + targetFish.getName() + "!";
 
-        entity.Item.RecipeUnlocker.checkFishUnlock(gp.player.getInventory()); //ini buat unlock resep yg sashimi itu
+        if (RecipeUnlocker.checkFishUnlock(gp.player.getInventory())) {
+            //System.out.println("Resep Sashimi berhasil dipelajari!");
+        }
+
+        String unlocked = RecipeUnlocker.checkItemUnlock(fishItem.getItemName());
+        if (unlocked != null) {
+            //System.out.println("Resep " + unlocked + " berhasil dipelajari!");
+        } //ini buat unlock resep yg sashimi itu
+
+        if (targetFish.getName().equals("Pufferfish") && !recipeFuguShown) {
+            recipePopupQueue.offer("Resep Fugu berhasil dipelajari!");
+            recipeFuguShown = true;
+        }
+
+        if (targetFish.getName().equals("Legend") && !recipeLegendaryShown) {
+            recipePopupQueue.offer("Resep The Legends of Spakbor berhasil dipelajari!");
+            recipeLegendaryShown = true;
+        }
+
+        int total = RecipeUnlocker.getTotalFishCount(gp.player.getInventory());
+        if (total >= 10 && !recipeSashimiShown) {
+            recipePopupQueue.offer("Resep Sashimi berhasil dipelajari!");
+            recipeSashimiShown = true;
+        }
 
         ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).updateFishStatistics(targetFish.getType());
         ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementTotalFishCaught();;
@@ -188,6 +251,7 @@ public class FishingState implements StateHandler {
                 gp.ui.drawCenteredText(g2, "Press SPACE to fishing", popupX, popupY + 45, popupWidth);
             }
         }
+        drawRecipePopup(g2);
     }
     
     public static int getMaxAttempts(FishType fishType) {

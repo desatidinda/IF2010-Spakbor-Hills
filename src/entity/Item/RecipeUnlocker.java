@@ -9,27 +9,31 @@ import java.util.stream.Collectors;
 public class RecipeUnlocker {
     private static boolean hasHarvested = false;
     private static final Set<String> unlockedFromItems = new HashSet<>();
-    
+
     private static final Set<String> fishItems = FishData.ALL_FISH.stream().map(Fish::getName).collect(Collectors.toSet());
 
-    public static void checkItemUnlock(String itemName) {
-        switch (itemName) {
-            case "Hot Pepper" -> tryUnlock("Fish Stew");
-            case "Pufferfish" -> tryUnlock("Fugu");
-            case "Legend" -> tryUnlock("The Legends of Spakbor");
-            // case "Fish n' Chips Recipe" -> tryUnlock("Fish n' Chips");
-            // case "Fish Sandwich Recipe" -> tryUnlock("Fish Sandwich");
+    private static final Map<String, String> itemUnlockMap = Map.of(
+            "Hot Pepper", "Fish Stew",
+            "Pufferfish", "Fugu",
+            "Legend", "The Legends of Spakbor"
+    );
+
+    public static String checkItemUnlock(String itemName) {
+        if (itemUnlockMap.containsKey(itemName)) {
+            String recipeName = itemUnlockMap.get(itemName);
+            if (tryUnlock(recipeName)) {
+                return recipeName;
+            }
         }
+        return null;
     }
 
-    public static void checkFishUnlock(Inventory inventory) {
+    public static boolean checkFishUnlock(Inventory inventory) {
         int totalFish = getTotalFishCount(inventory);
-        if (totalFish >= 10) {
-            tryUnlock("Sashimi");
-        }
+        return totalFish >= 10 && tryUnlock("Sashimi");
     }
 
-    private static int getTotalFishCount(Inventory inventory) {
+    public static int getTotalFishCount(Inventory inventory) {
         int totalFish = 0;
         Map<Item, Integer> items = inventory.getItems();
 
@@ -41,17 +45,29 @@ public class RecipeUnlocker {
         return totalFish;
     }
 
-    public static void checkHarvestUnlock() {
+    public static boolean checkHarvestUnlock() {
         if (!hasHarvested) {
             hasHarvested = true;
             tryUnlock("Veggie Soup");
+            return true;
         }
+        return false;
     }
 
-    private static void tryUnlock(String recipeName) {
+    private static boolean tryUnlock(String recipeName) {
         if (unlockedFromItems.add(recipeName)) {
             RecipeRegistry.unlock(recipeName);
-            //System.out.println("Unlocked: " + recipeName);
+            return true;
         }
+        return false;
     }
+
+    public static boolean unlockFromPurchase(String recipeName) {
+        return tryUnlock(recipeName);
+    }
+
+    public static boolean isUnlocked(String recipeName) {
+        return unlockedFromItems.contains(recipeName);
+    }
+
 }

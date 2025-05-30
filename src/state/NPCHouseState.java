@@ -55,7 +55,7 @@ public class NPCHouseState extends InsideHouseState {
     private BufferedImage storeFrameImage;
     private String localPopupMessage = null;
     private long localPopupTime = 0;
-    private static final long LOCAL_POPUP_DURATION = 7;
+    private static final long LOCAL_POPUP_DURATION = 2000;
 
     public NPCHouseState(GamePanel gp, NPC npc) {
         super(gp);
@@ -517,10 +517,33 @@ public class NPCHouseState extends InsideHouseState {
                     showLocalPopup("Pilih jumlah dulu!");
                 } else if (gp.player.useGold(total)) {
                     ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).addExpenditure(total);
-                    Item newItem = ItemFactory.createItem(name);
-                    gp.player.getInventory().addItem(newItem, amount);
+                    if (name.endsWith("Recipe")) {
+                        String recipeName = name.replace(" Recipe", "");
+                        if (RecipeUnlocker.unlockFromPurchase(recipeName)) {
+                            showLocalPopup("Resep " + recipeName + " berhasil dipelajari!");
+                        } else {
+                            showLocalPopup("Resep " + recipeName + " sudah dipelajari.");
+                        }
+                    } else {
+                        Item newItem = ItemFactory.createItem(name);
+                        gp.player.getInventory().addItem(newItem, amount);
+                    }
+
                     if (isOneTime) purchasedOneTimeItems.add(name);
-                    showLocalPopup("Berhasil beli " + amount + " " + name);
+
+                    if (name.endsWith("Recipe")) {
+                        String recipeName = name.replace(" Recipe", "");
+                        if (RecipeUnlocker.unlockFromPurchase(recipeName)) {
+                            showLocalPopup("Resep " + recipeName + " berhasil dipelajari!");
+                        } else {
+                            showLocalPopup("Resep " + recipeName + " sudah dipelajari.");
+                        }
+                    } else {
+                        Item newItem = ItemFactory.createItem(name);
+                        gp.player.getInventory().addItem(newItem, amount);
+                        showLocalPopup("Berhasil beli " + amount + " " + name);
+                    }
+
                     storeBuyAmount[storeSelectedIndex] = 0;
                 } else {
                     showLocalPopup("Uangmu tidak cukup!");

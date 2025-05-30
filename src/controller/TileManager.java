@@ -156,6 +156,15 @@ public class TileManager {
             Item cropItem = ItemFactory.createItem(cropName); 
             inventory.addItem(cropItem, 1);
 
+            String unlocked = RecipeUnlocker.checkItemUnlock(cropItem.getItemName());
+            if (unlocked != null) {
+                gp.ui.showRecipeUnlockMessage("Resep " + unlocked + " berhasil dipelajari!");
+            }
+            if (RecipeUnlocker.checkHarvestUnlock()) {
+                gp.ui.showRecipeUnlockMessage("Resep Veggie Soup berhasil dipelajari!");
+            }
+
+
             mapTileNum[col][row] = 0;
             wateredMap[col][row] = false;
             plantAgeMap[col][row] = 0;

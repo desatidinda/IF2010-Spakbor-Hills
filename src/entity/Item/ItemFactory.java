@@ -30,6 +30,10 @@ public class ItemFactory {
 
         for (Misc misc : MiscData.ALL_MISC) {
             if (misc.getItemName().equalsIgnoreCase(itemName)) {
+                if (itemName.endsWith("Recipe")) {
+                    String recipeName = itemName.replace(" Recipe", "");
+                    RecipeRegistry.unlock(recipeName);
+                }
                 return misc;
             }
         }

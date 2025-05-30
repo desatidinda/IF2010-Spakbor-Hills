@@ -1,10 +1,6 @@
 package entity.Player;
 
-import entity.Item.FuelItem;
-import entity.Item.Item;
-import entity.Item.ItemFactory;
-import entity.Item.Recipe;
-import entity.Item.RecipeRegistry;
+import entity.Item.*;
 import entity.NPC.NPC;
 import map.Point;
 import input.KeyHandler;
@@ -495,28 +491,61 @@ public class Player {
         }
 
         for (Map.Entry<String, Integer> entry : recipe.getIngredients().entrySet()) {
-            Item item = ItemFactory.createItem(entry.getKey());
+            String ingredientName = entry.getKey();
             int totalNeeded = entry.getValue() * quantity;
 
-            if (!inventory.hasItem(item, totalNeeded)) {
-                System.out.println("Bahan tidak cukup: " + item.getItemName() + " (butuh " + totalNeeded + ")");
-                return;
+            if (ingredientName.equals("Any Fish")) {
+                int totalFish = 0;
+                for (Map.Entry<Item, Integer> invEntry : inventory.getItems().entrySet()) {
+                    if (invEntry.getKey() instanceof Fish) {
+                        totalFish += invEntry.getValue();
+                    }
+                }
+                if (totalFish < totalNeeded) {
+                    System.out.println("Jumlah ikan tidak cukup (butuh " + totalNeeded + ")");
+                    return;
+                }
+            } else {
+                Item item = ItemFactory.createItem(ingredientName);
+                if (!inventory.hasItem(item, totalNeeded)) {
+                    System.out.println("Bahan tidak cukup: " + item.getItemName() + " (butuh " + totalNeeded + ")");
+                    return;
+                }
             }
+
+            for (Map.Entry<String, Integer> ingredientEntry : recipe.getIngredients().entrySet()) {
+                String ingName = ingredientEntry.getKey();
+                int total = ingredientEntry.getValue() * quantity;
+
+                if (ingName.equals("Any Fish")) {
+                    int remainingToRemove = total;
+
+                    for (Map.Entry<Item, Integer> invEntry : inventory.getItems().entrySet()) {
+                        Item fish = invEntry.getKey();
+                        int available = invEntry.getValue();
+
+                        if (fish instanceof entity.Item.Fish) {
+                            int toRemove = Math.min(available, remainingToRemove);
+                            inventory.removeItem(fish, toRemove);
+                            remainingToRemove -= toRemove;
+                            if (remainingToRemove == 0) break;
+                        }
+                    }
+                } else {
+                    Item item = ItemFactory.createItem(ingredientName);
+                    inventory.removeItem(item, totalNeeded);
+                }
+            }
+
+            inventory.removeItem(fuel, neededFuelUnits);
+
+            Item cookedItem = ItemFactory.createItem(recipe.getName());
+            inventory.addItem(cookedItem, quantity);
+
+            energy -= 10 * quantity;
+
+            System.out.println("Berhasil memasak " + quantity + "x " + recipe.getName() + "!");
         }
-
-        for (Map.Entry<String, Integer> entry : recipe.getIngredients().entrySet()) {
-            Item item = ItemFactory.createItem(entry.getKey());
-            inventory.removeItem(item, entry.getValue() * quantity);
-        }
-
-        inventory.removeItem(fuel, neededFuelUnits);
-
-        Item cookedItem = ItemFactory.createItem(recipe.getName());
-        inventory.addItem(cookedItem, quantity);
-
-        energy -= 10 * quantity;
-
-        System.out.println("Berhasil memasak " + quantity + "x " + recipe.getName() + "!");
     }
 
     public void watchingTV() {

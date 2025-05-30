@@ -32,6 +32,10 @@ public class UIController {
     public String gender = "";
     public String farmName = "";
 
+    private String recipeUnlockMessage = null;
+    private long recipeUnlockTime = 0;
+    private static final int RECIPE_POPUP_DURATION = 2000;
+
     double playTime;
     DecimalFormat df = new DecimalFormat("#0.00");
     BufferedImage gambar, bgName, bgGender, bgFarmGirl, bgFarmBoy;
@@ -55,6 +59,11 @@ public class UIController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void showRecipeUnlockMessage(String text) {
+        this.recipeUnlockMessage = text;
+        this.recipeUnlockTime = System.currentTimeMillis();
     }
 
     public void showMessage(String text) {
@@ -85,6 +94,24 @@ public class UIController {
             
         } else if (gp.gameState == GameStates.STATISTICS) {
             
+        }
+        if (recipeUnlockMessage != null) {
+            long elapsed = System.currentTimeMillis() - recipeUnlockTime;
+            if (elapsed < RECIPE_POPUP_DURATION) {
+                int x = 30;
+                int y = gp.screenHeight - 60;
+                int w = 280;
+                int h = 30;
+
+                drawPopupWindow(g2, x, y, w, h);
+
+                g2.setFont(g2.getFont().deriveFont(Font.BOLD, 13F));
+                g2.setColor(Color.WHITE);
+
+                drawCenteredText(g2, recipeUnlockMessage, x, y + h / 2 + 4, w);
+            } else {
+                recipeUnlockMessage = null;
+            }
         }
     }
 
