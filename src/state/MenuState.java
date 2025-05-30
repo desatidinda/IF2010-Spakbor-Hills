@@ -48,9 +48,9 @@ public class MenuState implements StateHandler {
         lines.add("Name     : " + player.getName());
         lines.add("Gender   : " + player.getGender());
         lines.add("Farm     : " + player.getFarmName());
-        lines.add("Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"));
-        lines.add("Status   : " + player.getRelationshipStatus());
         lines.add("Energy   : " + player.getEnergy());
+        lines.add("Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"));
+        //lines.add("Status   : " + player.getRelationshipStatus());
         lines.add("Favorite Item : " + player.getFavoriteItem().getItemName());
         lines.add("Gold     : " + player.getGold());
 

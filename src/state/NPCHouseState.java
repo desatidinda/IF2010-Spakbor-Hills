@@ -403,43 +403,46 @@ public class NPCHouseState extends InsideHouseState {
                     Item proposalRing = ItemFactory.createItem("Proposal Ring");
                     showChoicePopup = false;
                     showDialogPopup = false;
-                    showProposalPopup = true;
-                    popupStartHour = GameClock.getHour();
-                    popupStartMinute = GameClock.getMinute();
                     showGiftPopup = false;
                     showGiftSelectPopup = false;
                     if (!gp.player.getInventory().hasItem(proposalRing)) {
+                        showProposalPopup = true;
+                        proposal = false;
+                        popupStartHour = GameClock.getHour();
+                        popupStartMinute = GameClock.getMinute();
                         // giftText = "You need Proposal Ring to Propose!";
                         // showGiftPopup = true;
-                        proposal = false;
                     } else {
                         boolean success = gp.player.propose(npcInHouse);
-                        if (success) {
-                            proposal = true;
-                        } else {
-                            proposal = false;
-                        }
+                        showProposalPopup = true;
+                        proposal = success;
+                        popupStartHour = GameClock.getHour();
+                        popupStartMinute = GameClock.getMinute();
                     }
                 } else if (choices[selectedChoice].equals("Marry")) {
                     Item proposalRing = ItemFactory.createItem("Proposal Ring");
                     showChoicePopup = false;
                     showDialogPopup = false;
-                    showMarryPopup = true;
-                    popupStartHour = GameClock.getHour();
-                    popupStartMinute = GameClock.getMinute();
                     showGiftPopup = false;
                     showGiftSelectPopup = false;
                     if (!gp.player.getInventory().hasItem(proposalRing)) {
                         // giftText = "You need Proposal Ring to Marry!";
                         // showGiftPopup = true;
+                        showProposalPopup = true;
                         proposal = false;
+                        popupStartHour = GameClock.getHour();
+                        popupStartMinute = GameClock.getMinute();
                     } else {
                         boolean success = gp.player.marry(npcInHouse);
                         if (success) {
+                            showMarryPopup = true;
                             marry = true;
                         } else {
-                            marry = false;
+                            showProposalPopup = true;
+                            proposal = false;
                         }
+                        popupStartHour = GameClock.getHour();
+                        popupStartMinute = GameClock.getMinute();
                     }
                 } else if (choices[selectedChoice].equals("Store") && npcInHouse.getName().equals("Emily")) {
                     showChoicePopup = false;
