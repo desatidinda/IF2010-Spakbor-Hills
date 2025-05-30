@@ -9,6 +9,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import main.GameStates;
 import main.GameClock;
 import entity.Item.*;
 import entity.NPC.*;
@@ -372,6 +373,9 @@ public class NPCHouseState extends InsideHouseState {
                 Item selectedGift = giftableItems.get(selectedGiftIndex);
                 boolean success = gp.player.giveGift(npcInHouse, selectedGift.getItemName());
                 if (success) {
+                    gp.player.getInventory().removeItem(selectedGift);
+                    npcInHouse.reactToGift(selectedGift);
+                    gp.player.performAction(5);
                     giftText = "You gave " + selectedGift.getItemName() + " to " + npcInHouse.getName() + "!";
                 } else {
                     giftText = "You don't have " + selectedGift.getItemName() + "!";
@@ -427,6 +431,7 @@ public class NPCHouseState extends InsideHouseState {
                 } else if (amount == 0) {
                     showLocalPopup("Pilih jumlah dulu!");
                 } else if (gp.player.useGold(total)) {
+                    ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).addExpenditure(total);
                     Item newItem = ItemFactory.createItem(name);
                     gp.player.getInventory().addItem(newItem, amount);
                     if (isOneTime) purchasedOneTimeItems.add(name);

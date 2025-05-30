@@ -83,7 +83,7 @@ public class UIController {
 
         } else if (gp.gameState == GameStates.ITEMLIST) {
             
-        } else if (gp.gameState == GameStates.STATISTCS) {
+        } else if (gp.gameState == GameStates.STATISTICS) {
             
         }
     }

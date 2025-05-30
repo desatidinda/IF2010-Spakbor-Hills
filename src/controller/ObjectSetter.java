@@ -51,7 +51,7 @@ public class ObjectSetter {
         house.worldY = row * gp.tileSize;
         gp.obj[0] = house;
 
-        ShippingBin bin = new ShippingBin();
+        ShippingBin bin = new ShippingBin(gp);
         bin.worldX = (col * gp.tileSize) + gp.tileSize * binOffsetX;
         bin.worldY = (row * gp.tileSize) + gp.tileSize * binOffsetY;
         gp.obj[1] = bin;

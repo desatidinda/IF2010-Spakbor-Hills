@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import main.Game;
 import main.GameClock;
 import main.GamePanel;
+import main.GameStates;
 
 public class FishingState implements StateHandler {
 
@@ -150,6 +151,9 @@ public class FishingState implements StateHandler {
         resultMessage = "You caught a " + targetFish.getName() + "!";
 
         entity.Item.RecipeUnlocker.checkFishUnlock(gp.player.getInventory()); //ini buat unlock resep yg sashimi itu
+
+        ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).updateFishStatistics(targetFish.getType());
+        ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementTotalFishCaught();;
     }
 
     @Override
