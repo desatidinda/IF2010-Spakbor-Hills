@@ -11,6 +11,8 @@ public class MiscData {
         new Misc("Fish n’ Chips Recipe", 300.0, 0.0),
         new Misc("Fish Sandwich Recipe", 300.0,0.0),
         new Misc("Egg",20.0,10.0),
-        new Misc("Proposal Ring", 3000.0,0.0)
+        new Misc("Proposal Ring", 3000.0,0.0),
+        new Misc("Lalabu", 10000000.0, 0.0),
+        new Misc("AK47", 10000000.0, 0.0)
     );
 }

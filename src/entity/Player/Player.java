@@ -308,6 +308,15 @@ public class Player {
         return inventory; 
     }
 
+    public Item getFavoriteItem() {
+        //favorite item dr player ga berpengaruh apa apa di game ini hehe
+        if (getGender().equals("Male")){
+            return ItemFactory.createItem("AK47");
+        } else { 
+            return ItemFactory.createItem("Lalabu");
+        }
+    }
+
     public Point getLocation() { 
         if (gp.gameState == GameStates.MAP) {
             return location;

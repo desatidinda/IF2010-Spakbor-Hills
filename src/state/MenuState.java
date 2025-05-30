@@ -1,28 +1,40 @@
 package state;
-
-
 import entity.Player.Player;
-import main.GamePanel;
-import main.GameStates;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
+import main.GamePanel;
+import main.GameStates;
 
 public class MenuState implements StateHandler {
     private final GamePanel gp;
     private final Player player;
     private final Font vt323;
+    private BufferedImage backgroundImage;
 
     public MenuState(GamePanel gp, Player player) {
         this.gp = gp;
         this.player = player;
         this.vt323 = new Font("VT323", Font.PLAIN, 24);
+        getBackgroundImage();
+    }
+    
+    public void getBackgroundImage() {
+        try {
+            backgroundImage = ImageIO.read(getClass().getResourceAsStream("/res/menu.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void draw(Graphics2D g2) {
-
+        if (backgroundImage != null) {
+            g2.drawImage(backgroundImage, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
         // String[] lines = {
         //     "Name     : " + player.getName(),
         //     "Gender   : " + player.getGender(),
@@ -32,7 +44,6 @@ public class MenuState implements StateHandler {
         //     "Energy   : " + player.getEnergy(),
         //     "Gold     : " + player.getGold()
         // };
-
         List<String> lines = new ArrayList<>();
         lines.add("Name     : " + player.getName());
         lines.add("Gender   : " + player.getGender());
@@ -40,6 +51,7 @@ public class MenuState implements StateHandler {
         lines.add("Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"));
         lines.add("Status   : " + player.getRelationshipStatus());
         lines.add("Energy   : " + player.getEnergy());
+        lines.add("Favorite Item : " + player.getFavoriteItem().getItemName());
         lines.add("Gold     : " + player.getGold());
 
         if (player.hasReachedEndgame()) {
@@ -47,24 +59,32 @@ public class MenuState implements StateHandler {
             lines.add("Press S to view End Game Statistics");
         }
 
-        int boxWidth = 400;
+        lines.add("");
+        lines.add("Press ESC to exit menu");
+
+        int boxWidth = 500; 
         int lineHeight = 32;
         int boxHeight = 60 + lines.size() * lineHeight;
-
+        int cornerRadius = 20; 
         int boxX = (gp.screenWidth - boxWidth) / 2;
         int boxY = (gp.screenHeight - boxHeight) / 2;
-       
-        gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
-
+        
+        Color panelColor = new Color(0, 0, 0, 180); 
+        g2.setColor(panelColor);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, cornerRadius, cornerRadius);
+        g2.setColor(Color.WHITE);
+        g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, cornerRadius, cornerRadius);
+        
         // HEADER
         g2.setFont(vt323.deriveFont(Font.BOLD, 24F));
+        g2.setColor(Color.WHITE);
         gp.ui.drawCenteredText(g2, "PLAYER STATUS", boxX, boxY + 38, boxWidth);
-
         g2.setFont(vt323.deriveFont(Font.PLAIN, 18F));
         int textY = boxY + 70;
 
         for (String line : lines) {
-            g2.drawString(line, boxX + 20, textY);
+            g2.drawString(line, boxX + 30, textY); 
             textY += lineHeight;
         }
     }
