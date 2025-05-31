@@ -53,10 +53,14 @@ Snowballs Hills merupakan permainan yang terinspirasi berat dari Stardew Valley.
 ---
 
 ## Pictures
+Main Menu.
 ![Main Menu.](https://github.com/user-attachments/assets/782ce648-25b9-4aa7-a62e-21e579b9c76b)
 
+Tampilan Saat Masuk Game.
 ![Tampilan Saat Masuk Game.](https://github.com/user-attachments/assets/09700e29-39be-4228-a5c0-015cd38e2878)
 
+Silaturahmi Dengan Salah Satu NPC.
 ![Silaturahmi Dengan Salah Satu NPC.](https://github.com/user-attachments/assets/c24f568f-5ff5-4002-91e7-61af9b0c6ef6)
 
+M#ncing M#nia, M#ntap! (harus disensor, takut copyright. 😱)
 ![M*ncing M*nia, M*ntap! (harus disensor, takut copyright.)](https://github.com/user-attachments/assets/c5a6fbbb-db07-4ef0-9995-0400845f659a)
