@@ -313,7 +313,7 @@ public class InsideHouseState implements StateHandler {
                     Item item = ItemFactory.createItem(entry.getKey());
                     int qty = entry.getValue();
                     if (!gp.player.getInventory().hasItem(item, qty)) {
-                        cookMessage = "Not enough " + item + " to cook " + selected.getName() + "!";
+                        cookMessage = "Not enough " + item.getItemName() + " to cook " + selected.getName() + "!";
                         cookMessageTimer = 180;
                         return;
                     } 

@@ -244,6 +244,11 @@ public class NPCHouseState extends InsideHouseState {
 
     @Override
     public void update() {
+        if (GameClock.isPingsan()) {
+            gp.player.pingsan();
+            gp.ui.showPopupMessage("It's past midnight! You will be taken to your house.");
+        }
+
         gp.player.update();
 
         gp.player.collision = false;

@@ -50,7 +50,6 @@ public class Inventory {
         if (!unlimitedTools.contains(item) && hasItem(item, quantity)) {
             items.put(item, items.get(item) - quantity);
         }
-
     }
 
     public int getItemCount(Item item) {

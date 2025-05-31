@@ -55,7 +55,7 @@ public class Player {
         this.farmName = farmName;
         this.energy = MAX_ENERGY;
         this.partner = null;
-        this.gold = 0.0;
+        this.gold = 99999;
         this.inventory = new Inventory();
         this.location = new Point(16, 16); // default starting location (ini ditengah)
         this.indoorLocation = new Point(16, 16); // default indoor location
@@ -408,14 +408,17 @@ public class Player {
         //System.out.println(name + " has slept and recovered energy.");
     }
 
-    public void displayStatus() {
-        System.out.println("Name      : " + name);
-        System.out.println("Gender    : " + gender);
-        System.out.println("Energy    : " + energy);
-        System.out.println("Gold      : " + gold);
-        System.out.println("Partner   : " + (partner != null ? partner : "None"));
-        System.out.println("Location  : (" + location.getX() + ", " + location.getY() + ")");
-        System.out.println("Inventory : " + inventory);
+    public void pingsan() {
+        energy += Math.floor(energy / 2);
+        GameClock.skipToMorning();
+
+        gp.gameState = GameStates.INSIDE_HOUSE;
+        houseX = gp.screenWidth / 2 - (gp.tileSize / 2);
+        houseY = gp.screenHeight / 2 - (gp.tileSize / 2);
+        worldX = gp.tileSize * 16;
+        worldY = gp.tileSize * 16;
+        solid.x = houseX;
+        solid.y = houseY;
     }
 
     public void chatWith(NPC npc) {
@@ -462,7 +465,7 @@ public class Player {
         npc.setRelationshipStatus("Spouse");
         setPartner(npc.getName());
         performAction(80);
-        GameClock.skipTo22();
+        GameClock.skipToHour(22);
         return true;
     }
 

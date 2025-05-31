@@ -195,10 +195,27 @@ public class GameClock {
             }
         }
     }
-    public static void skipTo22() {
+    public static void skipToHour(int targetHour) {
         synchronized (lock) {
-            hour = 22;
+            if (targetHour < 0 || targetHour >= 24) {
+                targetHour = Math.max(0, Math.min(23, targetHour));
+            }
+
+            hour = targetHour;
             minute = 0;
+
+            if (targetHour < getHour()) {
+                day++;
+                dayfix++;
+                currentWeather = generateWeather();
+                checkSeasonChange();
+            }
+        }
+    }
+
+    public static boolean isPingsan() {
+        synchronized (lock) {
+            return hour >= 2 && hour < 6; // pingsan
         }
     }
 
