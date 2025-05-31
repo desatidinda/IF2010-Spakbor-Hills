@@ -17,8 +17,10 @@ public class MenuState implements StateHandler {
     private final Player player;
     private final Font vt323;
     private BufferedImage backgroundImage;
+    private BufferedImage creditImage;
     private UIController ui;
-    private boolean showInformation = false; 
+    private boolean showInformation = false;
+    private boolean showCredits = false; 
     
     public MenuState(GamePanel gp, Player player) {
         this.gp = gp;
@@ -26,6 +28,7 @@ public class MenuState implements StateHandler {
         this.vt323 = new Font("VT323", Font.PLAIN, 24);
         this.ui = gp.ui; 
         getBackgroundImage();
+        getCreditImage();
     }
     
     public void getBackgroundImage() {
@@ -35,11 +38,29 @@ public class MenuState implements StateHandler {
             e.printStackTrace();
         }
     }
+    
+    public void getCreditImage() {
+        try {
+            creditImage = ImageIO.read(getClass().getResourceAsStream("/res/credit.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void draw(Graphics2D g2) {
         if (backgroundImage != null) {
             g2.drawImage(backgroundImage, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
+        
+        if (showCredits && creditImage != null) {
+            g2.drawImage(creditImage, 0, 0, gp.screenWidth, gp.screenHeight, null);
+            return; 
+        }
+    
+        if (showInformation) {
+            ui.drawInformation(g2);
+            return; 
         }
 
         List<String> lines = new ArrayList<>();
@@ -58,6 +79,7 @@ public class MenuState implements StateHandler {
         }
 
         lines.add("Press Shift to show information about the game");
+        lines.add("Press A to show credits");
         lines.add("Press Q to exit game");
         lines.add("Press ESC to exit menu");
 
@@ -86,10 +108,6 @@ public class MenuState implements StateHandler {
             g2.drawString(line, boxX + 30, textY); 
             textY += lineHeight;
         }
-
-        if (showInformation) {
-            ui.drawInformation(g2); 
-        }
     }
 
     @Override
@@ -98,14 +116,23 @@ public class MenuState implements StateHandler {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            if (showInformation) {
+        if (showCredits) {
+            showCredits = false;
+            return;
+        }
+        
+        if (showInformation) {
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 showInformation = false;
-            } else {
-                gp.gameState = GameStates.MAP;
             }
+            return; 
+        }
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            gp.gameState = GameStates.MAP;
         } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
             showInformation = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_A) {
+            showCredits = true; 
         } else if (e.getKeyCode() == KeyEvent.VK_Q) {
             System.exit(0);
         } else if (e.getKeyCode() == KeyEvent.VK_S && player.hasReachedEndgame()) {
