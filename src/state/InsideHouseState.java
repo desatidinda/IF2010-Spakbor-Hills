@@ -38,6 +38,7 @@ public class InsideHouseState implements StateHandler {
     private String pendingFuel = null;
     private String cookMessage = null;
     private int cookMessageTimer = 0;
+    private boolean showExitMessage = false;
 
     public InsideHouseState(GamePanel gp) {
         this.gp = gp;
@@ -47,6 +48,14 @@ public class InsideHouseState implements StateHandler {
 
     public void setShowRecipeList(boolean value) {
         this.showRecipeList = value;
+    }
+
+    public void setShowExitMessage(boolean show) {
+        this.showExitMessage = show;
+    }
+
+    public boolean isAtEdge() {
+        return showExitMessage;
     }
 
     protected void loadBackground() {
@@ -132,6 +141,11 @@ public class InsideHouseState implements StateHandler {
 
         if (showRecipeList) {
             drawRecipeList(g2);
+        }
+
+        if (showExitMessage) {
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 16F));
+            gp.ui.drawCenteredText(g2, "Press ESC to exit house", 0, gp.screenHeight - 60, gp.screenWidth);
         }
     }
 
@@ -230,7 +244,9 @@ public class InsideHouseState implements StateHandler {
         } else if (key == KeyEvent.VK_D) {
             gp.keyHandler.rightPressed = true;
         } else if (key == KeyEvent.VK_ESCAPE) {
-            gp.player.teleportOut();
+            if (showExitMessage) {
+                gp.player.teleportOut();
+            }
         } else if (key == KeyEvent.VK_SPACE) {
             gp.keyHandler.spacePressed = true;
         }

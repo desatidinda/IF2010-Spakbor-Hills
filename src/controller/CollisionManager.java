@@ -1,7 +1,9 @@
 package controller;
 
 import main.GamePanel;
+import main.GameStates;
 import map.Point;
+import state.InsideHouseState;
 import entity.NPC.NPC;
 import entity.Player.*;
 
@@ -217,19 +219,26 @@ public class CollisionManager {
         
         switch (player.direction) {
             case "up":
-                predictedY -= gp.tileSize; 
-                break;
+            predictedY -= gp.tileSize; 
+            break;
             case "down":
-                predictedY += gp.tileSize;
-                break;
+            predictedY += gp.tileSize;
+            break;
             case "left":
-                predictedX -= gp.tileSize;
-                break;
+            predictedX -= gp.tileSize;
+            break;
             case "right":
-                predictedX += gp.tileSize;
-                break;
+            predictedX += gp.tileSize;
+            break;
         }
         
+        if (!isNabrak(predictedX, predictedY, player)) {
+            player.collision = true;
+            player.solid.x = originalX;
+            player.solid.y = originalY;
+            return index;
+        }
+
         // solid playernya jadiin ke prediksi
         player.solid.x = predictedX;
         player.solid.y = predictedY;
@@ -272,6 +281,26 @@ public class CollisionManager {
         player.solid.y = originalY;
         
         return index;
+    }
+
+    private boolean isNabrak(int x, int y, Player player) {
+        int roomLeftBound = 0;
+        int roomRightBound = gp.screenWidth - player.solid.width - 20;
+        int roomTopBound = 0;
+        int roomBottomBound = gp.screenHeight - player.solid.height - 20;
+        
+        boolean withinBounds = x >= roomLeftBound && x <= roomRightBound && 
+                               y >= roomTopBound && y <= roomBottomBound;
+
+        if (gp.gameState == GameStates.INSIDE_HOUSE) {
+            InsideHouseState houseState = (InsideHouseState) gp.stateHandlers.get(GameStates.INSIDE_HOUSE);
+            boolean atEdge = (x <= roomLeftBound + 5 || 
+                            x >= roomRightBound - 5 || 
+                            y <= roomTopBound - 5|| 
+                            y >= roomBottomBound - 5);
+            houseState.setShowExitMessage(atEdge);
+        }
+        return withinBounds;
     }
 
     public void checkNPCCollision(Player player, NPC npcInHouse) {
