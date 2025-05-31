@@ -7,11 +7,14 @@ import input.KeyHandler;
 import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
+import main.GameObserver;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Player {
@@ -22,6 +25,8 @@ public class Player {
     private String partner;
     private String relationshipStatus = "Single"; //status: Single, Engaged, Married
     private double gold;
+
+    private static List<GameObserver> observers = new ArrayList<>();
     private Inventory inventory;
     private Point location;
     private Point indoorLocation;
@@ -55,7 +60,7 @@ public class Player {
         this.farmName = farmName;
         this.energy = MAX_ENERGY;
         this.partner = null;
-        this.gold = 99999;
+        this.gold = 0.0;
         this.inventory = new Inventory();
         this.location = new Point(16, 16); // default starting location (ini ditengah)
         this.indoorLocation = new Point(16, 16); // default indoor location
@@ -78,6 +83,16 @@ public class Player {
         getImage();
         Item parsnipSeeds = ItemFactory.createItem("Parsnip Seeds");
         inventory.addItem(parsnipSeeds, 15);
+    }
+
+    public static void addObserver(GameObserver observer) {
+        observers.add(observer);
+    }
+
+    private void notifyExhausted() {
+        for (GameObserver observer : observers) {
+            observer.onPlayerExhausted();
+        }
     }
 
     public void update() {
@@ -384,9 +399,13 @@ public class Player {
             return false;
         }
         energy -= energyCost;
-        if (energy <= MIN_ENERGY) {
-            System.out.println(name + " is exhausted and falls asleep automatically.");
-            sleep();
+
+        if (energy <= 10) {
+            notifyExhausted();
+        }
+        
+        if (isExhausted()) {
+            pingsan();
         }
         return true;
     }
@@ -395,22 +414,33 @@ public class Player {
         energy = Math.min(MAX_ENERGY, energy + amount);
     }
 
+    public boolean isExhausted() {
+        return energy <= MIN_ENERGY;
+    }
+
     public void sleep() {
         if (energy < MAX_ENERGY * 0.1) {
             energy = MAX_ENERGY / 2;
-        } 
-        else if (energy == 0) {
+        } else if (energy == 0) {
             energy = MAX_ENERGY / 2 + 10;
-        } 
-        else {
+        } else {
             energy = MAX_ENERGY;
         }
-        //System.out.println(name + " has slept and recovered energy.");
+        GameClock.skipToMorning();
     }
 
     public void pingsan() {
-        energy += Math.floor(energy / 2);
-        GameClock.skipToMorning();
+        if (energy <= MIN_ENERGY) {
+        energy = 10; 
+        } else {
+            energy = Math.min(MAX_ENERGY, (int)(energy + Math.floor(energy/2))); 
+        }
+
+        if (GameClock.isPingsan() || GameClock.getHour() < 6) {
+            GameClock.skipUntilMorning();
+        } else {
+            GameClock.skipToMorning();
+        }
 
         gp.gameState = GameStates.INSIDE_HOUSE;
         houseX = gp.screenWidth / 2 - (gp.tileSize / 2);

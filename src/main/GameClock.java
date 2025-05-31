@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import entity.Farm.Season;
 import entity.Farm.Weather;
@@ -11,6 +13,9 @@ public class GameClock {
     private static boolean paused = false;
     private static final Object lock = new Object();
 
+    private static long gameStartTime = 0;
+    private static long totalGameTime = 0;
+
     private static int minute = 0;
     private static int hour = 6;
     private static int day = 1;
@@ -20,6 +25,8 @@ public class GameClock {
 
     private static int rainyDayCounter = 0;
     private static Random rand = new Random();
+
+    private static List<GameObserver> observers = new ArrayList<>();
 
     public static void startClock() {
         if (clockThread == null || !clockThread.isAlive()) {
@@ -49,12 +56,16 @@ public class GameClock {
             currentSeason = Season.SPRING;
             currentWeather = generateWeather();
             rainyDayCounter = currentWeather == Weather.RAINY ? 1 : 0;
+
+            gameStartTime = System.currentTimeMillis();
+            totalGameTime = 0;
         }
     }
 
     public static void updateTime(int realSeconds) {
         int gameMinutesToAdd = realSeconds * 5;
 
+        totalGameTime += realSeconds * 5000;
         minute += gameMinutesToAdd;
         while (minute >= 60) {
             minute -= 60;
@@ -70,6 +81,12 @@ public class GameClock {
 
         checkSeasonChange();
     }
+
+    public static long getGameTime() {
+        synchronized (lock) {
+            return totalGameTime;
+        }
+}
 
     public static void stopClock() {
         running = false;
@@ -141,6 +158,7 @@ public class GameClock {
             case FALL -> Season.WINTER;
             case WINTER -> Season.SPRING;
         };
+        notifySeasonChanged();
     }
     
     public static void skipToMorning() {
@@ -152,6 +170,13 @@ public class GameClock {
             
             currentWeather = generateWeather();
             checkSeasonChange();
+        }
+    }
+
+    public static void skipUntilMorning() {
+        synchronized(lock) {
+            hour = 6;
+            minute = 0;
         }
     }
 
@@ -195,6 +220,7 @@ public class GameClock {
             }
         }
     }
+
     public static void skipToHour(int targetHour) {
         synchronized (lock) {
             if (targetHour < 0 || targetHour >= 24) {
@@ -240,5 +266,15 @@ public class GameClock {
 
     public static boolean isNighttime() {
         return getCurrentTimePhase() == TimePhase.NIGHT;
+    }
+
+    public static void addObserver(GameObserver observer) {
+        observers.add(observer);
+    }
+
+    private static void notifySeasonChanged() {
+        for (GameObserver observer : observers) {
+            observer.onSeasonChanged();
+        }
     }
 }
