@@ -55,7 +55,7 @@ public class Player {
         this.farmName = farmName;
         this.energy = MAX_ENERGY;
         this.partner = null;
-        this.gold = 0;
+        this.gold = 0.0;
         this.inventory = new Inventory();
         this.location = new Point(16, 16); // default starting location (ini ditengah)
         this.indoorLocation = new Point(16, 16); // default indoor location
