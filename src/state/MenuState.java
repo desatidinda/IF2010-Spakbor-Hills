@@ -79,6 +79,7 @@ public class MenuState implements StateHandler {
         }
 
         lines.add("Press Shift to show information about the game");
+        lines.add("Press I to show item list");
         lines.add("Press A to show credits");
         lines.add("Press Q to exit game");
         lines.add("Press ESC to exit menu");
@@ -90,9 +91,7 @@ public class MenuState implements StateHandler {
         int boxX = (gp.screenWidth - boxWidth) / 2;
         int boxY = (gp.screenHeight - boxHeight) / 2;
         
-        Color panelColor = new Color(0, 0, 0, 180); 
-        g2.setColor(panelColor);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(new Color(0, 0, 0, 180));
         g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, cornerRadius, cornerRadius);
         g2.setColor(Color.WHITE);
         g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, cornerRadius, cornerRadius);
@@ -137,6 +136,8 @@ public class MenuState implements StateHandler {
             System.exit(0);
         } else if (e.getKeyCode() == KeyEvent.VK_S && player.hasReachedEndgame()) {
             gp.gameState = GameStates.STATISTICS;
+        } else if (e.getKeyCode() == KeyEvent.VK_I) {
+            gp.gameState = GameStates.ITEMLIST;
         }
     }
 

@@ -403,7 +403,7 @@ public class Player {
         if (energy <= 10) {
             notifyExhausted();
         }
-        
+
         if (isExhausted()) {
             pingsan();
         }
