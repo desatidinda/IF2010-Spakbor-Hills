@@ -221,7 +221,7 @@ public class NPCHouseState extends InsideHouseState {
             g2.setStroke(new BasicStroke(2));
             g2.drawRoundRect(boX, boY, boxWidth, boxHeight, 10, 10);
 
-            g2.setColor(Color.RED);
+            g2.setColor(Color.BLACK);
             int msgX = gp.screenWidth / 2 - msgWidth / 2;
             int msgY = boY + boxHeight / 2 + msgFm.getAscent() / 2 - 2;
             g2.drawString(localPopupMessage, msgX, msgY);
@@ -515,17 +515,17 @@ public class NPCHouseState extends InsideHouseState {
                 boolean isOneTime = oneTimeItems.contains(name);
 
                 if (isOneTime && isPurchased) {
-                    showLocalPopup("Item ini hanya bisa dibeli sekali.");
+                    showLocalPopup("This item can only be bought once!");
                 } else if (amount == 0) {
-                    showLocalPopup("Pilih jumlah dulu!");
+                    showLocalPopup("Please choose amount first!");
                 } else if (gp.player.useGold(total)) {
                     ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).addExpenditure(total);
                     if (name.endsWith("Recipe")) {
                         String recipeName = name.replace(" Recipe", "");
                         if (RecipeUnlocker.unlockFromPurchase(recipeName)) {
-                            showLocalPopup("Resep " + recipeName + " berhasil dipelajari!");
+                            showLocalPopup(recipeName + " Recipe unlocked!");
                         } else {
-                            showLocalPopup("Resep " + recipeName + " sudah dipelajari.");
+                            showLocalPopup(recipeName + " Recipe unlocked!");
                         }
                     } else {
                         Item newItem = ItemFactory.createItem(name);
@@ -537,19 +537,19 @@ public class NPCHouseState extends InsideHouseState {
                     if (name.endsWith("Recipe")) {
                         String recipeName = name.replace(" Recipe", "");
                         if (RecipeUnlocker.unlockFromPurchase(recipeName)) {
-                            showLocalPopup("Resep " + recipeName + " berhasil dipelajari!");
+                            showLocalPopup(recipeName + " Recipe unlocked!");
                         } else {
-                            showLocalPopup("Resep " + recipeName + " sudah dipelajari.");
+                            showLocalPopup(recipeName + " Recipe unlocked!");
                         }
                     } else {
                         Item newItem = ItemFactory.createItem(name);
                         gp.player.getInventory().addItem(newItem, amount);
-                        showLocalPopup("Berhasil beli " + amount + " " + name);
+                        showLocalPopup("Sucessfully buy " + amount + " " + name);
                     }
 
                     storeBuyAmount[storeSelectedIndex] = 0;
                 } else {
-                    showLocalPopup("Uangmu tidak cukup!");
+                    showLocalPopup("You don't have enough gold!");
                 }
             } else if (key == KeyEvent.VK_ESCAPE) {
                 showStorePopup = false;
