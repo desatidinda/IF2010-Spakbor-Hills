@@ -76,6 +76,7 @@ public class GamePanel extends JPanel implements Runnable {
         stateHandlers.put(GameStates.INVENTORY, new InventoryState(this, player));
         stateHandlers.put(GameStates.MENU, new MenuState(this, player));
         stateHandlers.put(GameStates.STATISTICS, new EndGameStatistics(this));
+        stateHandlers.put(GameStates.ITEMLIST, new ItemListState(this));
 
         //GameClock.init();
     }
