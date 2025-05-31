@@ -87,8 +87,8 @@ public class FishingState implements StateHandler {
     }
 
     private void startFishing() {
-        if (gp.player.getEnergy() < 5) {
-            gp.ui.showMessage("Not enough energy to fish! You need at least 5 energy.");
+        if (gp.player.getEnergy() <= 0) {
+            gp.ui.showMessage("Not enough energy to fish! You need at least some energy.");
             return;
         }
 
@@ -98,8 +98,8 @@ public class FishingState implements StateHandler {
     }
 
     private void startFishingGame() {
-        if (gp.player.getEnergy() < 5) {
-            gp.ui.showMessage("Not enough energy to fish!");
+        if (gp.player.getEnergy() <= 0) {
+            gp.ui.showMessage("Not enough energy to fish! You need at least some energy.");
             showFishInfo = false;
             showFishingGame = false;
             return;
@@ -134,6 +134,7 @@ public class FishingState implements StateHandler {
         } else if (attempts >= maxAttempts) {
             gameOver = true;
             resultMessage = "The fish got away!";
+            gp.player.performAction(5);
         } else {
             if (playerGuess < targetNumber) {
                 minRange = playerGuess + 1;
@@ -191,13 +192,13 @@ public class FishingState implements StateHandler {
         resultMessage = "You caught a " + targetFish.getName() + "!";
 
         if (RecipeUnlocker.checkFishUnlock(gp.player.getInventory())) {
-            //System.out.println("Resep Sashimi berhasil dipelajari!");
+            // Recipe unlock logic
         }
 
         String unlocked = RecipeUnlocker.checkItemUnlock(fishItem.getItemName());
         if (unlocked != null) {
-            //System.out.println("Resep " + unlocked + " berhasil dipelajari!");
-        } //ini buat unlock resep yg sashimi itu
+            // Item unlock logic
+        }
 
         if (targetFish.getName().equals("Pufferfish") && !recipeFuguShown) {
             recipePopupQueue.offer("Fugu Recipe unlocked!");
@@ -216,7 +217,7 @@ public class FishingState implements StateHandler {
         }
 
         ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).updateFishStatistics(targetFish.getType());
-        ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementTotalFishCaught();;
+        ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).incrementTotalFishCaught();
     }
 
     @Override
@@ -245,12 +246,10 @@ public class FishingState implements StateHandler {
         if (showInteractPopup && !showChoicePopup) {
             gp.ui.drawPopupWindow(g2, popupX, popupY, popupWidth, popupHeight);
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
-            g2.setColor(java.awt.Color.WHITE);
-            gp.ui.drawCenteredText(g2, "Press SPACE to fishing", popupX, popupY + 45, popupWidth);
-
-            if (gp.player.getEnergy() < 5) {
+            
+            if (gp.player.getEnergy() <= 0) {
                 g2.setColor(Color.RED);
-                gp.ui.drawCenteredText(g2, "Not enough energy to fish! (Need 5 energy)", popupX, popupY + 45, popupWidth);
+                gp.ui.drawCenteredText(g2, "Not enough energy to fish! (Need some energy)", popupX, popupY + 45, popupWidth);
             } else {
                 g2.setColor(Color.WHITE);
                 gp.ui.drawCenteredText(g2, "Press SPACE to fishing", popupX, popupY + 45, popupWidth);
@@ -501,8 +500,8 @@ public class FishingState implements StateHandler {
             showInteractPopup = false;
             GameClock.setPaused(false);
 
-            if (gp.player.getEnergy() < 5) {
-                gp.ui.showMessage("Not enough energy to fish! You need at least 5 energy.");
+            if (gp.player.getEnergy() <= 0) {
+                gp.ui.showMessage("Not enough energy to fish! You need at least some energy.");
                 return;
             }
         }
