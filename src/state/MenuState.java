@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
+
+import controller.UIController;
 import main.GamePanel;
 import main.GameStates;
 
@@ -15,11 +17,14 @@ public class MenuState implements StateHandler {
     private final Player player;
     private final Font vt323;
     private BufferedImage backgroundImage;
-
+    private UIController ui;
+    private boolean showInformation = false; 
+    
     public MenuState(GamePanel gp, Player player) {
         this.gp = gp;
         this.player = player;
         this.vt323 = new Font("VT323", Font.PLAIN, 24);
+        this.ui = gp.ui; 
         getBackgroundImage();
     }
     
@@ -31,19 +36,12 @@ public class MenuState implements StateHandler {
         }
     }
 
+    @Override
     public void draw(Graphics2D g2) {
         if (backgroundImage != null) {
             g2.drawImage(backgroundImage, 0, 0, gp.screenWidth, gp.screenHeight, null);
         }
-        // String[] lines = {
-        //     "Name     : " + player.getName(),
-        //     "Gender   : " + player.getGender(),
-        //     "Farm     : " + player.getFarmName(),
-        //     "Partner  : " + (player.getPartner() != null ? player.getPartner() : "None"),
-        //     "Status   : " + player.getRelationshipStatus(),
-        //     "Energy   : " + player.getEnergy(),
-        //     "Gold     : " + player.getGold()
-        // };
+
         List<String> lines = new ArrayList<>();
         lines.add("Name     : " + player.getName());
         lines.add("Gender   : " + player.getGender());
@@ -59,7 +57,8 @@ public class MenuState implements StateHandler {
             lines.add("Press S to view End Game Statistics");
         }
 
-        lines.add("");
+        lines.add("Press Shift to show information about the game");
+        lines.add("Press Q to exit game");
         lines.add("Press ESC to exit menu");
 
         int boxWidth = 500; 
@@ -87,17 +86,28 @@ public class MenuState implements StateHandler {
             g2.drawString(line, boxX + 30, textY); 
             textY += lineHeight;
         }
+
+        if (showInformation) {
+            ui.drawInformation(g2); 
+        }
     }
 
     @Override
     public void update() {
-        
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            gp.gameState = GameStates.MAP; 
+            if (showInformation) {
+                showInformation = false;
+            } else {
+                gp.gameState = GameStates.MAP;
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+            showInformation = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_Q) {
+            System.exit(0);
         } else if (e.getKeyCode() == KeyEvent.VK_S && player.hasReachedEndgame()) {
             gp.gameState = GameStates.STATISTICS;
         }
@@ -105,6 +115,5 @@ public class MenuState implements StateHandler {
 
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 }
