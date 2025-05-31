@@ -25,7 +25,7 @@ public class UIController implements GameObserver{
 
     private String popupMessage = null;
     private long popupMessageTime = 0;
-    private static final long popupDuration = 1500;
+    private static final long popupDuration = 2000;
 
     private String recipeUnlockMessage = null;
     private long recipeUnlockTime = 0;

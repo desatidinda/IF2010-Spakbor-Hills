@@ -51,6 +51,7 @@ public class NPCHouseState extends InsideHouseState {
     private final int VISIBLE_STORE_ITEMS = 5;
     private int storeScrollOffset = 0;
     private BufferedImage storeFrameImage;
+    private BufferedImage storeBackground;
     private String localPopupMessage = null;
     private long localPopupTime = 0;
     private static final long LOCAL_POPUP_DURATION = 2000;
@@ -64,8 +65,14 @@ public class NPCHouseState extends InsideHouseState {
                 : new String[]{"Chat", "Give Gift", "Propose", "Marry", "Cancel"};
         npcInHouse.worldX = gp.player.houseX + gp.tileSize * 2 - 16;
         npcInHouse.worldY = gp.player.houseY - gp.tileSize * 3;
-        super.loadBackground();
-        super.deployFurniture();
+
+        if ("Emily".equals(npc.getName())) {
+            loadStoreBackground(); 
+        } else {
+            super.loadBackground();
+            super.deployFurniture();
+        }
+
         if (npc != null && "Emily".equals(npc.getName())) {
             List<Item> regular = new ArrayList<>();
             List<Item> oneTime = new ArrayList<>();
@@ -89,6 +96,15 @@ public class NPCHouseState extends InsideHouseState {
             this.storeItems.addAll(regular);
             this.storeItems.addAll(oneTime);
             this.storeBuyAmount = new int[storeItems.size()];
+        }
+    }
+
+    private void loadStoreBackground() {
+        try {
+            storeBackground = ImageIO.read(getClass().getResourceAsStream("/res/storebackground.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            super.loadBackground();
         }
     }
 
@@ -268,7 +284,13 @@ public class NPCHouseState extends InsideHouseState {
 
     @Override
     public void draw(Graphics2D g2) {
-        super.draw(g2);
+        if ("Emily".equals(npcInHouse.getName()) && storeBackground != null) {
+            g2.drawImage(storeBackground, 0, 0, gp.screenWidth, gp.screenHeight, null);
+            gp.player.draw(g2);
+            gp.ui.draw(g2);
+        } else {
+            super.draw(g2);
+        }
         if (npcInHouse != null) {
             npcInHouse.draw(g2);
         }
@@ -407,6 +429,10 @@ public class NPCHouseState extends InsideHouseState {
             } else if (key == KeyEvent.VK_DOWN) {
                 selectedChoice = (selectedChoice + 1) % choices.length;
             } else if (key == KeyEvent.VK_ENTER) {
+                if (gp.player.isExhausted()) {
+                    gp.player.pingsan();
+                    return; 
+                }
                 if (choices[selectedChoice].equals("Chat")) {
                     dialogText = npcInHouse.chat();
                     gp.player.chatWith(npcInHouse);
