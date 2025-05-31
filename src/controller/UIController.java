@@ -371,7 +371,7 @@ public class UIController implements GameObserver{
         if (isLowEnergy) {
             message = "You collapsed from exhaustion!";
         } else {
-            message = "You stayed up too late and passed out!";
+            message = "You stayed up too late!";
         }
         startFadeEffect(message);
         pendingPingsanSkip = true;

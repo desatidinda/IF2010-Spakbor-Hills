@@ -17,14 +17,7 @@ public class ItemFactory {
 
         for (Fish fish : FishData.ALL_FISH) {
             if (fish.getName().equalsIgnoreCase(itemName)) {
-                return new Fish(
-                    fish.getName(),
-                    fish.getType(),
-                    fish.getSeasons(),
-                    fish.getTimeRange(),
-                    fish.getWeathers(),
-                    fish.getLocations()
-                );
+                return fish;
             }
         }
 

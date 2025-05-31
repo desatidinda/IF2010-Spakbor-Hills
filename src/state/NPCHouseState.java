@@ -418,6 +418,7 @@ public class NPCHouseState extends InsideHouseState {
                     popupStartMinute = GameClock.getMinute();
                 } else if (choices[selectedChoice].equals("Give Gift")) {
                     giftableItems.clear();
+
                     for (Map.Entry<Item, Integer> entry : gp.player.getInventory().getItems().entrySet()) {
                         Item item = entry.getKey();
                         if (!gp.player.getInventory().isUnlimitedTool(item) && entry.getValue() > 0) {
