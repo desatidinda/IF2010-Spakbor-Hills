@@ -555,21 +555,7 @@ public class NPCHouseState extends InsideHouseState {
                 } else if (amount == 0) {
                     showLocalPopup("Please select an amount first!");
                 } else if (gp.player.useGold(total)) {
-                    ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).addExpenditure(total);
-                    if (name.endsWith("Recipe")) {
-                        String recipeName = name.replace(" Recipe", "");
-                        if (RecipeUnlocker.unlockFromPurchase(recipeName)) {
-                            showLocalPopup("Recipe " + recipeName + " unlocked!");
-                        } else {
-                            showLocalPopup("Recipe " + recipeName + " already unlocked.");
-                        }
-                    } else {
-                        Item newItem = ItemFactory.createItem(name);
-                        gp.player.getInventory().addItem(newItem, amount);
-                    }
-
-                    if (isOneTime) purchasedOneTimeItems.add(name);
-
+                    ((EndGameStatistics) gp.stateHandlers.get(GameStates.STATISTICS)).addExpenditure(total);                    
                     if (name.endsWith("Recipe")) {
                         String recipeName = name.replace(" Recipe", "");
                         if (RecipeUnlocker.unlockFromPurchase(recipeName)) {
@@ -582,6 +568,8 @@ public class NPCHouseState extends InsideHouseState {
                         gp.player.getInventory().addItem(newItem, amount);
                         showLocalPopup("Successfully bought " + amount + " " + name);
                     }
+
+                    if (isOneTime) purchasedOneTimeItems.add(name);
 
                     storeBuyAmount[storeSelectedIndex] = 0;
                 } else {

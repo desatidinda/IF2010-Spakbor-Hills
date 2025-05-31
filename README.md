@@ -9,7 +9,7 @@
 
 
 ## Description
-
+Snowballs Hills merupakan permainan yang terinspirasi berat dari Stardew Valley. Game ini merupakan suatu open-ended game dimana player bisa mengelola farm dengan menanam dan mengurus tanaman. Game ini juga dilengkapi fitur-fitur seperti memancing, serta bersosialisasi dan membangun hubungan dengan penduduk lain.
 ---
 
 
@@ -28,8 +28,39 @@
 
 
 ## Features
+**Technical Features**
+- GUI
+- Mouse and Keyboard Input
 
+**Game Features**
+- Farming   :   Player dapat melakukan aksi seperti menanam tanaman, menyiram tanaman, serta meng-harvest tanaman.
+- Fishing   :   Player dapat memancing ikan.
+- Cooking   :   Player dapat memasak suatu makanan.
+- Berinteraksi Dengan NPC   :   Player bisa berinteraksi dengan NPC yang ada di game seperti mengobrol, memberi gift, dan men-propose serta menikahi NPC.
+- Membeli & Menjual Barang  :   Player dapat membeli item dan juga menjual item untuk mendapatkan uang.
+- Time & Season Change  :   Game memiliki sistem waktu dan pergantian hari serta pergantian musim.
+- Weather System    :   Game memiliki sistem cuaca. Cuaca yang ada adalah 'Sunny' dan 'Rainy'.
 ---
 
 
-## How To Run
+## How To Install
+1.  Clone Repository Github
+2.  Buka dalam folder **IF2210- Spakbor-Hills**
+3.  Buka folder menggunakan IDE seperti IntelliJ IDEA atau VS Code
+4.  Buka terminal dan ketik perintah  
+`./gradlew clean run`
+5.  Program akan otomatis di-build dan dijalankan
+---
+
+## Pictures
+Main Menu.
+![Main Menu.](https://github.com/user-attachments/assets/782ce648-25b9-4aa7-a62e-21e579b9c76b)
+
+Tampilan Saat Masuk Game.
+![Tampilan Saat Masuk Game.](https://github.com/user-attachments/assets/665a2054-92ed-4a95-a528-5de71bd6f489)
+
+Silaturahmi Dengan Salah Satu NPC.
+![Silaturahmi Dengan Salah Satu NPC.](https://github.com/user-attachments/assets/c24f568f-5ff5-4002-91e7-61af9b0c6ef6)
+
+M#ncing M#nia, M#ntap! (harus disensor, takut copyright. 😱)
+![M*ncing M*nia, M*ntap! (harus disensor, takut copyright.)](https://github.com/user-attachments/assets/c5a6fbbb-db07-4ef0-9995-0400845f659a)
