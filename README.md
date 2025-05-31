@@ -1,55 +1,97 @@
-# Tugas Besar IF2010 - Object Oriented Programming
+# Tugas Besar IF2010 - Pemrograman Berbasis Objek
+---
+
 ## Table of Contents
 - [Description](#description)
 - [Contributors](#contributors)
 - [Features](#features)
-- [How To Run](#how-to-run)
+- [How To Install](#how-to-install)
+- [Pictures](#pictures)
 
 ---
-
 
 ## Description
-Snowballs Hills merupakan permainan yang terinspirasi berat dari Stardew Valley. Game ini merupakan suatu open-ended game dimana player bisa mengelola farm dengan menanam dan mengurus tanaman. Game ini juga dilengkapi fitur-fitur seperti memancing, serta bersosialisasi dan membangun hubungan dengan penduduk lain.
----
 
+**Snowballs Hills** merupakan permainan yang terinspirasi berat dari *Stardew Valley*. Game ini merupakan suatu open-ended game di mana player bisa mengelola farm dengan menanam dan mengurus tanaman.Game ini juga dilengkapi fitur-fitur seperti memancing, serta bersosialisasi dan membangun hubungan dengan penduduk lain.
+
+---
 
 ## Contributors
-| **No** | **Nama** | **NIM**  | **GitHub** |
-| ------ | ------------------------- | ------------- | ----------- |
-| 1      | Fadhil Rifqi Rabbani Pane | 18223109      | [@Belligool](https://github.com/Belligool) |
-| 2      | Desati Dinda Saraswati    | 18223110      | [@desatidinda](https://github.com/desatidinda)
-| 3      | Stefany Josefina Santono  | 18223116      | [@StefanyJosefina](https://github.com/StefanyJosefina) 
-| 4      | Nakeisha Valya Shakila    | 18223133      | [@NakeishaValya](https://github.com/NakeishaValya) 
-| 5      | Fawwaz Aydin Mustofa      | 18222109      | [@fawwazay11](https://github.com/fawwazay11) |
 
-**Asisten:** Vincent Franstyo
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Belligool">
+        <img src="https://github.com/Belligool.png" width="80" style="border-radius: 50%"><br/>
+        <strong>Fadhil R.R. Pane</strong><br/>
+        18223109
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/desatidinda">
+        <img src="https://github.com/desatidinda.png" width="80" style="border-radius: 50%"><br/>
+        <strong>Desati D. Saraswati</strong><br/>
+        18223110
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/StefanyJosefina">
+        <img src="https://github.com/StefanyJosefina.png" width="80" style="border-radius: 50%"><br/>
+        <strong>Stefany J. Santono</strong><br/>
+        18223116
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/NakeishaValya">
+        <img src="https://github.com/NakeishaValya.png" width="80" style="border-radius: 50%"><br/>
+        <strong>Nakeisha V. Shakila</strong><br/>
+        18223133
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/fawwazay11">
+        <img src="https://github.com/fawwazay11.png" width="80" style="border-radius: 50%"><br/>
+        <strong>Fawwaz A. Mustofa</strong><br/>
+        18222109
+      </a>
+    </td>
+  </tr>
+</table>
+
+<p><strong>Assistant:</strong> Vincent Franstyo</p>
 
 ---
-
 
 ## Features
-**Technical Features**
-- GUI
-- Mouse and Keyboard Input
 
-**Game Features**
-- Farming   :   Player dapat melakukan aksi seperti menanam tanaman, menyiram tanaman, serta meng-harvest tanaman.
-- Fishing   :   Player dapat memancing ikan.
-- Cooking   :   Player dapat memasak suatu makanan.
-- Berinteraksi Dengan NPC   :   Player bisa berinteraksi dengan NPC yang ada di game seperti mengobrol, memberi gift, dan men-propose serta menikahi NPC.
-- Membeli & Menjual Barang  :   Player dapat membeli item dan juga menjual item untuk mendapatkan uang.
-- Time & Season Change  :   Game memiliki sistem waktu dan pergantian hari serta pergantian musim.
-- Weather System    :   Game memiliki sistem cuaca. Cuaca yang ada adalah 'Sunny' dan 'Rainy'.
+### Technical Features
+- GUI-based interface
+- Supports both mouse and keyboard input
+
+### Game Features
+
+| Fitur                | Deskripsi                                                                 |
+|----------------------|---------------------------------------------------------------------------|
+| **Farming**          | Tanam, siram, dan panen berbagai tanaman                                  |
+| **Fishing**          | Pancing berbagai jenis ikan di sungai atau danau                          |
+| **Cooking**          | Gabungkan bahan untuk memasak hidangan lezat                              |
+| **Interaksi dengan NPC** | Ngobrol, beri hadiah, dan menikah dengan NPC pilihan                   |
+| **Jual Beli**        | Beli item penting atau jual hasil panen untuk mendapatkan uang            |
+| **Perubahan Waktu & Musim** | Hari berganti dan musim berubah seiring waktu berjalan             |
+| **Sistem Cuaca**     | Nikmati cuaca cerah atau hujan yang memengaruhi gameplay                  |
+
 ---
 
-
 ## How To Install
-1.  Clone Repository Github
-2.  Buka dalam folder **IF2210- Spakbor-Hills**
-3.  Buka folder menggunakan IDE seperti IntelliJ IDEA atau VS Code
-4.  Buka terminal dan ketik perintah  
-`./gradlew clean run`
-5.  Program akan otomatis di-build dan dijalankan
+
+1. Clone repository ini dari GitHub  
+2. Masuk ke folder **IF2210-Spakbor-Hills**  
+3. Buka folder tersebut menggunakan IDE seperti IntelliJ IDEA atau VS Code  
+4. Buka terminal, lalu jalankan perintah:  
+   ```bash
+   ./gradlew clean run
+5. Program akan dibangun dan dijalankan secara otomatis
+
 ---
 
 ## Pictures
