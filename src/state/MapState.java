@@ -129,6 +129,11 @@ public class MapState implements StateHandler, MouseListener {
         }
 
         gp.player.draw(g2);
+        //ini buat lighting kalo malem
+        if (GameClock.isNighttime()) {
+            g2.setColor(new Color(0, 0, 40, 120));
+            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        }
         gp.ui.draw(g2);
 
         if (showShippingBinPopup && interactedObjectIndex != 999) {

@@ -201,4 +201,27 @@ public class GameClock {
             minute = 0;
         }
     }
+
+    public enum TimePhase {
+        DAY,    // jaaaaam 06:00 - 17:59
+        NIGHT   // jaaaaam 18:00 - 05:59
+    }
+
+    public static TimePhase getCurrentTimePhase() {
+        synchronized (lock) {
+            if (hour >= 6 && hour <= 17) {
+                return TimePhase.DAY;
+            } else {
+                return TimePhase.NIGHT;
+            }
+        }
+    }
+
+    public static boolean isDaytime() {
+        return getCurrentTimePhase() == TimePhase.DAY;
+    }
+
+    public static boolean isNighttime() {
+        return getCurrentTimePhase() == TimePhase.NIGHT;
+    }
 }
