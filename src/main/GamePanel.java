@@ -58,6 +58,9 @@ public class GamePanel extends JPanel implements Runnable {
         npc[4] = new Emily(this);
         npc[5] = new Abigail(this);
 
+        Player.addObserver(ui); 
+        GameClock.addObserver(ui);
+
         setupGame();
     }
 

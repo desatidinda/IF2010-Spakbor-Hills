@@ -7,13 +7,14 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
 import main.GameClock;
+import main.GameObserver;
 import main.GamePanel;
 import main.GameStates;
 import entity.NPC.NPC;
 import state.NPCHouseState;
 import state.StateHandler;
 
-public class UIController {
+public class UIController implements GameObserver{
     GamePanel gp;
     Graphics2D  g2;
     Font bradrock, vt323;
@@ -24,7 +25,10 @@ public class UIController {
 
     private String popupMessage = null;
     private long popupMessageTime = 0;
-    private static final long POPUP_MESSAGE_DURATION = 1500;
+    private static final long popupDuration = 1500;
+
+    private long recipeUnlockStartTime = 0;
+    private static final long recipeUnlockDuration = 2000;
 
     public int initialStep = 0;
     public String inputBuffer = "";
@@ -61,9 +65,19 @@ public class UIController {
         }
     }
 
+    @Override
+    public void onPlayerExhausted() {
+        showPopupMessage("Warning: Your energy is low!");
+    }
+
+    @Override
+    public void onSeasonChanged() {
+        showPopupMessage("Season changed to " + GameClock.getCurrentSeason() + "!");
+    }
+
     public void showRecipeUnlockMessage(String text) {
         this.recipeUnlockMessage = text;
-        this.recipeUnlockTime = System.currentTimeMillis();
+        this.recipeUnlockTime = GameClock.getGameTime();
     }
 
     public void showMessage(String text) {
@@ -73,8 +87,7 @@ public class UIController {
 
     public void showPopupMessage(String text) {
         popupMessage = text;
-        //TODO: ini nnt ganti kalo gamethreadnya dh bnr
-        popupMessageTime = System.currentTimeMillis();
+        popupMessageTime = GameClock.getGameTime();
     }
 
     public void draw(Graphics2D g2) {
@@ -88,16 +101,12 @@ public class UIController {
             drawMap();
         } else if (gp.gameState == GameStates.INSIDE_HOUSE || gp.gameState == GameStates.NPC_HOUSE) {
             drawMap();
-        } else if (gp.gameState == GameStates.MENU) {
-
-        } else if (gp.gameState == GameStates.ITEMLIST) {
-            
-        } else if (gp.gameState == GameStates.STATISTICS) {
-            
+        } else if (gp.gameState == GameStates.FISHING) {
+            drawPopupMessage(g2);
         }
         if (recipeUnlockMessage != null) {
-            long elapsed = System.currentTimeMillis() - recipeUnlockTime;
-            if (elapsed < RECIPE_POPUP_DURATION) {
+            long elapsed = GameClock.getGameTime() - recipeUnlockTime;
+            if (elapsed < recipeUnlockDuration) {
                 int x = 30;
                 int y = gp.screenHeight - 60;
                 int w = 280;
@@ -141,7 +150,7 @@ public class UIController {
             g2.setColor(Color.WHITE);
             drawCenteredText(g2, popupMessage, x, y + h/2 + 4, w);
 
-            if (System.currentTimeMillis() - popupMessageTime > POPUP_MESSAGE_DURATION) {
+            if (GameClock.getGameTime() - popupMessageTime > popupDuration) {
                 popupMessage = null;
             }
         }
@@ -340,6 +349,7 @@ public class UIController {
     
                 }
             }
+            drawPopupMessage(g2);
         }
     }
 

@@ -4,15 +4,17 @@ import entity.Item.*;
 import entity.NPC.NPC;
 import map.Point;
 import input.KeyHandler;
-import main.Game;
 import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
+import main.GameObserver;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Player {
@@ -23,6 +25,8 @@ public class Player {
     private String partner;
     private String relationshipStatus = "Single"; //status: Single, Engaged, Married
     private double gold;
+
+    private static List<GameObserver> observers = new ArrayList<>();
     private Inventory inventory;
     private Point location;
     private Point indoorLocation;
@@ -79,6 +83,16 @@ public class Player {
         getImage();
         Item parsnipSeeds = ItemFactory.createItem("Parsnip Seeds");
         inventory.addItem(parsnipSeeds, 15);
+    }
+
+    public static void addObserver(GameObserver observer) {
+        observers.add(observer);
+    }
+
+    private void notifyExhausted() {
+        for (GameObserver observer : observers) {
+            observer.onPlayerExhausted();
+        }
     }
 
     public void update() {
@@ -385,8 +399,12 @@ public class Player {
             return false;
         }
         energy -= energyCost;
+
+        if (energy <= 10) {
+            notifyExhausted();
+        }
+        
         if (isExhausted()) {
-            System.out.println(name + " is exhausted and falls asleep automatically.");
             pingsan();
         }
         return true;
