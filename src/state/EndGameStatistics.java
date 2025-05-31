@@ -5,11 +5,13 @@ import main.GamePanel;
 import state.StateHandler;
 import main.GameStates;
 import entity.NPC.*;
-import entity.Item.Fish;
 import entity.Item.FishType;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +20,7 @@ import java.util.List;
 public class EndGameStatistics implements StateHandler {
     private final GamePanel gp;
     private final Font vt323;
+    private BufferedImage background;
 
     private int scrollOffset = 0;
     private final int visibleLines = 16;
@@ -33,6 +36,15 @@ public class EndGameStatistics implements StateHandler {
     public EndGameStatistics(GamePanel gp) {
         this.gp = gp;
         this.vt323 = new Font("VT323", Font.PLAIN, 24);
+        getBackgroundImage();
+    }
+
+    public void getBackgroundImage() {
+        try {
+            background = ImageIO.read(getClass().getResourceAsStream("/res/menu.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // === Methods ===
@@ -95,7 +107,7 @@ public class EndGameStatistics implements StateHandler {
 
     private List<String> getStatisticsLines() {
         List<String> lines = new ArrayList<>();
-        lines.add("== END GAME STATISTICS ==");
+        lines.add("====== END GAME STATISTICS ======");
         lines.add("Total Income     : " + totalIncome);
         lines.add("Total Expenditure: " + totalExpenditure);
         lines.add("Total Seasons    : " + totalSeasonsPassed);
@@ -105,7 +117,7 @@ public class EndGameStatistics implements StateHandler {
         lines.add("Crops Harvested  : " + getTotalCropsHarvested());
         lines.add("Fish Caught      : " + getTotalFishCaught());
         lines.add("");
-        lines.add("-- NPC Status --");
+        lines.add("------ NPC Status ------");
         for (NPC npc : gp.npc) {
             lines.add(npc.getName() + " - Relationship: " + npc.getRelationshipStatus());
             lines.add("Chat: " + npc.getCountChatting()
@@ -113,34 +125,39 @@ public class EndGameStatistics implements StateHandler {
                     + ", Visit: " + npc.getCountVisiting());
         }
         lines.add("");
-        lines.add("-- Fish Statistics --");
+        lines.add("------ Fish Statistics ------");
         for (FishType type : FishType.values()) {
             lines.add(type + ": " + fishStatistics.getOrDefault(type, 0));
         }
         lines.add("");
-        lines.add("Press ESC/ENTER to return, ↑/↓ to scroll");
+        lines.add("Press ESC/ENTER to return");
         return lines;
     }
 
     // === UI ===
     @Override
     public void draw(Graphics2D g2) {
+        if (background != null) {
+            g2.drawImage(background, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
+
         List<String> lines = getStatisticsLines();
         int totalLines = lines.size();
 
         int boxWidth = 600;
-        int lineHeight = 30;
-        int boxHeight = 60 + Math.min(visibleLines, totalLines) * lineHeight;
+        int lineHeight = 28;
+        int boxHeight = 60 + Math.min(visibleLines, totalLines) * lineHeight + 20;
 
         int boxX = (gp.screenWidth - boxWidth) / 2;
         int boxY = (gp.screenHeight - boxHeight) / 2;
 
+        g2.setColor(new Color(0, 0, 0, 180));
         gp.ui.drawPopupWindow(g2, boxX, boxY, boxWidth, boxHeight);
 
         g2.setFont(vt323.deriveFont(Font.BOLD, 24F));
         gp.ui.drawCenteredText(g2, "END GAME STATISTICS", boxX, boxY + 38, boxWidth);
 
-        g2.setFont(vt323.deriveFont(Font.PLAIN, 18F));
+        g2.setFont(vt323.deriveFont(Font.PLAIN, 16F));
         int y = boxY + 70;
 
         int end = Math.min(scrollOffset + visibleLines, totalLines);
