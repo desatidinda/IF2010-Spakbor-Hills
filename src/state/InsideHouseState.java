@@ -310,19 +310,52 @@ public class InsideHouseState implements StateHandler {
                 }
 
                 for (Map.Entry<String, Integer> entry : selected.getIngredients().entrySet()) {
-                    Item item = ItemFactory.createItem(entry.getKey());
+                    String ingredientName = entry.getKey();
                     int qty = entry.getValue();
-                    if (!gp.player.getInventory().hasItem(item, qty)) {
-                        cookMessage = "Not enough " + item.getItemName() + " to cook " + selected.getName() + "!";
-                        cookMessageTimer = 180;
-                        return;
-                    } 
+
+                    if (ingredientName.equals("Any Fish")) {
+                        int totalFish = 0;
+                        for (Map.Entry<Item, Integer> invEntry : gp.player.getInventory().getItems().entrySet()) {
+                            if (invEntry.getKey() instanceof Fish) {
+                                totalFish += invEntry.getValue();
+                            }
+                        }
+                        if (totalFish < qty) {
+                            cookMessage = "Not enough fish to cook " + selected.getName() + "!";
+                            cookMessageTimer = 180;
+                            return;
+                        }
+                    } else {
+                        Item item = ItemFactory.createItem(ingredientName);
+                        if (!gp.player.getInventory().hasItem(item, qty)) {
+                            cookMessage = "Not enough " + item.getItemName() + " to cook " + selected.getName() + "!";
+                            cookMessageTimer = 180;
+                            return;
+                        } 
+                    }
                 }
                 
                 for (Map.Entry<String, Integer> entry : selected.getIngredients().entrySet()) {
-                    Item item = ItemFactory.createItem(entry.getKey());
+                    String ingredientName = entry.getKey();
                     int qty = entry.getValue();
-                    gp.player.getInventory().removeItem(item, qty);
+                    
+                    if (ingredientName.equals("Any Fish")) {
+                        int remainingToRemove = qty;
+                        for (Map.Entry<Item, Integer> invEntry : gp.player.getInventory().getItems().entrySet()) {
+                            Item fish = invEntry.getKey();
+                            int available = invEntry.getValue();
+                            
+                            if (fish instanceof Fish && remainingToRemove > 0) {
+                                int toRemove = Math.min(available, remainingToRemove);
+                                gp.player.getInventory().removeItem(fish, toRemove);
+                                remainingToRemove -= toRemove;
+                                if (remainingToRemove == 0) break;
+                            }
+                        }
+                    } else {
+                        Item item = ItemFactory.createItem(ingredientName);
+                        gp.player.getInventory().removeItem(item, qty);
+                    }
                 }
                 if (fuel.equals("Coal")) {
                     if (fuelUsageLeft <= 0) {
