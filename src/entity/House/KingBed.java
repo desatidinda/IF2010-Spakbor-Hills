@@ -28,7 +28,6 @@ public class KingBed extends GameObject {
     @Override
     public void playerInteract(Player player) {
         player.sleep();
-        GameClock.skipToMorning(); 
         ShippingBin.hasUsedTodayBin = false;
         ShippingBin.processPendingSales();  
     }

@@ -155,6 +155,13 @@ public class GameClock {
         }
     }
 
+    public static void skipUntilMorning() {
+        synchronized(lock) {
+            hour = 6;
+            minute = 0;
+        }
+    }
+
     public static void skipMinutes(int minutes) {
         synchronized (lock) {
             if (paused) return; 

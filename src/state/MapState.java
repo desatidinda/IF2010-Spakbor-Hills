@@ -64,7 +64,7 @@ public class MapState implements StateHandler, MouseListener {
 
     @Override
     public void update() {
-        if (GameClock.isPingsan()) {
+        if (GameClock.isPingsan() || gp.player.isExhausted()) {
             gp.player.pingsan();
             gp.ui.showPopupMessage("It's past midnight! You will be taken to your house.");
         }
