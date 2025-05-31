@@ -78,7 +78,6 @@ public class TileManager {
             reader.close();
             
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
     }

@@ -35,11 +35,32 @@ public class ObjectSetter {
         int totalAreaWidth = Math.max(houseWidth, binOffsetX + binWidth);
         int totalAreaHeight = Math.max(houseHeight, binOffsetY + binHeight);
 
-        int maxCol = gp.maxWorldCol - totalAreaWidth;
-        int maxRow = gp.maxWorldRow - totalAreaHeight;
+        int col, row;
+        boolean inCenterZone;
 
-        int col = random.nextInt(maxCol);
-        int row = random.nextInt(maxRow);
+        do {
+            int maxCol = gp.maxWorldCol - totalAreaWidth - 1; 
+            int maxRow = gp.maxWorldRow - totalAreaHeight - 1;
+
+            col = random.nextInt(maxCol) + 1; 
+            row = random.nextInt(maxRow) + 1;
+
+            int houseEndCol = col + totalAreaWidth - 1;
+            int houseEndRow = row + totalAreaHeight - 1;
+
+            int centerCol = gp.maxWorldCol / 2;
+            int centerRow = gp.maxWorldRow / 2;
+            int exclusionSize = 8; 
+            
+            int centerZoneStartCol = centerCol - exclusionSize / 2;
+            int centerZoneEndCol = centerCol + exclusionSize / 2;
+            int centerZoneStartRow = centerRow - exclusionSize / 2;
+            int centerZoneEndRow = centerRow + exclusionSize / 2;
+            
+            inCenterZone = !(col > centerZoneEndCol || houseEndCol < centerZoneStartCol ||
+                            row > centerZoneEndRow || houseEndRow < centerZoneStartRow);
+
+        } while (inCenterZone);
 
         houseStartCol = col;
         houseStartRow = row;
@@ -62,23 +83,37 @@ public class ObjectSetter {
         int pondHeight = 2;
 
         int colPond, rowPond;
-        boolean overlap;
+        boolean overlap, inCenterZone;
 
         do {
-            colPond = random.nextInt(gp.maxWorldCol - pondWidth);
-            rowPond = random.nextInt(gp.maxWorldRow - pondHeight);
+            int maxCol = gp.maxWorldCol - pondWidth - 1; 
+            int maxRow = gp.maxWorldRow - pondHeight - 1;
+
+            colPond = random.nextInt(maxCol - 1) + 1;
+            rowPond = random.nextInt(maxRow - 1) + 1;
 
             int pondEndCol = colPond + pondWidth - 1;
             int pondEndRow = rowPond + pondHeight - 1;
 
             overlap = !(colPond > houseEndCol || pondEndCol < houseStartCol ||
                         rowPond > houseEndRow || pondEndRow < houseStartRow);
-        } while (overlap);
+            
+            int centerCol = gp.maxWorldCol / 2;
+            int centerRow = gp.maxWorldRow / 2;
+            int exclusionSize = 6;
+            
+            int centerZoneStartCol = centerCol - exclusionSize / 2;
+            int centerZoneEndCol = centerCol + exclusionSize / 2;
+            int centerZoneStartRow = centerRow - exclusionSize / 2;
+            int centerZoneEndRow = centerRow + exclusionSize / 2;
+            
+            inCenterZone = !(colPond > centerZoneEndCol || pondEndCol < centerZoneStartCol ||
+                            rowPond > centerZoneEndRow || pondEndRow < centerZoneStartRow);
+        } while (overlap || inCenterZone);
 
         Pond pond = new Pond();
         pond.worldX = colPond * gp.tileSize;
         pond.worldY = rowPond * gp.tileSize;
         gp.obj[2] = pond;
-        //TODO: masih overlap, benerin dan gaboleh kedeploy ditengah biar ga nabrak player
     }
 }

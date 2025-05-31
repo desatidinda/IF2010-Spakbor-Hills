@@ -31,7 +31,6 @@ public class Stove extends GameObject {
 
         @Override
         public void playerInteract(Player player) {
-            //TODO: implement cook nanti
             ((InsideHouseState) gp.stateHandlers.get(GameStates.INSIDE_HOUSE)).setShowRecipeList(true);
         }
 }
