@@ -38,7 +38,7 @@ public class InsideHouseState implements StateHandler {
     private String pendingFuel = null;
     private String cookMessage = null;
     private int cookMessageTimer = 0;
-    private boolean showExitMessage = false;
+    protected boolean showExitMessage = false;
 
     public InsideHouseState(GamePanel gp) {
         this.gp = gp;
@@ -143,7 +143,7 @@ public class InsideHouseState implements StateHandler {
             drawRecipeList(g2);
         }
 
-        if (showExitMessage) {
+        if (showExitMessage && gp.gameState != GameStates.NPC_HOUSE) {
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 16F));
             gp.ui.drawCenteredText(g2, "Press ESC to exit house", 0, gp.screenHeight - 60, gp.screenWidth);
         }

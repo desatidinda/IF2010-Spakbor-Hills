@@ -292,8 +292,8 @@ public class CollisionManager {
         boolean withinBounds = x >= roomLeftBound && x <= roomRightBound && 
                                y >= roomTopBound && y <= roomBottomBound;
 
-        if (gp.gameState == GameStates.INSIDE_HOUSE) {
-            InsideHouseState houseState = (InsideHouseState) gp.stateHandlers.get(GameStates.INSIDE_HOUSE);
+        if (gp.gameState == GameStates.INSIDE_HOUSE || gp.gameState == GameStates.NPC_HOUSE) {
+            InsideHouseState houseState = (InsideHouseState) gp.stateHandlers.get(gp.gameState);
             boolean atEdge = (x <= roomLeftBound + 5 || 
                             x >= roomRightBound - 5 || 
                             y <= roomTopBound - 5|| 

@@ -94,6 +94,16 @@ public class NPCHouseState extends InsideHouseState {
         }
     }
 
+    @Override
+    public void setShowExitMessage(boolean show) {
+        super.setShowExitMessage(show);
+    }
+    
+    @Override
+    public boolean isAtEdge() {
+        return super.isAtEdge();
+    }
+
     private void showLocalPopup(String msg) {
         localPopupMessage = msg;
         localPopupTime = System.currentTimeMillis();
@@ -259,7 +269,6 @@ public class NPCHouseState extends InsideHouseState {
         if (npcInHouse != null) {
             npcInHouse.draw(g2);
         }
-
         
         if (showStorePopup && npcInHouse.getName().equals("Emily")) {
             drawStorePopup(g2);
@@ -355,12 +364,34 @@ public class NPCHouseState extends InsideHouseState {
             } 
             return;
         }
-        
+
+        if (super.showExitMessage && !hasAnyPopupOpen()) {
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 16F));
+            gp.ui.drawCenteredText(g2, "Press ESC to exit "+ npcInHouse.getName() +" house", 0, gp.screenHeight - 60, gp.screenWidth);
+        }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
+
+        if (key == KeyEvent.VK_ESCAPE) {
+            if (super.showExitMessage && !hasAnyPopupOpen()) {
+                gp.player.teleportOut();
+                return;
+            } 
+
+            if (showStorePopup) {
+                showStorePopup = false;
+                showChoicePopup = true;
+            } else if (showGiftSelectPopup) {
+                showGiftSelectPopup = false;
+                showChoicePopup = true;
+            } else if (showChoicePopup) {
+                showChoicePopup = false;
+            }
+            return;
+        }
 
         if (showInteractPopup && !showChoicePopup && key == KeyEvent.VK_SPACE) {
             showChoicePopup = true;
@@ -554,11 +585,21 @@ public class NPCHouseState extends InsideHouseState {
             } else if (key == KeyEvent.VK_ESCAPE) {
                 showStorePopup = false;
                 showChoicePopup = true;
-    }
-    } else {
-        // movement, teleport, dll
-        super.keyPressed(e);
-    }
+        }
+        } else {
+            // movement
+            if (key == KeyEvent.VK_W) {
+                gp.keyHandler.upPressed = true;
+            } else if (key == KeyEvent.VK_S) {
+                gp.keyHandler.downPressed = true;
+            } else if (key == KeyEvent.VK_A) {
+                gp.keyHandler.leftPressed = true;
+            } else if (key == KeyEvent.VK_D) {
+                gp.keyHandler.rightPressed = true;
+            } else if (key == KeyEvent.VK_SPACE) {
+                gp.keyHandler.spacePressed = true;
+            }
+        }
     }
 
     @Override
@@ -568,5 +609,10 @@ public class NPCHouseState extends InsideHouseState {
 
     public NPC getNpcInHouse() {
         return npcInHouse;
+    }
+
+    private boolean hasAnyPopupOpen() {
+        return showChoicePopup || showGiftPopup || showProposalPopup || 
+            showMarryPopup || showStorePopup || showDialogPopup || showGiftSelectPopup;
     }
 }
