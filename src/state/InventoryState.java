@@ -187,7 +187,7 @@ public class InventoryState extends JFrame implements StateHandler {
     }
     
     private boolean isEdible(Item item) {
-        return item instanceof Fish || item instanceof Seeds || item instanceof Food;
+        return item instanceof Fish || item instanceof Crops || item instanceof Food;
     }
     
     private void eatFood(Item item) {
@@ -211,7 +211,7 @@ public class InventoryState extends JFrame implements StateHandler {
         int energyGain = 0;
         if (item instanceof Fish) {
             energyGain = 1;
-        } else if (item instanceof Seeds) {
+        } else if (item instanceof Crops) {
             energyGain = 3;
         }
         else if (item instanceof Food) {
