@@ -39,11 +39,12 @@ public class UIController {
     double playTime;
     DecimalFormat df = new DecimalFormat("#0.00");
     BufferedImage gambar, bgName, bgGender, bgFarmGirl, bgFarmBoy;
+    private BufferedImage informationImage; 
     
 
     public UIController(GamePanel gp) {
         this.gp = gp;
-
+        
         try {
             InputStream input = getClass().getResourceAsStream("/res/Font/Bradrock.ttf");
             bradrock = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.PLAIN, 40);
@@ -54,6 +55,8 @@ public class UIController {
             bgGender = ImageIO.read(getClass().getResourceAsStream("/res/choosegender.png"));
             bgFarmGirl = ImageIO.read(getClass().getResourceAsStream("/res/farmnamegirl.png"));
             bgFarmBoy = ImageIO.read(getClass().getResourceAsStream("/res/farmnameboy.png"));
+            informationImage = ImageIO.read(getClass().getResourceAsStream("/res/information.png"));
+
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -162,7 +165,7 @@ public class UIController {
                 drawInputField(inputBuffer, bgFarmGirl);
             }
         } else if (initialStep == 4) {
-            drawInformation();
+            drawInformation(g2);
         }
     }
 
@@ -217,19 +220,13 @@ public class UIController {
         }
     }
 
-    public void drawInformation() {
-        try {
-            gambar = ImageIO.read(getClass().getResourceAsStream("/res/information.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (gambar != null) {
-            g2.drawImage(gambar, 0, 0, gp.screenWidth, gp.screenHeight, null);
+    public void drawInformation(Graphics2D g2) {
+        if (informationImage != null) {
+            g2.drawImage(informationImage, 0, 0, gp.screenWidth, gp.screenHeight, null);
         } else {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
             g2.setColor(Color.RED);
-            g2.drawString("Failed to load image!", 100, 100);
+            g2.drawString("Failed to load information image!", 100, 100);
         }
     }
 
