@@ -160,8 +160,8 @@ public class FishingState implements StateHandler {
 
             int w = textWidth + padding * 2;
             int h = 50;
-            int x = (gp.screenWidth - w) / 2;
-            int y = gp.screenHeight - 100;
+            int x = 40;
+            int y = gp.screenHeight - h - 40;
 
             g2.setColor(new Color(0, 0, 0, 200));
             g2.fillRoundRect(x, y, w, h, 15, 15);
@@ -200,18 +200,18 @@ public class FishingState implements StateHandler {
         } //ini buat unlock resep yg sashimi itu
 
         if (targetFish.getName().equals("Pufferfish") && !recipeFuguShown) {
-            recipePopupQueue.offer("Resep Fugu berhasil dipelajari!");
+            recipePopupQueue.offer("Fugu Recipe unlocked!");
             recipeFuguShown = true;
         }
 
         if (targetFish.getName().equals("Legend") && !recipeLegendaryShown) {
-            recipePopupQueue.offer("Resep The Legends of Spakbor berhasil dipelajari!");
+            recipePopupQueue.offer("The Legends of Spakbor Recipe unlocked!");
             recipeLegendaryShown = true;
         }
 
         int total = RecipeUnlocker.getTotalFishCount(gp.player.getInventory());
         if (total >= 10 && !recipeSashimiShown) {
-            recipePopupQueue.offer("Resep Sashimi berhasil dipelajari!");
+            recipePopupQueue.offer("Sashimi Recipe unlocked!");
             recipeSashimiShown = true;
         }
 
