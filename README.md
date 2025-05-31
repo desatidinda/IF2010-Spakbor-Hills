@@ -66,7 +66,7 @@
 
 ### Technical Features
 - GUI-based interface
-- Supports both mouse and keyboard input
+- Mouse and Keyboard Utilization
 
 ### Game Features
 
