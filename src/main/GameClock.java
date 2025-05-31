@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 import entity.Farm.Season;
 import entity.Farm.Weather;
-import state.EndGameStatistics;
 
 public class GameClock {
     private static Thread clockThread;

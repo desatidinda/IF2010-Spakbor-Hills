@@ -18,12 +18,10 @@ import main.GameClock;
 import map.Point;
 import map.Tile;
 import map.TileType;
-import entity.Player.Inventory;
 import entity.Farm.ShippingBin;
 import entity.Item.Item;
 import entity.Item.Seeds;
 import entity.Farm.Season;
-import state.EndGameStatistics;
 
 public class MapState implements StateHandler, MouseListener {
 

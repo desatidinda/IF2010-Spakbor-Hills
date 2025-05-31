@@ -11,11 +11,9 @@ import javax.imageio.ImageIO;
 import java.util.Queue;
 import java.util.LinkedList;
 
-import main.Game;
 import main.GameClock;
 import main.GamePanel;
 import main.GameStates;
-import entity.Item.*;
 
 public class FishingState implements StateHandler {
 

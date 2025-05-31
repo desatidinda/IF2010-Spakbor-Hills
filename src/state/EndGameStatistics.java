@@ -2,7 +2,6 @@ package state;
 
 import main.GameClock;
 import main.GamePanel;
-import state.StateHandler;
 import main.GameStates;
 import entity.NPC.*;
 import entity.Item.FishType;

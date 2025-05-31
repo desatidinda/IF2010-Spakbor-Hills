@@ -2,15 +2,12 @@ package entity.House;
 
 import java.io.IOException;
 import javax.imageio.ImageIO;
-
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import entity.Player.Player;
 import main.GameClock;
 import objects.GameObject;
-import entity.Farm.Weather;
 
 public class TV extends GameObject {
     BufferedImage tvsunny, tvrainy;

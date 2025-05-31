@@ -5,7 +5,6 @@ import javax.imageio.ImageIO;
 import java.awt.Rectangle;
 import objects.GameObject;
 import entity.Player.Player;
-import main.GameClock;
 import entity.Farm.ShippingBin;
 
 public class KingBed extends GameObject {

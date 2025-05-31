@@ -3,8 +3,6 @@ package entity.House;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-import entity.Player.Player;
-import main.GameClock;
 import objects.GameObject;
 
 public class House extends GameObject {

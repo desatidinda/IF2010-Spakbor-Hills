@@ -4,7 +4,6 @@ import entity.Item.Fish;
 import entity.Item.FishData;
 import entity.Item.Item;
 import entity.Player.Player;
-import main.Game;
 import main.GamePanel;
 import main.GameStates;
 
