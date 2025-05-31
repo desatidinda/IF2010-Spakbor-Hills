@@ -9,7 +9,7 @@
 
 
 ## Description
-
+Snowballs Hills merupakan permainan yang terinspirasi berat dari Stardew Valley. Game ini merupakan suatu open-ended game dimana player bisa mengelola farm dengan menanam dan mengurus tanaman. Game ini juga dilengkapi fitur-fitur seperti memancing, serta bersosialisasi dan membangun hubungan dengan penduduk lain.
 ---
 
 
@@ -28,8 +28,25 @@
 
 
 ## Features
+**Technical Features**
+- GUI
+- Mouse and Keyboard Input
 
+**Game Features**
+- Farming   :   Player dapat melakukan aksi seperti menanam tanaman, menyiram tanaman, serta meng-harvest tanaman.
+- Fishing   :   Player dapat memancing ikan.
+- Cooking   :   Player dapat memasak suatu makanan.
+- Berinteraksi Dengan NPC   :   Player bisa berinteraksi dengan NPC yang ada di game seperti mengobrol, memberi gift, dan men-propose serta menikahi NPC.
+- Membeli & Menjual Barang  :   Player dapat membeli item dan juga menjual item untuk mendapatkan uang.
+- Time & Season Change  :   Game memiliki sistem waktu dan pergantian hari serta pergantian musim.
+- Weather System    :   Game memiliki sistem cuaca. Cuaca yang ada adalah 'Sunny' dan 'Rainy'.
 ---
 
 
-## How To Run
+## How To Install
+1.  Clone Repository Github
+2.  Buka dalam folder **IF2210- Spakbor-Hills**
+3.  Buka folder menggunakan IDE seperti IntelliJ IDEA atau VS Code
+4.  Buka terminal dan ketik perintah  
+`./gradlew clean run`
+5.  Program akan otomatis di-build dan dijalankan
