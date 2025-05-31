@@ -13,8 +13,6 @@ import main.GameStates;
 import main.GameClock;
 import entity.Item.*;
 import entity.NPC.*;
-import entity.Player.Player;
-import entity.Player.Inventory;
 
 public class NPCHouseState extends InsideHouseState {
     private final GamePanel gp;
@@ -106,7 +104,7 @@ public class NPCHouseState extends InsideHouseState {
 
     private void showLocalPopup(String msg) {
         localPopupMessage = msg;
-        localPopupTime = System.currentTimeMillis();
+        localPopupTime = GameClock.getGameTime();
     }
 
     {
@@ -236,7 +234,7 @@ public class NPCHouseState extends InsideHouseState {
             int msgY = boY + boxHeight / 2 + msgFm.getAscent() / 2 - 2;
             g2.drawString(localPopupMessage, msgX, msgY);
 
-            if (System.currentTimeMillis() - localPopupTime > LOCAL_POPUP_DURATION) {
+            if (GameClock.getGameTime() - localPopupTime > LOCAL_POPUP_DURATION) {
                 localPopupMessage = null;
             }
         }

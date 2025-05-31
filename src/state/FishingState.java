@@ -150,7 +150,7 @@ public class FishingState implements StateHandler {
     private void drawRecipePopup(Graphics2D g2) {
         if (recipePopupMessage == null && !recipePopupQueue.isEmpty()) {
             recipePopupMessage = recipePopupQueue.poll();
-            recipePopupTime = System.currentTimeMillis();
+            recipePopupTime = GameClock.getGameTime();
         }
 
         if (recipePopupMessage != null) {
@@ -173,7 +173,7 @@ public class FishingState implements StateHandler {
 
             g2.drawString(recipePopupMessage, x + padding, y + 30);
 
-            if (System.currentTimeMillis() - recipePopupTime > RECIPE_POPUP_DURATION) {
+            if (GameClock.getGameTime() - recipePopupTime > RECIPE_POPUP_DURATION) {
                 recipePopupMessage = null;
             }
         }
