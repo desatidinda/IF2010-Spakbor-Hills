@@ -27,8 +27,17 @@ public class UIController implements GameObserver{
     private long popupMessageTime = 0;
     private static final long popupDuration = 1500;
 
-    private long recipeUnlockStartTime = 0;
+    private String recipeUnlockMessage = null;
+    private long recipeUnlockTime = 0;
     private static final long recipeUnlockDuration = 2000;
+
+    private boolean showFadeEffect = false;
+    private int fadeAlpha = 0;
+    private String fadeMessage = "";
+    private boolean fadeIn = true;
+    private static final int fadeSpeed = 30;
+    private boolean pendingSleepSkip = false;
+    private boolean pendingPingsanSkip = false;
 
     public int initialStep = 0;
     public String inputBuffer = "";
@@ -36,9 +45,6 @@ public class UIController implements GameObserver{
     public String gender = "";
     public String farmName = "";
 
-    private String recipeUnlockMessage = null;
-    private long recipeUnlockTime = 0;
-    private static final int RECIPE_POPUP_DURATION = 2000;
 
     double playTime;
     DecimalFormat df = new DecimalFormat("#0.00");
@@ -124,6 +130,10 @@ public class UIController implements GameObserver{
             } else {
                 recipeUnlockMessage = null;
             }
+        }
+
+        if (showFadeEffect) {
+            drawFadeEffect(g2);
         }
     }
 
@@ -350,15 +360,66 @@ public class UIController implements GameObserver{
         }
     }
 
-    public void drawMenu() {
-        String text = "MENU";
+    public void startSleepFade() {
+        String message = "Good morning, " + gp.player.getName() + "!";
+        startFadeEffect(message);
+        pendingSleepSkip = true;
+    }
 
-        int y = gp.screenHeight / 2;
-        drawCenteredText(g2, text, 0, y, gp.screenWidth);
+    public void startPingsanFade(boolean isLowEnergy) {
+        String message;
+        if (isLowEnergy) {
+            message = "You collapsed from exhaustion!";
+        } else {
+            message = "You stayed up too late and passed out!";
+        }
+        startFadeEffect(message);
+        pendingPingsanSkip = true;
+    }
 
-        String subText = "Press Enter to continue";
+    private void startFadeEffect(String message) {
+        this.fadeMessage = message;
+        this.showFadeEffect = true;
+        this.fadeAlpha = 0;
+        this.fadeIn = true;
+    }
 
-        drawCenteredText(g2, subText, 0, y + 40, gp.screenWidth);
+    private void drawFadeEffect(Graphics2D g2) {
+        if (fadeIn) {
+            fadeAlpha += fadeSpeed;
+            if (fadeAlpha >= 255) {
+                fadeAlpha = 255;
+                fadeIn = false;
+            
+                if (pendingSleepSkip) {
+                    GameClock.skipToMorning();
+                    pendingSleepSkip = false;
+                } else if (pendingPingsanSkip) {
+                    if (GameClock.isPingsan() || GameClock.getHour() < 6) {
+                        GameClock.skipUntilMorning();
+                    } else {
+                        GameClock.skipToMorning();
+                    }
+                    pendingPingsanSkip = false;
+                }
+            }
+        } else {
+            fadeAlpha -= fadeSpeed;
+            if (fadeAlpha <= 0) {
+                fadeAlpha = 0;
+                showFadeEffect = false;
+                fadeMessage = "";
+            }
+        }
+        
+        g2.setColor(new Color(0, 0, 0, fadeAlpha));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        
+        if (fadeAlpha >= 200 && !fadeMessage.isEmpty()) {
+            g2.setFont(vt323.deriveFont(Font.BOLD, 48F));
+            g2.setColor(new Color(255, 255, 255, fadeAlpha));
+            drawCenteredText(g2, fadeMessage, 0, gp.screenHeight / 2, gp.screenWidth);
+        }
     }
 }
 
