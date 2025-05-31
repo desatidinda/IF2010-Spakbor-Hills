@@ -419,6 +419,8 @@ public class Player {
     }
 
     public void sleep() {
+        gp.ui.startSleepFade();
+
         if (energy < MAX_ENERGY * 0.1) {
             energy = MAX_ENERGY / 2;
         } else if (energy == 0) {
@@ -426,21 +428,23 @@ public class Player {
         } else {
             energy = MAX_ENERGY;
         }
-        GameClock.skipToMorning();
+        //GameClock.skipToMorning();
     }
 
     public void pingsan() {
+        gp.ui.startPingsanFade(isExhausted());
+
         if (energy <= MIN_ENERGY) {
         energy = 10; 
         } else {
             energy = Math.min(MAX_ENERGY, (int)(energy + Math.floor(energy/2))); 
         }
 
-        if (GameClock.isPingsan() || GameClock.getHour() < 6) {
-            GameClock.skipUntilMorning();
-        } else {
-            GameClock.skipToMorning();
-        }
+        // if (GameClock.isPingsan() || GameClock.getHour() < 6) {
+        //     GameClock.skipUntilMorning();
+        // } else {
+        //     GameClock.skipToMorning();
+        // }
 
         gp.gameState = GameStates.INSIDE_HOUSE;
         houseX = gp.screenWidth / 2 - (gp.tileSize / 2);
